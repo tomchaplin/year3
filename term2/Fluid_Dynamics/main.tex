@@ -1,0 +1,317 @@
+\documentclass[11pt]{article}
+\title{Fluid Dynamics Notes}
+\author{Thomas Chaplin}
+\date{}
+\setlength{\parindent}{0pt}
+%\vfuzz=30pt
+%\hfuzz=30pt
+
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathdots}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{microtype}
+
+% Partial Derivative command
+\newcommand*{\pd}[3][]{\ensuremath{\frac{\partial^{#1} {#3}}{\partial {#3}^{#1}}}}
+% Material Derivative command
+\newcommand*{\md}[1]{\ensuremath{\frac{D #1}{D t}}}
+% Gradient
+\newcommand{\grad}{\bigtriangledown}
+% Define to equal
+\newcommand{\defeq}{:=}
+\newcommand{\eqdef}{=:}
+% Tensor underline
+\newcommand{\tul}[1]{\underline{\underline{#1}}}
+
+% Proof environments
+\renewenvironment{proof}{{\bfseries Proof}}{\qed}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{axiom}{Axiom}[section]
+\newtheorem{prop}{Proposition}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{lemma}{Lemma}[prop]
+\newtheorem{defin}{Definition}[section]
+
+\definecolor{mylg}{rgb}{0.9,0.9,0.9}
+\newenvironment{eg}
+    {\begin{mdframed}[backgroundcolor=mylg, roundcorner=5pt, linewidth=0pt]}
+    {\end{mdframed}}
+    
+\newenvironment{note}
+    {\textbf{Note:}\begin{mdframed}[backgroundcolor=white, roundcorner=5pt, linewidth=0pt]}
+    {\end{mdframed}}
+
+\newenvironment{formula}
+	{\begin{mdframed}[backgroundcolor=white, roundcorner=5pt, linewidth=1pt, linecolor=red]}
+	{\end{mdframed}}
+
+
+% Definition environments
+\newlist{definition}{description}{2}
+\setlist[definition]{leftmargin=8em,style=nextline}
+
+% Quick column vector command
+\newcount\colveccount
+\newcommand*\colvec[1]{
+        \global\colveccount#1
+        \begin{pmatrix}
+        \colvecnext
+}
+\def\colvecnext#1{
+        #1
+        \global\advance\colveccount-1
+        \ifnum\colveccount>0
+                \\
+                \expandafter\colvecnext
+        \else
+                \end{pmatrix}
+        \fi
+}
+
+% Custom formatting commands
+\newcommand{\mv}[1]{\textbf{#1}}
+\newcommand{\mdf}[1]{{\color{red}#1}}
+
+\begin{document}
+\maketitle
+
+\section{Mathematical Modelling of Fluid Flow}
+\subsection{Validity of continuum mechanics}
+Continuum mechanics is valid when
+$$\frac{l}{L}<<1$$
+where $l$ and $L$ are length scales characterising molecular motion and flow dimension respectively.
+\begin{eg}
+\textbf{Typical examples:}
+\begin{itemize}
+    \item $l_{gas}\sim 100nm=10^{-7}m$ is the mean free path of a typical gas
+    \item $l_{liquid}\sim 1nm=10^{-9}m$ is the typical distance between molecules.
+\end{itemize}
+\end{eg}
+
+\subsection{Lagrangian v.s. Eulerian Description}
+A fluid will consist of a number of material points/fluid elements/fluid particles/fluid volumes.
+In order to uniquely identify each fluid element we can tag it according to its Eulerian coordinates at some initial condition
+$$x_j(t-t_0)=X_j=(X_1,X_2,X_3)$$
+Alternatively we allow the coordinates to move and deform with time to get the $X_j$ Largrangian coordinates which follow the fluid.
+This allows us to derive useful equation but these equations are usually simpler when transformed back to Eulerian coordinates.
+
+\subsection{Flow Visuation}
+\subsubsection{Particle Paths}
+Particle paths are intuitively the path a particle will follow if dropped into a flow and depends only on initial conditions:
+$$\pd{x_i^p}{t}=u_i \quad\quad\quad \text{for fixed} \quad x_i^p(t=0)=X_i$$
+We integrate these equations and eliminate $t$ to get particle paths.
+\begin{eg}
+To calculate particle paths for the flow $\mv{u}(t)=(u_0,kt,0)$, we integrate to get
+$$\mv{x}(t)=(u_0t+a,\frac{kt^2}{2}+b,c)\implies y=\frac{k}{2}\left(\frac{x-a}{u_0}\right)^2+b\implies\text{Parabola}$$
+\end{eg}
+\subsubsection{Stream lines}
+Intuitively, we pause time and then draw lines in the vector field. We parameterise these lines in terms of arc length $s$
+$$\pd{x_i^p}{s}=u_i \quad\quad\quad \text{for fixed} \quad t$$
+We integrate these equations and eliminate $s$ to get stream lines. Note, for a steady flow (i.e $\pd{\mv{u}}{t}=0$), this is the same as the particle paths. 
+\begin{eg}
+For the same flow $\mv{u}(t)=(u_0,kt,0)$, suppose at $s=0$ we have $(x,y,z)=(a,b,c)$ then
+$$\mv{x}(t)=(u_0s+a,kts+b,c)\implies y=kt\left(\frac{x-a}{u_0}\right)+b\implies\text{Straight lines}$$
+\end{eg}
+
+fsubsection{Material Derivative}
+The \mdf{material derivative} is the rate of change of something which follows the flow. To figure out what this is we consider the derivative of a function dependant on time and the particle paths $f(\mv{x}^p(t),t)$. Then
+\begin{align*}
+    \pd{f}{t}&=\pd{f}{t}+\sum_i \pd{f}{x_i}\pd{x_i}{t}\\
+             &=\pd{f}{t}+\sum_i u_i\pd{f}{x_i}\\
+             &=\left(\pd{ }{t} + \sum_i u_i\pd{ }{x_i}\right)f
+\end{align*}
+We then define the \mdf{material derivative} to be
+$$\md{ }\defeq \pd{ }{t}+\sum_i u_i\pd{ }{x_i}=\pd{ }{t}+\mv{u}\cdot\grad$$
+The first time is the local rate of change at a fixed Eulerian position whereas the second term represents the convective rate of change caused by driving fluid elements through gradients of $f$.
+\begin{eg}
+For a concentration of pollutant c=c(x) in a river with steady flow $\mv{u}=(u_0,0,0)$, how does the concetration change in a fluid element that follows the fluid?
+\begin{align*}
+    \md{c}&=\pd{c}{t}+(\mv{u}\cdot\grad)c\\
+          &=u_0\pd{c}{x}+0\pd{c}{y}+0\pd{c}{z}\\
+          &=u_0\pd{c}{x}
+\end{align*}
+\end{eg}
+\begin{note}
+\begin{itemize}
+    \item $\md{f}\equiv 0 \implies$ $f$ is constant in fluid elements but, in general, has different values in different elements.
+    \item Parameterising streamlines by $s$, let $\mv{e}_s$ be the unit tangent vector at $s$. Then
+    $$(\mv{u}\cdot\grad) f= |u|\mv{e}_s\cdot\grad f=|u|\pd{f}{s}$$
+    Hence $(u\cdot\grad)f = 0\implies$ $f$ constant on streamlines
+\end{itemize}
+\end{note}
+We can now define \mdf{acceleation} as
+$$\mv{a}=\md{\mv{u}}=\pd{\mv{u}}{t}+(\mv{u}\cdot\grad)\mv{u}.$$
+We also say a flow is \mdf{steady} if $\pd{\mv{u}}{t}=0$ (normal partial derivaive).
+\begin{eg}
+Consider the 1D flow $\mv{u}=(u_1(x),0,0)$, noticing we have steady flow but
+\begin{align*}
+    a_1&=\pd{u_1}{t}+\sum_j u_j\pd{u_1}{x_j}\\
+       &= 0 + u_1 \pd{u_1}{x} = u_1 \pd{u_1}{x}
+\end{align*}
+individual fluid elements still accelerate. To visualise this consider a flow in a pipe which constricts.
+\end{eg}
+
+\subsection{Vorticity and Rate of Strain}
+We want to understand how flow deforms fluid elements which will show us that rate of deformations is what generates stress in a fluid.
+
+To do this we Taylor expand velocity to first order, at two points differing by some $\delta_{x_j}:$
+\begin{align*}
+    u_i(x_j+\delta_{x_j},t)&=u_i(x_j,t)+\sum_j \pd{u_i}{x_j}\delta{x_j}\\
+    &=\underbrace{u_i(x_j,t)+\sum_j r_{ij}\delta{x_j}}_{\text{rigid body}}+\underbrace{\sum_j e_{ij}\delta{x_j}}_{\text{Shearing + Extension}}\\
+    &\eqdef u_i^T + u_i^R + u_i^S
+\end{align*}
+\begin{align*}
+    \text{where} \quad &r_{ij}=-r_{ji}\defeq\frac{1}{2}\left(\pd{u_i}{x_j}-\pd{u_j}{x_i}\right) & \text{is the \mdf{rate of rotation tensor}}\\
+    \quad &e_{ij}=e_{ji}\defeq\frac{1}{2}\left(\pd{u_i}{x_j}+\pd{u_j}{x_i}\right) & \text{is the \mdf{rate of strain tensor}}
+\end{align*}
+This term has three components of interest which we will now explore.
+\subsubsection{Translation}
+The first term is certainly translation because
+$$u_i(x_j+\delta_{x_j},t)=u_i(x_j,t)\implies\text{velocity is locally constant}$$
+This induces no internal stress.
+\subsubsection{Rotation}
+Because the rate of rotation tensor is skew-symmetric we only get 3 non-zero terms:
+\[
+(r_{ij})=
+\begin{bmatrix}
+0 & -c & -b\\
+c &  0 & -a\\
+b &  a &  0
+\end{bmatrix}
+\]
+so we can rewrite the rotation term as
+$$u_i^R=\sum_j r_{ij}\delta_{x_j} = \sum_j \sum_k \epsilon_{ijk}\Omega{j}\delta_{x_k}$$
+where $\Omega = (r_{32},r_{13},r_{21})=(a,b,c)$.
+We then define \mdf{vertocity} to be $\omega\defeq\grad\times\mv{u}=2\Omega$.
+We can view this as the rotation term where $\Omega$ is the local rate of rotation. Rotation induces no internal stress.
+\subsubsection{Shearing + Extension}
+The strain term $u_i^S$ involves the relative motion of fluid particles. They can be split into two types:
+\begin{align*}
+    \text{Diagonal terms} &\longleftrightarrow \text{Extensional terms}\\
+    \text{Off-diagonal terms} &\longleftrightarrow \text{Sharing terms}
+\end{align*}
+Read written notes for diagrammatic explanation of these terms.
+\begin{note}
+Denote by $V$ the volume of a fluid element then
+\begin{formula}
+$$\frac{1}{V}\md{V} = \grad\cdot\mv{u}$$
+\end{formula}
+Therefore $\md{V}=0\implies\underbrace{\grad\cdot\mv{u}=0}_{Incompressible flow}\iff\sum_k e_{kk}=0$
+\end{note}
+
+\subsection{Conservation of Mass}
+We want an equation which encompasses conservation of mass in a fluid. Consider a fluid element cube with (infinetesimal) side length $d$ and centred at $(x_0,y_0,x_0)$.
+\begin{align*}
+    \text{Rate of increase of fluid mass} &= \text{Volume} \cdot \text{Rate of change of density}\\
+    &= d^3 \cdot \pd{\rho}{t}
+\end{align*}
+Summing over all sides we see
+\begin{align*}
+d^3\pd{\rho}{t}=d^2[&-\rho(x_0+d,y,z)u(x_0+d,y,z)+\rho(x_0,y,z)u(x_0,y,z)\\
+                    &-\rho(x,y,_0+d,z)u(x,y_0+d,z)+\rho(x,y_0,z)u(x,y_0,z)\\
+                    &-\rho(x,y,z_0+d)u(x,y,z_0+d)+\rho(x,y,z_0)u(x,y,z_0)]
+\end{align*}
+Dividing by $d^3$ and taking the limit $d\to 0$ we see
+$$\pd{\rho}{t}=-\pd{(\rho u)}{x} - \pd{(\rho v)}{y} - \pd{(\rho w)}{z} = -\grad\cdot(\rho\mv{u})$$
+So we have our equation
+\begin{formula}
+$$\pd{\rho}{t}+\grad\cdot(\rho\,\mv{u})=0$$
+\end{formula}
+\begin{note}
+	We have derived this equation in Cartesian coordinates but obtained a vector equation, so we may apply it to any coordinate system.
+\end{note}
+\subsection{Conservation of Momentum}
+We would like to apply Newton's $2^{nd}$ law to fluids. So far we can write
+$$m\mv{a}=\underbrace{ \mv{F}_{body} }_{internal}+\underbrace{\mv{F}_{stress}}_{external}$$
+We define \mdf{stress} to be the force per unit area and then the \mdf{stress tensor} $T_{ij}$  is the $i^{th}$ component of stress on the surface with normal $\mv{n}_j$.
+We normally the symmetric class of tensors where $T_{ij}=T{ji}$.
+We now consider the total force acting on our infinitesimal cube and by a similar calculation as the one in conservation of momentum we find
+$$\delta F_i=d^3\sum_j\pd{T_{ij}}{x_j}$$
+\subsubsection{Cauchy's Momentum Equation}
+We can now substitute all of the formulae into Newton's second law to get:
+$$\underbrace{ (\rho d^3) }_{mass}\underbrace{ \md{u_i} }_{acceleration}=\underbrace{d^3\sum_j\pd{T_{ij}}{x_j}}_{internal} -\underbrace{(\rho d^3)}_{mass}\underbrace{g\delta_{i3}}_{gravity}$$
+Then we can divide by $d^3$ on both sides to yield the Cauchy Momentum Equation:
+\begin{formula}
+\textbf{Cauchy's Momentum Equation:}
+$$\rho\md{u_i}=\pd{T_{ij}}{x_j}-\rho g \delta_{i3}$$
+or in vector form
+$$\md{\mv{u}}=\frac{1}{\rho}\grad\cdot\;\tul{\mv{T}}-g\mv{e}_z$$
+\end{formula}
+This is a very important formula but it requires us to know the stress tensor. We would like to relate $\tul{\mv{T}}$ to velocity $\mv{u}$ and pressure $\mv{P}$. 
+\subsubsection{Inviscid Flow}
+In inviscid flows, there is no internal friction and so there are no sheering terms to the stress tensor, i.e. all off-diagonal terms are 0.
+Therefore, the only stress is the inward pressure acting perpendicular to the sides of the fluid element.
+We can write this as the following \mdf{constitutive relation}:
+$$T_{ij}=-p\delta{i_j}$$
+Substituting $\pd{T_{ij}}{x_j}=-\pd{p}{x_i}$ into Cauchy's Momentum Equation we see
+\begin{formula}
+	\textbf{Euler's Equation}
+	$$\md{\mv{u}}=-\frac{1}{\rho}\grad{p}-g\mv{e}_z$$
+\end{formula}
+\begin{note}
+\begin{itemize}
+	\item In the absence of gravitational forces we see that fluid elements are accelerated by pressure gradients from high to low pressure.
+	\item If we assume fluid elements are not being accelerated then we recover a hydrostatic balance:
+		$$0=-\frac{1}{\rho}\pd{p}{z}-g\implies p=-\rho gz + p_0$$
+\end{itemize}
+\end{note}
+\subsubsection{Stress Tensor for a Viscous Fluid}
+This time we have the normal inward pressure as with inviscid flows but we also have an additional \mdf{viscous stress tensor} $\sigma_{ij}$.
+$$T_{ij}=-p\delta_{ij}+\sigma_{ij}$$
+We need another constitutive relation between the rate of strain tensor $e_{ij}$ and the viscous stress tensor $\sigma_{ij}$.
+When this relationship is linear, we call this flow \mdf{Newtonian}.
+In the case that the flow is incompressible we get $\sum_k e_{kk}=0$ and hence
+$$\sigma_{ij}=2\mu e_{ij}$$
+where $\mu$ is the dynamic viscosity given in $kgm^{-1}s^{-1}$. The dynamic viscosity is the coefficient of proportionality between the rate of strain tensor and the stress tensor. This describes how easily a fluid moves under a shear force.
+Then we can write
+\begin{align*}
+	T_{ij}&= -p\delta_{ij}+2\mu e_{ij}\\
+		  &= -p\delta_{ij}+\mu\left(\pd{u_i}{x_j}-\pd{u_i}{x_j}\right)
+\end{align*}
+Now $\sum_i T_{ii} = -3p$ and hence $p=-\frac{1}{3}(\sum_i T_{ii})$ is the mechanical (NOT thermodynamic) pressure.
+\begin{note}
+The flow of incompressible Newtonian fluids covers a huge range of phenomena.
+However, there are many cases in which non-Newtonian behaviour is encountered and hence we need more complex constitutive relations than those above.
+\end{note}
+We can now substitute these relations into Cauchy's momentum equation to get:
+\begin{formula}
+\textbf{The incompressible Navier-Stokes equations:}
+$$\md{u_i}=-\frac{1}{\rho}\pd{p}{x_i}+\nu\pd[2]{u_i}{x_k}-g\delta_{i3}$$
+or in vector form
+$$\md{\mv{u}}=\underbrace{-\frac{1}{\rho}\grad{p}}_{Pressure\;gradients}+\underbrace{\nu\grad^2\mv{u}}_{Viscous\;forces}\underbrace{-g\mv{e}_z}_{Gravity}$$
+where $\nu=\frac{\mu}{\rho}$ is the \mdf{kinematic viscosity coefficient}.
+\end{formula}
+\subsection{Controlling Flow Parameters}
+We have two key questions to answer before we can start using these formulae:
+\begin{itemize}
+	\item When is the inviscid assumption valid?
+	\item When is the incompressible assumption valid?
+\end{itemize}
+To this end, we shall define two \mdf{dimensionless parameters}, namely the Reynold's Number and Mach Number.
+\subsubsection{Reynold's Number}
+Our aim is to determine when it is safe to ignore the viscous forces in NS equations.
+To do this we compare the approximate sizes of typical terms within the viscous and acceleration term.
+Suppose we have a flow with characteristic length $L$ and characteristic speed $u$ with a kinematic viscosity $\nu$.
+\begin{align*}
+	\text{A typical viscosity term is} &\left|\nu\pd[2]{u}{x}\right|\sim\frac{\nu u}{L^2}\\
+	\text{A typical acceleration term is} &\left|u\pd{u}{x}\right|\sim\frac{u^2}{L}
+\end{align*}
+Dividing these two terms we should get (we can check a dimensional parameter. We call this the \mdf{Reynold's number}.
+$$\frac{|(u\cdot\grad)u|}{|\nu\grad^2 u|}\sim \frac{u^2}{L}\cdot\frac{L^2}{\nu u}=\underbrace{\mdf{\frac{uL}{\nu}}}_{\mdf{Reynold's\;Number}}$$
+We now have two cases:
+\begin{itemize}
+	\item $Re >> 1 \implies \frac{Inertia}{Viscosity} >> 1 \implies$ Viscosity is negligible so we can use the Euler equations.
+	\item $Re << 1 \implies \frac{Inertia}{Viscosity} << 1 \implies$ Inertia is negligible so we can use the Stoke's equation (where we remove inertia term).
+	\item $Re \approx 1 \implies$ We have to use the NS equations
+\end{itemize}
+\begin{formula}
+	\textbf{Stokes's Equation:}
+	$$0=-\frac{1}{\rho}\grad{p}+\nu\grad^2\mv{u}-g\mv{e}_z$$
+\end{formula}
+\end{document}
