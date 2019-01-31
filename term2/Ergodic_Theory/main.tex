@@ -1,0 +1,187 @@
+\documentclass[11pt]{article}
+
+%{{{ Packages
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathdots}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{microtype}
+\setlength{\parindent}{0pt}
+%}}}
+%{{{ Custom commands
+% Nice maths commands
+\newcommand{\defeq}{:=}
+\newcommand{\abs}[1]{|#1|}
+\newcommand{\norm}[1]{||#1||}
+%\renewcommand{\dots}{...}
+\newcommand{\msrspc}{\ensuremath{(X,\mathcal{B},\mu)}}
+\newcommand{\symd}{\triangle}
+
+% Spaces
+\newcommand{\ktor}{\mathbb{T}^k}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+%}}}
+%{{{ Enviornments
+% Definitions environment
+\newenvironment{defin}
+	{\begin{mdframed}[backgroundcolor=white, roundcorner=5pt, linewidth=1pt]}
+	{\end{mdframed}}
+\newcommand{\mdf}[1]{{\color{red} #1}}
+
+% Important notes environment
+\newenvironment{note}
+	{\begin{mdframed}[backgroundcolor=white, linecolor=red, roundcorner=5pt, linewidth=1pt]\bfseries{Note:}\normalfont}
+	{\end{mdframed}}
+
+% Examples enviornmnet
+\definecolor{mylg}{rgb}{0.9,0.9,0.9}
+\newenvironment{eg}
+	{\begin{mdframed}[backgroundcolor=myld,roundcorner=5pt,linewidth=0pt]\bfseries{Example:}}
+	{\end{mdframed}}
+
+% Theorem enviornment
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{cor}[theorem]{Corollary}
+%}}}
+%{{{ Document metadata
+\title{Ergodic Theory Notes}
+\author{}
+\date{}
+%}}}
+
+\begin{document}
+\maketitle
+
+\section{Basic Definitions}
+
+For this section we fix a probability space \msrspc and we have a transformation $T:X\to X$ which is measurable in our probability space.
+
+\begin{defin}
+	
+We say $T$ is a \mdf{measure preserving transformation (m.p.t.)} or $\mu$ is a \mdf{$T$-invariant measure} if 
+$$\mu(T^{-1}B)=\mu(B)\quad\forall B\in\mathcal{B}$$
+
+The \mdf{push forward of $\mu$ by $T$} is defiend to be
+	$$T_*\mu(B)=\mu(T^{-1}B)\quad\forall B \in\mathcal{B}$$
+
+We say a measure $\mu$ is \mdf{regular} if $\forall B\in\mathcal{B}$ we have $\forall\epsilon >0 \exists U\subseteq X$ open such that
+$$B\subseteq U \quad \text{and} \quad \mu(U) < \mu(B) + \epsilon$$
+
+An m.p.t $T$ is said to be \mdf{ergodic} if
+$$\forall B\in\mathcal{B},\; T^{-1}B=B \implies \mu(B)=0\;\text{or}\;1$$
+
+\end{defin}
+
+\section{Facts on Fourier Series}
+Suppose $f\in L_1(\ktor)$ then we can define the \mdf{Fourier coefficients} by
+$$\hat{f}(n)=\int_{\ktor}f(x)e^{-2\pi in\cdot x}dx\quad\forall n\in\Z^k$$
+\begin{theorem}[Fej\'er's Theorem]
+The average of the partial Fourier sums converges uniformly to $f$, i.e.
+$$\frac{1}{N}\sum_{k=0}^{N-1}S_kf\to f\quad\text{uniformly}$$
+\end{theorem}
+\begin{theorem}[Riemann-Lebesgue Lemma]
+	For all $f\in L_1(\ktor)$, $$\lim_{\abs{n}\to\infty}\hat{f}(n)=0$$
+\end{theorem}
+\begin{theorem}[Reisz-Fisher Theorem]
+Define $S_Nf(x)=\sum_{\abs{n}\leq N}\hat{f}(n)e^{2\pi i (n\cdot x)}$
+then $S_nf\to f$ in $L^2$ for all $f\in L^2(\ktor)$.
+\end{theorem}
+\begin{cor}
+If $f\in L^2(\ktor)$ and $\hat{f}(n)=0\;\forall n\in\Z^k\setminus\{0\}$, then $f$ is constant.
+\end{cor}
+\section{Criteria for measure preserving}
+\begin{theorem}
+Given $T:X\to X$ on a probability space $(X,\mu)$, the following are equivalent:
+\begin{enumerate}
+	\item $T$ is m.p.t
+	\item $\int f\circ T d\mu = \int f d\mu \quad\quad \forall f\in L_1(X)$.\end{enumerate}
+\end{theorem}
+Recall the space $L_1(X)=\left\{ f:x\to\R : \text{measurable}\quad \norm{f}_1 \defeq\int \abs{f} d\mu < \infty \right\}$
+
+\begin{theorem}
+Given $T:X\to X$ on a probability space $(X,\mu)$, the following are equivalent:
+\begin{enumerate}
+	\item $T$ is m.p.t
+	\item $\int f\circ T d\mu = \int f d\mu \quad\quad \forall f\in C(X)$.
+\end{enumerate}
+\end{theorem}
+
+So we see that in fact it suffices to check that $T$ does not affect the integral of any continuous function $f$.
+However, we can extend this further using the density of trigonometric polynomials in the space of continuous functions. 
+First, we need to define a trigonometric polynomial in arbitrary dimension on the $k$-torus $X=\ktor$ with $\mu=leb$ and $\mathcal{B}=Borel$.
+\begin{defin}
+	$P:\ktor\to\ktor$ is a \mdf{trigonometric polynomial} if for some $N\geq 1$ and $c_n\in\C$ we can write
+	$$P(x)=\sum_{\abs{n}\leq N} c_n e^{2\pi in\cdot x}$$
+	where $n=(n_1,\dots,n_k)\in\Z^k, x=(x_1,\dots,x_k), \abs{n}=\abs{n_1}+\dots+\abs{n_k}$.
+\end{defin}
+\begin{note}
+	\[
+		\int_{\ktor} e^{2\pi n\cdot x} dx =
+		\begin{cases}
+			1 & \text{if} \; n=0\\
+			0 & \text{if} \; n\neq 0
+		\end{cases}
+	\]
+	and hence
+	$$\int_{\ktor}P = c_0$$
+\end{note}
+
+\begin{theorem}
+Given $T:\ktor\to \ktor$ continuous and denoting by $\mu$ the Lebesgue measure.
+\begin{enumerate}
+	\item $T$ is m.p.t
+	\item $\int P\circ T d\mu = \int P d\mu \quad\quad \forall\; \text{trigonometric polynomials}\; P$. 
+\end{enumerate}
+\end{theorem}
+
+\section{Criteria for Ergodicity}
+First another few definitions.
+\begin{defin}
+Given $A,B\subseteq X$, their \mdf{symmetric difference} is
+$$A\symd B\defeq (A \setminus B)\cup (B \setminus A)$$
+
+A function $f$ is \mdf{$T$-invariant} if $f \circ T = f$ a.e.
+
+A function $f$ is \mdf{constant} if $\exists c\in\R$ such that $f(x) = c$ almost everywhere.
+\end{defin}
+
+\begin{theorem}
+Given a measure preserving transformation $T:X\to X$ and some $1\leq p\leq\infty$. TFAE:
+\begin{enumerate}
+	\item T is ergodic.
+	\item For all $f$ measurable $f$ invariant $\iff$ $f$ constant.
+	\item For all $f\in L^p(X)$, $f$ invariant $\iff$ $f$ constant.
+\end{enumerate}
+\end{theorem}
+\begin{note}
+To check that $T$ is ergodic it suffices to show that all invariant $L^2$ functions have zero Fourier coefficients away from zero.
+\end{note}
+To this end we present the following formula for computing the Fourier coefficients of invariant $L^2$ functions.
+\begin{theorem}
+Given $f\in L^2$ which is invariant
+$$\hat{f}(n)=\lim_{N\to\infty}\int (S_Nf)(Tx)e^{-2\pi i n\cdot x}dx$$
+\end{theorem}
+
+\section{Theorems using Measure Preserving}
+\begin{theorem}[Poincar\'e Recurrence Theorem]
+	Given a probability space \msrspc and $T:X\to X$ measure preserving. Then
+	$$\mu\{x\in B : T^nx\in B \; \text{infinitely often}\,\}=\mu(B)\quad \forall B\in\mathcal{B}$$
+\end{theorem}
+\section{Theorems using Ergodicity}
+\begin{theorem}[Pointwise Ergoic Theorem - Birkhoff 1931]
+	Given a measure space \msrspc and a measure preserving transformation $T:X \to X$ and $f\in L^1(X)$. Then $\exists f^*\in L^1(X)$ invariant such that
+	$$\frac{1}{n}\sum_{j=0}^{n-1}f\circ T^j \to f^* \; a.e.\quad \text{and} \quad \int f^* = \int f$$
+\end{theorem}
+Note this does not actually need ergodicity. However, if we additionally assume ergodicity we can prove the following stronger result.
+\begin{cor}
+Given a probability space \msrspc, $T$ measure preserving and ergodic, $f\in L^1(x)$, then
+$$\underbrace{\frac{1}{n}\sum_{j=0}^{n-1}f\circ T^j }_{\text{Time average}}\to \underbrace{\int f d\mu \; a.e.}_{\text{Space average}}$$
+\end{cor}
+\end{document}
