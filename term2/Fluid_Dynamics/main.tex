@@ -55,6 +55,9 @@
 \newcommand{\mv}[1]{\textbf{#1}}
 \newcommand{\mdf}[1]{{\color{red}#1}}
 
+% Norms
+\newcommand{\abs}[1]{|#1|}
+
 %}}}
 %{{{ Custom environments
 % Proof environments
@@ -119,7 +122,7 @@ For the same flow $\mv{u}(t)=(u_0,kt,0)$, suppose at $s=0$ we have $(x,y,z)=(a,b
 $$\mv{x}(t)=(u_0s+a,kts+b,c)\implies y=kt\left(\frac{x-a}{u_0}\right)+b\implies\text{Straight lines}$$
 \end{eg}
 
-fsubsection{Material Derivative}
+\subsection{Material Derivative}
 The \mdf{material derivative} is the rate of change of something which follows the flow. To figure out what this is we consider the derivative of a function dependant on time and the particle paths $f(\mv{x}^p(t),t)$. Then
 \begin{align*}
     \pd{f}{t}&=\pd{f}{t}+\sum_i \pd{f}{x_i}\pd{x_i}{t}\\
@@ -369,7 +372,192 @@ The location of this boundary must then be found as part of the solution.
 To summarise this, we assume the free-slip boundary conditions and that the pressure of the liquid at the boundary is equal to the atmospheric pressure $p_a$ in the gas.
 $$p(\mv{x},t)=p_a\quad\quad\forall\mv{x}\in\partial V$$
 
+\subsection{Summary}
+The \mdf{material derivative} is
+$$\md{}\defeq\pd{}{t}+\sum_i \pd{}{x_i}=\pd{}{t}+\mv{u}\cdot\grad$$
+
+A flow is \mdf{steady} if $\pd{\mv{u}}{t}=0$.
+
+The \mdf{rate of rotation tensor} is 
+$$r_{ij}\defeq\frac{1}{2}\left(\pd{u_i}{x_j}-\pd{u_j}{x_i}\right)$$
+
+The \mdf{rate of strain tensor} is 
+$$r_{ij}\defeq\frac{1}{2}\left(\pd{u_i}{x_j}+\pd{u_j}{x_i}\right)$$
+
+The \mdf{vorticity} is $\omega\defeq\grad\times\mv{u}=2(r_{32},r_{13},r_{21})$.
+
+We have \mdf{incompressible flow if} $\grad\cdot\mv{u}=0$.
+
+The \mdf{stress tensor} $T_{ij}$ is the $i^{th}$ component of stress (force per unit area) on the surface with normal $\mv{n}_j$.
+
+\mdf{Cauchy's Momentum equation} is
+$$\rho\md{u_i}=d^3\pd{T_{ij}}{x_j}-\rho g\delta_{i3}\;\iff\;\md{\mv{u}}=\frac{1}{\rho}\grad\cdot\tul{\mv{T}}-g\mv{e}_z$$
+
+For inviscid flows we can use \mdf{Euler's Equation}
+$$\md{\mv{u}}=-1\frac{1}{\rho}\grad p-g\mv{e}_z$$
+
+For Newtonian flows the relationship between the viscous stress and strain tensors is linear $\sigma_{ij}=2\mu e_{ij}$ where $\mu$ is the dynamic viscosity.
+
+For incompressible Newtonian fluids we have the \mdf{incompressible Navier-Stokes equations}
+$$\md{u_i}=\frac{1}{\rho}\pd{p}{x_i}+\nu\pd[2]{u_i}{x_k}-g\delta_{i3}$$
+or in vector form
+$$\md{\mv{u}}=\frac{1}{\rho}\grad p + \nu \grad^2\mv{u} - g\mv{e}_z$$
+where $\nu=\frac{\mu}{\rho}$ is the \mdf{kinematic viscosity coefficient}.
+
+\mdf{Reynold's number} measures the negligibility of viscosity. When large we can use Euler's equations, when low we can use Stoke's equations as approximations.
+$$Re\defeq\frac{uL}{\nu}$$
+
+The \mdf{Mach number} measures the importance of compressibility. At low Mach numbers, incompressibility is a safe assumption.
+$$Ma\defeq\frac{u}{c_s}$$
+
+When solving these equations we must specify a divergence free \mdf{initial velocity field} which satisfies the boundary conditions.
+
+In viscous fluids we may assume the \mdf{no-slip boundary condition}:
+$$\mv{u}(\mv{x},t)=\mv{U}_b(\mv{x},t)\quad\quad\forall\mv{x}\in\partial V$$
+
+In inviscid fluids we may assume the \mdf{free-slip boundary condition}:
+$$\mv{u}(\mv{x},t)\cdot\mv{n}=\mv{U}_b(\mv{x},t)\cdot\mv{n}\quad\quad\forall\mv{x}\in\partial V$$
+
+At free surfaces we can assume that surface pressure is equal to atmospheric pressure:
+$$p(\mv{x},t)=p_a\quad\quad\forall\mv{x}\in\partial V$$
 \section{Additional Conservation Laws}
+Now that we have the Navier-Stokes equations we will consider what further conservation laws result from these equations. We consider special cases in which we can make analytic progress.
 
+\subsection{Velocity-Vorticity Form of the NS equations}
+When flow in incompressible $\grad\cdot\mv{u}=0$ and we have the following vector identity
+$$(\mv{u}\cdot\grad)\mv{u}=\omega\times\mv{u}+\grad\left(\frac{u^2}{2}\right)$$
+where we write $u^2=\mv{u}\cdot\mv{u}$. We can sub this into the NS equations and writing $g\mv{e}_z=\grad(gz)$ we get
+$$\pd{\mv{u}}{t}+\omega\times\mv{u}=-\grad B+\nu\grad^2\mv{u}$$
+where $B$ is the \mdf{Bernoulli Potential}
+$$B=\frac{p}{\rho}+\frac{u^2}{2}+gz$$
+\subsection{Bernoulli Theorems}
+We will now consider two cases:
+\begin{itemize}
+	\item The flow is irrotational $\omega = 0$.
+	\item The flow is steady $\pd{\mv{u}}{t}=0$.
+\end{itemize}
+\subsubsection{Unsteady Irrotational Flow}
+The Helmholtz decomposition tehorem tells us we can split up $\mv{u}$ into a rotational part and an irrotational part $\grad\phi$ where $\phi$ is a velocity potential. So in the irrotational case, velocity can be written
+$$\mv{u}=\grad\phi$$
+We will also use this identity
+$$\grad\times(\grad\times\mv{u})=\grad(\grad\cdot\mv{u})-\grad^2\mv{u}$$
+For incompressible irrotational flows this implies $\grad^2\mv{u}=0$.
+We substitute all of this into the velocity-vorticity form and get
+$$\grad\pd{\phi}{t}=-\grad B$$
+which we can over a path $\mv{x}$ to get the following
+\begin{theorem}[Bernoulli theorem for steady irrotational flow]
+	$$\pd{\phi}{t}+B=C(t), \quad \text{where} \quad B=\frac{p}{\rho}+\frac{\abs{\grad\phi}^2}{2}+gz$$
+	where $C(t)$ is a function of time only. The incompressibility condition becomes
+	$$\grad\cdot\mv{u}=\grad^2\phi=0.$$
+\end{theorem}
 
+\begin{eg}
+Do U-bend example here!
+\end{eg}
+
+\subsubsection{Steady Irrotational Flow}
+If we further assume that flow is steady then the theorem tells us that Bernoulli's potential is constant throughout the flow volume.
+$$B\equiv \frac{p}{\rho}+\frac{u^2}{2}+gz$$
+\begin{eg}
+Pitot Tube example here!
+\end{eg}
+\subsubsection{Steady Inviscid Rotational Flow}
+We again start with the velocity-vorticity form and dot the entire equation with $\mv{u}$. Using $\pd{\mv{u}}{t}=0$ and $\mv{u}\cdot(\omega\times\mv{u})=0$ we arrive at the equation
+$$\underbrace{\md{B}=\mv{u}\cdot\grad B}_{\text{for steady flow}} \equiv 0$$
+so B follows the fluid. That is B is constant on each streamline, although this constant may differ between stream lines. Moreover, remember steady flow implies that particle paths and steam lines coincide.
+\subsection{Global Conservation Laws}
+So far all of our conservation laws have been local, i.e. they refer to conservation of a field along fluid trajectories. However, we can also apply similar laws to arbitrary volumes within our fluid by integrating the local equations. This arbitrary volume could be the entire fluid volume.
+\subsection{Mass Conservation Over an Arbitrary Volume}
+We assume incompressibility $\pd{u_i}{x_i}=0$ and integrate over a finite fixed volume V:
+$$0=\int_V \pd{u_i}{x}dV=\int_{\partial V}u_in_idA=\int_{\partial V}\mv{u}\cdot\mv{n}\;dA$$
+Intuitively, this means that mass flux through all side of our volume $V$ must sum to zero. In a compressible fluid, where the density inside $V$ can change, this is not necessarily true.
+\begin{eg}
+Venturi Pipe!
+\end{eg}
+\subsection{Momentum Conservation}
+Recall that the main NS equation is the local momentum balance equation. That is, it was obtained by applying Newton's second law to a moving infinitesimal fluid parcel.
+\subsubsection{Over an arbitrary volume}
+Consider an arbitrary fixed volume V within the fluid through which the fluid flows.
+The total momentum in this volume is given by
+$$M_i=\int_V \rho u_i\;dV.$$
+Integrating the NS equation over this volume we get
+$$\pd{M_i}{t}=-\rho\int_V u_j\pd{u_i}{x_j}dV-\int_V\pd{p_\rho gz}{x_i}dV + \nu\rho\int_V \pd[2]{u_u}{x_j}dV$$
+Using incompressibility and the product rule we see that
+$$\pd{u_iu_j}{x_j}=u_j\pd{u_i}{x_j}+u_i\underbrace{\pd{u_j}{x_j}}_{=0 \;\text{by incompressibility}}$$
+Then using the divergence theorem, we have
+$$\pd{M_i}{t}=-\underbrace{\rho\int_{\partial V}u_iu_jn_j\;dA}_{\text{Inertial terms at boundary}}-\underbrace{\int_{\partial V}(p+\rho gz)n_i\;dA}_{\text{Pressure and gravity}}+\underbrace{\mu\int_{\partial V}\pd{u_i}{x_j}n_j\;dA}_{\text{Viscous stress}}$$
+Finally, for steady inviscid flows we can conclude
+$$\underbrace{\rho\int_{\partial V}u_iu_jn_j\;dA}_{\text{Momentum flux into V}}=\underbrace{-\int_{\partial V}(p + \rho gz)n_i\;dA}_{\text{Boundary forces}}$$
+Note, we have information about the balance of forces at the boundary, without needing explicit knowledge of the flow inside our fixed volume V.
+\begin{eg}
+Jammed garden hose!
+\end{eg}
+\subsubsection{Over the entire volume}
+Suppose we have a fluid contained in a finite volume $V$ whose bounding surface consist of impenetrable, stationary walls. The boundary conditions tell us the following.
+\begin{itemize}
+	\item For non-zero finite viscosity $\nu$ the normal and parall component of $u_i$ are zero at the boundary
+		$$u_i=0\quad\text{on}\;\partial V$$
+	\item For zero viscosity $\nu$ we only have the free-slip condition
+		$$u_in_i=0\quad\text{on}\;\partial V$$
+\end{itemize}
+In either case notice that the inertial terms become 0.
+If $V$ is the entire volume then momentum will certainly be conserved, i.e. $\pd{M_i}{t}=0$.
+So at the boundary we find
+$$\int_{\partial V}(p+\rho g z)n_i\;dA=\nu\int_{\partial V}\pd{u_i}{x_j}n_j\;dA$$
+so the net effect of the pressure and gravity forces, together with viscous stress at the boundary must be zero.
+\subsection{Energy Conservation}
+We consider the conservation of energy over the \emph{entire volume} and suppose that the fluid is contained by in a finite volume $V$ bounded by a surface of impenetrable, stationary walls $\partial V$.
+We start with a number of notes that will help later
+\begin{itemize}
+	\item Using integration by parts, followed by the impenetrability of $\partial V$ and incompressibility
+		$$\int_V u_i\pd{B}{x_i}dV=\int_V\left(\pd{}{x_i}(u_iB)-B\underbrace{\pd{u_i}{x_i}}_{=0}\right)dV=\int_{\partial V} Bu_in_i\; dA = 0$$
+	\item Using integration by parts we see
+		\begin{align*}
+			\nu\int_V u_i\pd{}{x_j}\pd{u_i}{x_j}dV &= \nu \int_V \left[\pd{}{x_j}\left(u_i\pd{u_i}{x_j}\right)-\pd{u_i}{x_j}\pd{u_i}{x_j}\right]dV\\
+												   &= \underbrace{\nu \int_{\partial V} u_i\pd{u_i}{x_j}n_j\;dA}_{=0\;\text{in both conditions}} - \nu \int_{V} \left(\pd{u_i}{x_j}\right)^2 dV
+		\end{align*}
+	Note we are summing over both indices in this identity.
+\item $u_i\pd{u_i}{t}=\frac{1}{2}\pd{u_iu_i}{t}=\frac{1}{2}\pd{u_i^2}{t}$ where $u_i^2=\mv{u}\cdot{\mv{u}}$.
+\end{itemize}
+Now we dot multiply the velocity-vorticity form with $\mv{u}$ and integrate over the entire volume $V$.
+$$\int_V u_i\pd{u_i}{t}dV = - \int_V u_i\pd{B}{x_i}dV + \nu \int_V u_i\pd[2]{u_i}{x_j}dV$$
+Substituting in what we found earlier we obtain the relation
+$$\pd{}{t}\int_V\frac{1}{2}u^2\;dV=-\nu\int_v\left(\pd{u_i}{x_j}\right)^2dV$$
+Note we are summing over two indices (there are no free indices) and hence this is a scalar expression, as we would expect for an energy equation.
+We now define the \mdf{total kinetic energy} as
+$$E\defeq \frac{\rho}{2}\int_V u^2\;dV$$
+and we achieve our energy balance equation.
+\begin{formula}
+	\textbf{Energy balance equation:}(over the entire volume $V$)
+	$$\pd{E}{t}=-\nu\int_v\left(\pd{u_i}{x_j}\right)^2dV$$
+\end{formula}
+In physicsy terms this means that kinetic is lost by viscous dissipation (i.e. internal friction), which will result in the generation of heat (and hence conservation of total energy).
+We see that in the inviscid case, this becomes
+$$\pd{E}{t}=0$$
+This energy conservation law is \emph{global}.
+\subsection{Summary}
+We introduced a velocity potential $\mv{u}=\grad\phi$ which, for incompressible flow, yields three different Bernoulli theorems depending on flow characteristics. Recall the \mdf{Bernoulli potential} has now become $B=\frac{p}{\rho}+\frac{\abs{\grad\phi}^2}{2}+gz$.
+We have the following theorems:
+\begin{enumerate}
+	\item \textbf{Unsteady Irrotational Flow ($\omega=0$)}
+		$$\pd{\phi}{t}+B=C(t)$$
+	\item \textbf{Steady Irrotational Flow ($\omega=\pd{\mv{u}}{t}=0$)}
+		$$B=\text{fixed constant}$$
+	\item \textbf{Steady Inviscid Rotational Flow ($\pd{\mv{u}}{t}=\nu=0$)}
+		$$B=\text{constant on each streamline(= particle paths)}$$
+\end{enumerate}
+\subsubsection{Fixed Volumes}
+Given an arbitrary fixed volume $V$, we have mass conservation
+$$\int_{\partial V}u_in_i\;dA=0$$
+The \mdf{momentum} $M_i=\int_V \rho u_i\;dV$ satisfies
+$$\pd{M_i}{t}=-\rho\int_{\partial V}u_iu_jn_j\;dA-\int_{\partial V}(p+\rho gz)n_i\;dA+\nu\rho\int_{\partial V}\pd{u_i}{x_j}n_j\;dA$$
+with the left side zero for steady flow.
+\subsubsection{Entire Volume}
+Taking $V$ to be the entire volume which is bounded by impenetrable, stationary walls, we have momentum conservation
+$$\int_{\partial V}(p+\rho gz)n_idA = \mu\int_{\partial V}\pd{u_i}{x_j}n_j\;dA$$
+which is a balance of forces on the boundary.
+
+Considering the \mdf{kinetic energy} $E=\frac{\rho}{2}\int_V u^2\;dV$ we obtain
+$$\pd{E}{t}=-\nu\int_V \left(\pd{u_i}{x_j}\right)^2dV$$
+so that in the absence of viscosity kinetic energy is conserved globally.
 \end{document}
