@@ -27,6 +27,8 @@
 \newcommand*{\md}[1]{\ensuremath{\frac{D #1}{D t}}}
 % Gradient
 \newcommand{\grad}{\bigtriangledown}
+% Infinitesimal contour segment
+\newcommand{\dl}{d\ell}
 % Define to equal
 \newcommand{\defeq}{:=}
 \newcommand{\eqdef}{=:}
@@ -560,4 +562,55 @@ which is a balance of forces on the boundary.
 Considering the \mdf{kinetic energy} $E=\frac{\rho}{2}\int_V u^2\;dV$ we obtain
 $$\pd{E}{t}=-\nu\int_V \left(\pd{u_i}{x_j}\right)^2dV$$
 so that in the absence of viscosity kinetic energy is conserved globally.
+
+\section{Vortex Dynamics}
+To save chalk we define an \mdf{ideal fluid} to be what that is incompressible ($\grad\cdot\mv{u}=0$) and inviscid ($\nu=0$).
+
+\subsection{The Vorticity Form of the Navier-Stokes Equations}
+Recall that we found the velocity-vorticity form of the Navier-Stokes equations:
+$$\pd{\mv{u}}{t}+\omega\times\mv{u}=-\grad B+\nu\grad^2\mv{u}\quad\text{where}\quad B=\frac{p}{\rho}+\frac{u^2}{2}+gz$$
+If we take the curl of this equation, assuming $\rho=\text{const}$ and noting $\grad\times(\grad B)=0$ we have the following vorticity equation:
+$$\pd{\omega}{t}+\grad\times(\omega\times\mv{u})=\nu\grad^2\omega$$
+For incompressible flows we have the following vector identity
+$$\grad\times(\omega\times\mv{u})=(\mv{u}\cdot\grad)\omega-(\omega\cdot\grad)\mv{u}$$
+which yields the following formula.
+\begin{formula}
+	\textbf{Vorticity form of the flow equation}
+	$$\md{\omega}\equiv\pd{\omega}{t}+\underbrace{(\mv{u}\cdot\grad)\omega}_{\text{Advection}}=\underbrace{(\omega\cdot\grad)\mv{u}}_{\text{Stretching}}+\underbrace{\nu\grad^2\omega}_{\text{Diffusion}}$$
+\end{formula}
+\subsection{Vorticity Invariants in 2D flows}
+\begin{eg}
+Vorticity conservation!
+\end{eg}
+In fact, given any function $f(\omega)$ the following quantity will be conserved over a \emph{fixed} volume $V$ (finite or infinite)
+$$\int_v f(\omega)\;dV$$
+provided that this integral converges and the conditions at the boundary of V are appropriate. We can show this by using the above example ($\md{\omega}$=0).
+$$\md{f}=\pd{f}{t}+u_j\pd{f}{x_j}=\pd{f}{\omega}\underbrace{\left(\pd{\omega}{t}+u_j\pd{\omega}{x_j}\right)}_{=D_t\omega}=0$$
+$$0=\int_V\left(\pd{f}{t}+u_j\pd{f}{x_j}\right)dV$$
+so that (using integration by parts)
+$$0=\pd{}{t}\int_V f\;dV - \int_V f\pd{u_j}{x_j}dV+\int_{\partial V} fu_jn_j\;dA$$
+where the middle term is $0$ by incompressibility and the last term is $0$ if
+\begin{itemize}
+	\item The volume $V$ is impermeable (e.g. solid walls) so $u_jn_j=0$
+	\item $f=0$
+	\item $fu_jn_j$ decays fast enough for an infinite volume
+\end{itemize}
+In any of this cases we have
+$$\pd{}{t}\int_V f\;dV=0$$
+so that the quantity $\int_V f(\omega)\;dV$ is conserved over time.
+
+In particular we can choose $f(\omega)=\abs{f}^n$ for natural $n$ in which case we get the \mdf{enstrophy series of invariants}:
+$$I_n\defeq\int_V \abs{\omega}^n\;dV$$
+The most important of these, in particular for 2D turbulence is $n=2$ which is called the \mdf{enstropy}
+$$Z\defeq I_2 = \int_V \omega^2\;dV$$
+
+\subsection{Circulation}
+We define the \mdf{velocity circulation} $\Gamma$ over an evolving closed contour $C=C(t)$ via the following contour integral
+$$\gamma=\oint_{C(T)}\mv{u}\cdot\dl$$
+where $\dl$ is an infinitesimal segment of the contour $C$.
+By Stokes' theorem we can rewrite this a surface integral of the vorticity over the surface $A=A(t)$ spanned by the contour C,
+$$\Gamma=\oint_{C(t)} \mv{u}\cdot\dl=\int_{A(t)}(\grad\times\mv{u})\cdot\mv{n}\;dA=\int_{A(t)}\omega\cdot\mv{n}\;dA$$
+where $\mv{n}$ is the normal to $A$.
+\subsection{Motion of a Material Line Element}
+For the next statement we need to know how to describe the motion of line elements that `follow the fluid'. We consider a \emph{material} contour $C$ that `follows the fluid', so that the points of $C$ move together with the fluid particles.
 \end{document}
