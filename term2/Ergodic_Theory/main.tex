@@ -6,6 +6,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{amsmath}
+\usepackage{bbm}
 \usepackage{amsthm}
 \usepackage{mathdots}
 \usepackage[dvipsnames]{xcolor}
@@ -21,14 +22,28 @@
 %\renewcommand{\dots}{...}
 \newcommand{\msrspc}{\ensuremath{(X,\mathcal{B},\mu)}}
 \newcommand{\symd}{\triangle}
+\newcommand{\indic}[1]{\mathbbm{1}_{#1}}
+\newcommand\restr[2]{{% we make the whole thing an ordinary symbol
+  \left.\kern-\nulldelimiterspace % automatically resize the bar with \right
+  #1 % the function
+  \vphantom{\big|} % pretend it's a little taller at normal size
+  \right|_{#2} % this is the delimiter
+  }}
 
 % Spaces
 \newcommand{\ktor}{\mathbb{T}^k}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\Z}{\mathbb{Z}}
+
+% Ergodic Theory
+\newcommand{\gvn}[2]{\ensuremath{\left(#1\;|\;#2\right)}}
+\newcommand{\expg}[2]{\ensuremath{\mathbb{E}\gvn{#1}{#2}}}
+\newcommand{\infog}[2]{\ensuremath{I\gvn{#1}{#2}}}
+\newcommand{\entrg}[2]{\ensuremath{H\gvn{#1}{#2}}}
+\newcommand{\probg}[2]{\ensuremath{\mathbb{P}\gvn{#1}{#2}}}
 %}}}
-%{{{ Enviornments
+%{{{ Environments
 % Definitions environment
 \newenvironment{defin}
 	{\begin{mdframed}[backgroundcolor=white, roundcorner=5pt, linewidth=1pt]}
@@ -47,8 +62,10 @@
 	{\end{mdframed}}
 
 % Theorem enviornment
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{cor}[theorem]{Corollary}
+\newtheorem{prop}{Proposition}[section]
+\newtheorem{theorem}[prop]{Theorem}
+\newtheorem{lemma}[prop]{Lemma}
+\newtheorem{cor}[prop]{Corollary}
 %}}}
 %{{{ Document metadata
 \title{Ergodic Theory Notes}
@@ -96,6 +113,10 @@ then $S_nf\to f$ in $L^2$ for all $f\in L^2(\ktor)$.
 \begin{cor}
 If $f\in L^2(\ktor)$ and $\hat{f}(n)=0\;\forall n\in\Z^k\setminus\{0\}$, then $f$ is constant.
 \end{cor}
+\begin{theorem}
+Given $f\in L^2$ which is $T$-invariant
+$$\hat{f}(n)=\lim_{N\to\infty}\int (S_N f)(Tx)e^{-2\pi i n\cdot x}$$
+\end{theorem}
 \section{Criteria for measure preserving}
 \begin{theorem}
 Given $T:X\to X$ on a probability space $(X,\mu)$, the following are equivalent:
@@ -184,4 +205,138 @@ Note this does not actually need ergodicity. However, if we additionally assume 
 Given a probability space \msrspc, $T$ measure preserving and ergodic, $f\in L^1(x)$, then
 $$\underbrace{\frac{1}{n}\sum_{j=0}^{n-1}f\circ T^j }_{\text{Time average}}\to \underbrace{\int f d\mu \; a.e.}_{\text{Space average}}$$
 \end{cor}
+\begin{theorem}[Mean Ergodic Theorems]
+	$1\leq p < \infty$, $T$ measure preserving theorem, $f\in L^p(X)$. Define $f^*\defeq \lim_{n\to\infty} \frac{1}{n}\sum_{j=0}^{n-1}f\circ T^j$ almost everywhere. Then
+	$$\lim_{n\to\infty}\frac{1}{n}\sum_{j=0}^{n-1}f\circ T^j = f^*$$
+	in $L^p$.
+\end{theorem}
+\section{Examples}
+\subsection{Linear toral automorphism}
+\begin{defin}
+A \mdf{linear toral automorphism} is a map $Tx=Ax (mod 1)$ with $A$ a $k\times k$ matrix with integer entries and $\det(A)\neq 0$.
+
+Such an automorphisms is \mdf{hyperbolic} if all eigenvalue for $A$ have $|\lambda|\neq 1$.
+\end{defin}
+\begin{theorem}
+T ergodic $\iff$ no eigenvalue of $A$ is a root of unity.
+\end{theorem}
+\subsection{Normality of real numbers}
+\begin{defin}
+$x\in\R$ is \mdf{normal (base b)} if
+\begin{itemize}
+	\item $x$ has a  unique expansion in that base.
+	\item $\forall k\in\{0,1,\dots,b-1\}$
+		$$\frac{1}{n}\#\{1\leq i\leq n | x_i=k\}\to\frac{1}{10}\quad\text{as}\;n\to\infty$$
+\end{itemize}
+
+$x\in\R$ is \mdf{absolutely normal} if $x$ is normal base b for all $b\geq 2$.
+\end{defin}
+\begin{theorem}
+Almost every $x\in\R$ is absolutely normal.
+\end{theorem}
+
+\section{Existent of invariant/ergodic measures}
+\begin{defin}
+Let $\mdf{M(X)}$ be the set of all probability measure on X.
+
+We can view measures as linear functionals on the space of continuous functions as such:
+$$\forall f\in C(X)\quad\quad \mdf{\mu(f)}\defeq\int_X f d\mu$$
+
+$\mdf{C(X)^*}\defeq\{\text{bounded linear functionals}\quad w:C(X)\to\R\}$
+
+A linear functional is called \mdf{normalised} if $\int 1 d\mu =1$
+
+A linear functional is called \mdf{positive} if $f\geq 0\implies \int f d\mu \geq 0$
+\end{defin}
+\begin{theorem}
+	Every $\mu\in M(X)$ defines a normalised, positive, bounded, linear functional in $C(X)^*$ defined by $\mu(f)=\int_X f d\mu$.
+\end{theorem}
+\begin{theorem}[Reisz Representation Theorem]
+	Let $w\in C(X)*$ be a bounded linear functional. Suppose that $w$ is positive and normalised. Then $\exists !\mu\in M(X)$ such that $w(f)=\mu(f)$ for all $f\in C(X)$.
+\end{theorem}
+
+\section{Entropy}
+The motivation for a definition of entropy is as a vehicle to distinguish between dynamical systems. First we need to know how tell when two systems are identical.
+\begin{defin}
+	Two probability spaces with measure preserving transformations, $(X,\mathcal{B},\mu,T),(Y,\mathcal{C}, \nu, S)$ are \mdf{measure-theoretically isomorphic} if there exists a bijection $\pi:B\to C$ where $B\in\mathcal{B}$ and $C\in\mathcal{C}$ such that
+	\begin{itemize}
+		\item $\mu(B)=\nu(C)=1$
+		\item $T(B)\subseteq B, S(C)\subseteq C$
+		\item $\pi: B\to C$ and $\pi^{-1}:C\to B$ are measure preserving transformations
+		\item $\pi\circ T = S\circ\pi$
+	\end{itemize}
+Assume $\msrspc$ is a probability space and $\alpha=\{A_i\}$ a countable collection of subsets $A_i\subseteq B$.
+\begin{itemize}
+	\item We say $\alpha$ is a \mdf{partition} of $X$ if $\cup A_i$ = X and $A_i\cap A_j=\emptyset$ up to measure 0.
+	\item The \mdf{join} of two partitions $\alpha,\beta$ is the partition $\alpha\vee\beta$ of all possible intersections $A_i\cap B_j$.
+	\item A countable partition $\beta$ is a \mdf{refinement} of $\alpha$ if every element of $\alpha$ is a union of element of $\beta$ and write $\alpha\leq\beta$.
+	\item $\alpha,\beta$ are \mdf{independent} if $\mu(A\cap B)=\mu(A)\mu(B)$ for all $A\in\alpha, B\in\beta$.
+	\item The \mdf{information of a partition} $\alpha$ is
+		$$I(\alpha)\defeq-\sum_{A\in\alpha}\indic{A}\log(\mu(A))$$
+		where $I(\alpha):X\to[0,\infty]$.
+	\item The \mdf{entropy of a partition} $\alpha$ is
+		$$H(\alpha)\defeq\int_X I(\alpha)d\mu=-\sum_{A\in\alpha}\mu(A)\log(\mu(A))$$
+		using the convention $0\cdot\log(0)=0$.
+	\item The \mdf{expectation given a partition} is
+		$$\expg{\cdot}{\alpha}\defeq\expg{\cdot}{\sigma(\alpha)}$$
+	\item The \mdf{conditional probability} of $B\in\mathcal{B}$ given $\alpha$ is
+		$$\probg{B}{\alpha}\defeq\expg{\indic{B}}{\alpha}$$
+\end{itemize}
+Suppose that $\mathcal{C}$ is a sub $\sigma$-algebra of $\mathcal{B}$.
+\begin{itemize}
+	\item The \mdf{conditional information of $\alpha$ given $\mathcal{C}$} is
+		$$\infog{\alpha}{\mathcal{C}}\defeq - \sum_{A\in\alpha}\indic{A}\log(\mu\gvn{A}{C})$$
+	where $\mu\gvn{A}{\mathcal{C}}\defeq\expg{\indic{A}}{\mathcal{C}}$
+	\item The \mdf{conditional entropy of $\alpha$ given $\mathcal{C}$} is
+			$$\entrg{\alpha}{\mathcal{C}}\defeq\int_X\infog{\alpha}{\mathcal{C}}d\mu$$	
+\end{itemize}
+\end{defin}
+We have the following desirable properties:
+\begin{itemize}
+	\item If $\alpha$ and $\beta$ are independent then $I(\alpha\vee\beta)=I(\alpha)+I(\beta)$.
+	\item If $\alpha=\{X\}$ then $I(\alpha)=0$ so $H(\alpha)=0$.
+	\item If $T$ is a measure preserving transformation then $H(T^{-1}\alpha)=H(\alpha)$.
+	\item Given $A\in\alpha$, $\restr{\expg{f}{\alpha}}{A}=\frac{\int_A f \;d\mu}{\mu(A)}$ and hence
+		$$\expg{f}{\alpha}=\sum_{A\in\alpha}\indic{A}\frac{\int_A f \;d\mu}{\mu(A)}$$
+	\item Conditional probability and expectation are constant on partition elements.
+	\item For $A\in\alpha$, 
+		$$\restr{\probg{B}{\alpha}}{A}=\restr{\expg{\indic{B}}{\alpha}}{A}=\frac{\int_A \indic{B} d\mu}{\mu(A)}=\frac{\mu(A\cap B}{\mu(A)}$$
+	\item If $\mathcal{C}=\{X,\emptyset\}$ then $\infog{\alpha}{\mathcal{C}}=I(\alpha)$ and $\entrg{\alpha}{\mathcal{C}}=H(\alpha)$.
+	\item If $g\geq 0$ is $\sigma(\alpha)$-measurable then $\expg{fg}{\sigma(\alpha)}=g\cdot\expg{f}{\sigma(\alpha)}$.
+	\item If $T$ is a measure preserving transformation then $\infog{T^{-1}\alpha}{T^{-1}\mathcal{C}}=\infog{\alpha}{\mathcal{C}}\circ T$.
+	\item Integrating this gives $\entrg{T^{-1}\alpha}{T^{-1}\mathcal{C}}=\entrg{\alpha}{\mathcal{C}}$.
+	\item $\alpha\leq\beta\implies\infog{\alpha}{\beta}=0$.
+\end{itemize}
+\begin{prop}
+	$$\entrg{\alpha}{\mathcal{C}}=-\int_X \sum_{A\in\alpha}\mu\gvn{A}{\mathcal{C}}\log(\mu\gvn{A}{\mathcal{C}})d\mu$$	
+\end{prop}
+\begin{lemma}[Basic Identity]
+	Given $\alpha,\beta,\gamma$ partitions of $X$ then
+	$$\infog{\alpha\vee\beta}{\gamma}=\infog{\alpha}{\gamma}+\infog{\beta}{\alpha\vee\gamma}$$
+	$$\entrg{\alpha\vee\beta}{\gamma}=\entrg{\alpha}{\gamma}+\entrg{\beta}{\alpha\vee\gamma}$$
+\end{lemma}
+\begin{cor}
+	$$\beta\leq\gamma\implies\infog{\alpha\vee\beta}{\gamma}=\infog{\alpha}{\gamma}$$
+\end{cor}
+\begin{cor}[Monotonicity of information of entropy]
+	$$\alpha\leq\beta\implies\infog{\alpha}{\gamma}\leq\infog{\beta}{\gamma}$$
+\end{cor}
+\begin{cor}[Anti-monotonicity of entropy]
+	$$\beta\leq\gamma\implies\entrg{\alpha}{\beta}\geq\entrg{\alpha}{\gamma}$$
+\end{cor}
+\begin{cor}
+We have the two following properties as well:
+\begin{itemize}
+	\item $\entrg{\alpha}{\gamma}\leq H(\alpha)$ (because always $\gamma\leq\{X,\emptyset\}$)
+	\item $\entrg{\alpha\vee\beta}{\gamma}\leq\entrg{\alpha}{\gamma}+\entrg{\beta}{\gamma}$
+\end{itemize}
+\end{cor}
+So far this does not encapsulate any dynamics of the system and so we must use these concepts to arrive at a definition of entropy which depends on the transformation. For convenience define the following set:
+$$\mathcal{P}\defeq\{\alpha\;\text{countable partitions}\;|H(\alpha) < \infty\}$$
+Now choose $\alpha\in\mathcal{P}$. Then we define the following:
+$$\mdf{H_n(\alpha)}\defeq H(\alpha^n)\quad\text{where}\quad\alpha^n\defeq\bigvee_{j=0}^{n-1}T^{-j}\alpha$$
+This has the convenient property that $H_{n+m}(\alpha)\leq H_n(\alpha)+H_m(\alpha)$, i.e. these $H_n$ form a sub-additive sequence $\R$-valued sequence and hence the limit $\mdf{h(T,\alpha)}\defeq\lim_{n\to\infty}\frac{1}{n}H_n(\alpha)$ exists. We call this the \mdf{entropy of T relative to $\alpha$}.
+We can then define the \mdf{entropy of T} by taking the supremum:
+$$\mdf{h(T)}\defeq\sup_{\alpha\in\mathcal{P}}h(T,\alpha)$$
+Having done all this work, this had better be a measure-theoretic isomorphism invariant.
 \end{document}
