@@ -13,6 +13,7 @@
 \usepackage[framemethod=TikZ]{mdframed}
 \usepackage{microtype}
 \usepackage{witharrows}
+\usepackage{float}
 \setlength{\parindent}{0pt}
 %}}}
 %{{{ Custom commands
@@ -450,6 +451,22 @@ By applying this proposition to $f^+$ and $f^-$ separately and combining the res
 It is possible to construct a set this is Lebesgue measurable but not Borel measurable.
 Its rather long winded but worth a read.
 \end{note}
+\subsection{Some Generalisations}
+\begin{defin}
+	Given spaces $(X, \mathcal{A})$ and $(Y, \mathcal{C})$ we can say that $f:X\to Y$ is \mdf{$(A, \mathcal{C})$-measurable} if
+	\[
+		\forall C \in \mathcal{C}\quad f^{-1}(C)\in \mathcal{A}
+	\]	
+\end{defin}
+We can see very clearly that composition of measurable functions yields another measurable function.
+Checking something is measurable can be quite challenging because we have a lot of sets to check.
+The following allows us to check a basis of sets rather than there $\sigma$-algebra.
+\begin{prop}
+Suppose $\mathcal{C}=\sigma(C_0)$ for some $C_0\subseteq\mathcal{P}(Y)$ then
+\[
+	f \text{is measurable}\quad\iff\quad \forall C\in C_0\; f^{-1}(C)\in \mathcal{A}
+\]
+\end{prop}
 \section{Integration}
 The aim of this section is to define the integral on a measure space \msrspc.
 We define this function iteratively on an increasingly large subset of functions.
@@ -696,5 +713,106 @@ Let $f$ and $f_1, f_2, \dots$ be measurable functions $X\to[0, +\infty]$ such th
 	f_1(x)\leq f_2(x)\leq \dots \quad \text{and} \quad f(x)=\lim_{n\to\infty}f_n(x)
 \]
 then $\int f\dm = \lim_{n\to\infty}\int f_n \dm$.
+\end{theorem}
+\begin{proof}
+We will suppose that the inequalities hold for every $x\in X$.
+This leaves us with one inequality left to prove.
+We approximate each $f_n$ by an increasing sequence of $S_+$ functions and then select a subsequence of these.
+
+So for each $n\in\N$ we can pick $g_{n,1}\leq g_{n,2} \leq g_{n,3} \leq \dots$ in $S_+$ such that $f_n=\lim_{k\to\infty}g_{n,k}$.
+Then for each $k\in\N$ we define
+\[
+	h_k\defeq\max\left\{g_{1,k},g_{2,k}, \dots , g_{k,k}\right\}\in S_+
+\]
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.25\textwidth]{mct_diagram.png}	
+	\caption{Visualizing the definition $h_k$. Each square represents a $g_{n,k}$.}
+\end{figure}
+Notice that $h_1\leq h_2 \leq h_3 \leq \dots$ and $f=\lim_{k\to\infty}h_k$.
+Hence
+\[
+	\int f \dm = \lim_{k\to\infty}\int h_k \dm \leq \lim_{n\to\infty}f_n \dm
+\]
+In generality, we can pick $N\in\mathcal{A}$ such that $\mu(N)=0$ and we have the assumed inequalities $\forall x\in N\stcmp$.
+We can then apply these previous arguments to $N\stcmp$ by considering the functions
+\[
+	f\chi_{N\stcmp}, \quad f_1\chi_{N\stcmp} \leq f_2\chi_{N\stcmp} \leq f_3\chi_{N\stcmp} \leq \dots
+\]
+These functions differ on a set contained within a set of measure 0 and hence their integrals must agree with the full integrals.
+\end{proof}
+\begin{cor}[Levi's Theorem]
+	Given measurable $g_n: X\to[0, +\infty]$ for each $n\in\N$.
+	\[
+		\int\left( \sum_{n-1}^{\infty}g_n \right)\dm = \sum_{n=1}^{\infty}\left(\int g_n \dm\right)
+	\]	
+\end{cor}
+\begin{theorem}[Fatou's Lemma]
+Given a sequence $\left\{f_n\right\}$ of functions in $\overline{S_+}$,
+\[
+	\int \left(\liminf_n f_n\right)\dm \leq \liminf_n \int f_n \dm
+\]
+\end{theorem}
+\begin{proof}
+For each $k\in\N$ define $g_k\defeq\inf_{n\geq k} f_n \in \overline{S_+}$.
+\[
+	g_1 \leq g_2 \leq g_3 \leq \dots \quad \text{and} \quad \liminf_n f_n = \lim_n g_n
+\]
+Apply the Monotone Convergence Theorem to see
+\[
+	\int \left(\liminf_n f_n \right)\dm = \int \left(\lim_n g_n\right)\dm = \lim_n \int g_n \dm
+\]
+So we need to show $\lim_n\int g_n \dm \leq \liminf_n \int f_n \dm$.
+Notice for each $n\in\N$ that $g_n\leq f_n \leq f_{n+1} \leq \dots$ and hence
+\[
+\lim_n g_n \dm \leq \liminf_n \int f_n \dm
+\]
+\end{proof}
+\begin{theorem}[Dominated Convergence Theorem]
+Suppose:
+\begin{enumerate}[label=(\roman*)]
+	\item $g:X\to [0, +\infty]$ is integrable
+	\item $f,f_1,f_2, \dots:X\to\Rb$ are measurable such that for almost every $x\in X$
+		\[
+			f(x) = \lim_{n\to\infty}f_n(x)\quad\text{and}\quad\forall n\in\N \;\abs{f_n(x)}\leq g(x)
+		\]
+\end{enumerate}
+Then:
+\begin{enumerate}
+	\item $f$ and each $f_i$ are integrable
+	\item $\int f \dm = \lim_{n\to\infty}\int f_n \dm$
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+We may assume that \textit{(ii)} holds for every $x\in X$ since this won't change any integrals.
+Likewise we may assume that $g(x)\neq + \infty$ for all $x\in X$.
+\begin{enumerate}
+	\item Given $n\in\N$, $\abs{f_n}\leq g\implies \int \abs{f_n} < \int g < + \infty \implies f_n \text{integrable}$.
+
+		Then $\abs{f}=\lim_n\abs{f_n}\leq \lim_n g = g\implies f\text{integrable}$.
+	\item \textbf{Claim: }$\int\left(g+f\right)\dm\leq\liminf_n\int\left(g+f_n\right)\dm$
+		
+		This follows by Fatou's Lemma because $g+f_n\geq 0$ is measurable and $g+f=\lim_n\left(g+f_n\right)$.
+		Now,
+		\begin{align*}
+			\int g \dm + \int f \dm &= \int (g+f)\dm \\
+									&\leq \liminf_n \left(\int \left(g+ f_n\right)\dm\right) \\
+									&= \int g \dm + \liminf_n \int f_n \dm \\
+			\text{and hence}\quad \int f \dm &\leq \liminf_n \int f_n \dm
+		\end{align*}
+		Now applying the same argument to $-f$ and $\left\{-f_n\right\}$ yields
+		\[
+			\int(-f)\dm \leq \liminf_n\int(-f_n)\dm \implies \int f \dm \geq \limsup_n \int f_n \dm
+		\]
+		And hence we have $\int f \dm = \lim_n \int f_n \dm$.
+\end{enumerate}
+\end{proof}
+It's also worth knowing that
+\begin{theorem}
+Given bounded function $f:[a, b]\to\R$
+\begin{enumerate}[label=(\alph*)]
+	\item $f$ is Riemann integrable $\iff$ for almost every $x$, $f$ is continuous at $x$
+	\item In this case Riemann Integral = Lebesgue Integral
+\end{enumerate}
 \end{theorem}
 \end{document}
