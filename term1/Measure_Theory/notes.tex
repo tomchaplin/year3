@@ -14,6 +14,8 @@
 \usepackage{microtype}
 \usepackage{witharrows}
 \usepackage{float}
+\usepackage{silence}
+\WarningFilter{mdframed}{You got a bad break}
 \setlength{\parindent}{0pt}
 %}}}
 %{{{ Custom commands
@@ -30,6 +32,12 @@
 \newcommand{\dm}{\ensuremath{\,d\mu}}
 \DeclareMathOperator\vol{vol}
 \newcommand{\stcmp}{^{\mathsf{c}}}
+\newcommand\restr[2]{{% we make the whole thing an ordinary symbol
+  \left.\kern-\nulldelimiterspace % automatically resize the bar with \right
+  #1 % the function
+  \vphantom{\big|} % pretend it's a little taller at normal size
+  \right|_{#2} % this is the delimiter
+  }}
 
 % Spaces
 \newcommand{\pow}[1]{\mathcal{P}(#1)}
@@ -64,13 +72,14 @@
 % Examples enviornmnet
 \definecolor{mylg}{rgb}{0.9,0.9,0.9}
 \newenvironment{eg}
-	{\begin{mdframed}[backgroundcolor=myld,roundcorner=5pt,linewidth=0pt]\bfseries{Example:}}
+{\begin{mdframed}[backgroundcolor=mylg,roundcorner=5pt,linewidth=0pt]\bfseries{Example:}\normalfont}
 	{\end{mdframed}}
 
 % Theorem enviornment
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{prop}[theorem]{Proposition}
 \newtheorem{cor}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
 %}}}
 %{{{ Document metadata
 \title{Measure Theory - Overview}
@@ -588,9 +597,7 @@ The \mdf{completion} of $(X, \mathcal{A}\mu)$ is $(X, \mathcal{A}_\mu , \overlin
 	\mathcal{A}_\mu & \defeq \left\{A \subseteq X \rmv \exists E,F\in\mathcal{A}\text{ such that }E\subseteq A \subseteq F,\;\mu(F\setminus E)=0\right\}\supseteq \mathcal{A}\\
 	\overline{\mu}(A) & \defeq \mu(F) = \mu(E)
 \end{align*}
-\end{defin}
 The proof that the completion of a measure space is in fact a complete measure space is omitted and non-examinable.
-\begin{defin}
 	A property $P:X\to\left\{\text{true}, \text{false}\right\}$ holds \mdf{almost everywhere} if 
 	\[
 		\exists N\in \mathcal{A}\;\text{ such that }\;\mu(N)=0,\;N\supseteq P^{-1}(\text{false})
@@ -814,5 +821,575 @@ Given bounded function $f:[a, b]\to\R$
 	\item $f$ is Riemann integrable $\iff$ for almost every $x$, $f$ is continuous at $x$
 	\item In this case Riemann Integral = Lebesgue Integral
 \end{enumerate}
+\end{theorem}
+
+\subsection{The Riemann Integral}
+\begin{defin}
+	Given a bounded function $f:[a, b]\to\R$, a \mdf{partition} is $P=\left\{a_i\right\}_{i=0}^k$ where
+	\[
+		a=a_0 < a_1 < \dots < a_{k-1} < a_k = b
+	\]
+	We say $P'$ \mdf{refines} $P$ if $P\subseteq P'$ and $P'$ is a partition.
+
+	We define the \mdf{lower sum}
+	\[
+		l(f,P)\defeq\sum_{i=1}^{k}(a_i-a_{i-1})\inf(f[a_{i-1}, a_i])
+	\]
+	and the \mdf{upper sum}
+	\[
+		u(f, P)\defeq\sum_{i=1}^{k}(a_i-a_{i-1})\sup(f[a_{i-1},a_i])
+	\]
+	f is \mdf{Riemann integrable} if
+	\[
+		\sup_P l(f, P) = \inf_P u(f, P)
+	\]
+	Then this common value is the \mdf{Riemann integral $(RI)\int_a^b f(x) dx$}.
+\end{defin}
+\begin{theorem}
+Let $a < b$ and $f:[a, b]\to\R$ be bounded
+\begin{enumerate}[label=(\alph*)]
+	\item f is Riemann integrable if and only if
+		\[
+			\lambda(\left\{x\in[a, b] \rmv f\text{ not continuous at } x\right\}=0
+		\]
+		i.e. the set is $\lambda$-measurable and has measure 0.
+	\item If one of \textit{(a)} holds then the $f$ is Lebesgue integrable and
+		\[
+			(RI)\int_a^b f(x) dx = \int_a^b f d\lambda
+		\]
+\end{enumerate}
+\begin{proof}
+Very long, should definitely be read.
+\end{proof}
+\end{theorem}
+
+\section{Theorems on Measures}
+\begin{defin}
+	$D\subseteq\mathcal{P}(X)$ is a \mdf{d-system} or \mdf{Dynkin class} if
+	\begin{enumerate}[label=(\alph*)]
+		\item $X\in D$.
+		\item $\forall A, B \in D$ such that $B\subseteq A$ we have $A\setminus B\in D$.
+		\item $D$ is closed under countable union.
+	\end{enumerate}
+	Given any collection of sets $\mathcal{C}$, \mdf{$d(\mathcal{C})$} is the smallest d-system containing $\mathcal{C}$.
+
+	$\mathcal{C}\subseteq\mathcal{P}(X)$ is a \mdf{$\pi$-system} if it is closed under finite intersections.
+\end{defin}
+\begin{lemma}
+Let $\mathcal{C}$ be a $\pi$-system then $\sigma(\mathcal{C})=d(\mathcal{C})$.
+\end{lemma}
+
+\begin{proof}
+A $\sigma$-algebra is a d-system and $d(\mathcal{C})$ is the smallest d-system containing $\mathcal{C}$ and hence we easily see $\sigma(\mathcal{C})\supseteq d(\mathcal{C})$.
+
+For the opposite direction we want to show that $\mathcal{D}\defeq d(\mathcal{C})$ is a $\sigma$-algebra.
+First we show that it is closed under finite intersections.
+To this end define 
+\[
+	D_1\defeq \left\{A\in\mathcal{D} \rmv \forall C \in \mathcal{C}\quad A\cap C \in\mathcal{D}\right\}
+\]
+\textbf{Claim: }$D_1$ is a d-system.
+
+Once this has been shown we can see that $D_1\supseteq\mathcal{C}$ because $\mathcal{C}$ is closed under intersections. Hence
+\[
+	D_1\supseteq d(\mathcal{C}) \implies d(\mathcal{C})=\mathcal{D}\supseteq D_1 \supseteq d(\mathcal{C}) \implies \mathcal{D}=D_1
+\]
+
+Next define 
+\[
+	D_2\defeq\left\{A\in\mathcal{D} \rmv \forall C\in\mathcal{D} \quad A\cap C\in\mathcal{D} \right\}
+\]
+\textbf{Claim: }$D_2$ is also a d-system.
+
+Then again one can easily see that $D_2\supseteq\mathcal{C}$ and hence
+\[
+	\mathcal{D}\supseteq D_2 \supseteq d(\mathcal{C}) = \mathcal{D} \implies D_2 = \mathcal{D}
+\]
+which shows that $\mathcal{D}$ is closed under finite intersections.
+
+So we have that $\mathcal{D}$ is a $(\pi+d)$-system which means that in fact $\mathcal{D}$ is a $\sigma$-algebra and thus yields the opposite inequality because $\sigma(\mathcal{C})$ is the smallest $\sigma$-algebra containing $\mathcal{C}$.
+\end{proof}
+
+\begin{cor}
+	Given a measurable space $(X\mathcal{A})$ and a $\pi$-system $\mathcal{C}\subseteq\mathcal{P}(X)$ such that two measures $\mu$ and $\nu$ coincide on $\mathcal{C}$.
+	If there exists an increasing sequence of subsets
+	\[
+		C_1 \subseteq C_2 \subseteq \dots \quad \text{in}\; \mathcal{C}
+	\]
+	such that $\cup C_n=X$ and $\mu(C_n)<\infty$ then $\mu= \nu$.
+\end{cor}
+\begin{defin}
+	Given $f:\R\to\R$ non-decreasing and right continuous at every $x\in\R$, we define the \mdf{Lebesgue-Stieltfes measure} by
+	\[
+		\mdf{\lambda_f^\ast}\defeq\inf\left\{\sum_{i=1}^\infty (f(b_i) - f(a_i)) \rmv A \subseteq \cup_i (a_i, b_i] \right\}
+	\]
+	
+\end{defin}
+\begin{prop}
+Given a measure $\mu$ on $(\R, \mathcal{B}(\R))$ such that $\mu([a, b])< \infty$ for all such $a<b$ define
+\[
+	F_\mu (x)\defeq
+	\begin{cases}
+		\;\;\mu((0, x]) & \text{for } x\geq 0 \\
+		-\mu((x, 0]) & \text{for } x< 0
+	\end{cases}
+\]
+Then $F_\mu$ is non-decreasing and right continuous and $f(0)=0$.
+\end{prop}
+This gives us a nice bijection
+\[
+	\left\{f: \R \to \R \rmv \text{non-decreasing, right continuous, }f(0)=0\right\}\leftrightarrow\left\{\text{measure }\mu \rmv \mu((a,b])<\infty\; \forall a< b\right\}
+\]
+\subsection{Product Measures}
+\begin{defin}
+	Given measurable spaces $(X, \mathcal{A})$ and $(Y, \mathcal{C})$ a \mdf{rectangle} is any set $A\times C$ with $A\in\mathcal{A}$ and $C\in\mathcal{C}$.	
+	Define $\mathcal{R}\defeq\left\{\text{rectangles}\right\}$ then the \mdf{product $\sigma$-algebra} is
+	\[
+		\mdf{\mathcal{A}\times\mathcal{C}}\defeq \sigma(\mathcal{R})
+	\]
+	Given any subset $E\subseteq X\times Y$ and $f:X\times Y \to Z$, for $x\in X$ we define the \mdf{section}
+	\[
+		E_x\defeq\left\{y\in X \rmv (x,y)\in E\right\}
+	\]
+	and then
+	\[
+		f_x:Y\to Z \quad \text{by} \quad y\mapsto f(x,y)
+	\]
+	i.e. we restrict $f$ to the vertical line $E_x$.
+	We likewise define $E^y$ and $f^y:X\to Z$ by restricting $f$ to the horizontal line $E^y$.
+\end{defin}
+\begin{eg}
+	\[
+		\mathcal{B}(\R^2)=\sigma(\text{2D intervals})\subseteq \sigma(\text{rectangles})=\mathcal{B}(R)\times\mathcal{B}(R)
+	\]
+	Given a rectangle $A\times C\in \mathcal{R}$ we can write $A\times C=A\times\R \cap \R\times C$.
+	If we define projection to the first coordinate $\pi_1$ then we see
+	\[
+		A\times\R=\pi_1^{-1}(A)\in\mathcal{B}(\R^2)
+	\]
+	since $A\in\mathcal{B}(\R)$ and projection is a continuous function.
+	Likewise $\R\times C\in\mathcal{B}(\R^2)$ and hence $A\times C\in \mathcal{B}(\R^2)$.
+	We may conclude that
+	\[
+		\mathcal{B}(\R^2)=\mathcal{B}(\R)\times\mathcal{B}(\R)
+	\]
+\end{eg}
+\begin{lemma}
+\begin{enumerate}[label=(\alph*)]
+	\item $E\in\mathcal{A}\times\mathcal{C}\implies \forall x \;\; E_x\in\mathcal{C}$ and $\forall y \;\; E^y\in\mathcal{A}$.
+	\item If $f:X\times Y \to \R$ is $(\mathcal{A}\times\mathcal{C}, \mathcal{B}(\R))$-measurable then $f_x$ is $\mathcal{C}$-measurable and $f^y$ is $\mathcal{A}$-measurable $\forall x,y$.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+This is done by the standard procedure:
+\begin{enumerate}[label=(\roman*)]
+	\item Prove that $\left\{E\subseteq X\times Y \rmv E_x\in\mathcal{C}\right\}$ is a $\sigma$-algebra.
+	\item Prove that all rectangles belong to this set.
+\end{enumerate}
+\end{proof}
+\begin{prop}
+Given $\sigma$-finite measure spaces $(X, \mathcal{A}, \mu)$ and $(Y, \mathcal{C}, \nu)$ and $E\in\mathcal{A}\times \mathcal{C}$, the function 
+\[
+	I_E:X\to [0, +\infty], \quad x\mapsto \nu(E_x)
+\]
+is $\mathcal{A}$-measurable for all $x\in X$.
+\end{prop}
+\begin{theorem}
+Given $\sigma$-finite measure spaces $(X, \mathcal{A}, \mu)$ and $(Y, \mathcal{C}, \nu)$ and $E\in\mathcal{A}\times \mathcal{C}$, there is a unique measure $\mu\times\nu$ on $(X\times Y, \mathcal{A}\times\mathcal{C})$ such that for all $A\times C\in \mathcal{R}$
+\[
+	(\mu \times \nu)(A\times C)=\mu(A)\cdot\nu(C)
+\]
+and moreover given any $E\in\mathcal{A}\times\mathcal{C}$
+\[
+	(\mu\times\nu)(E)=\int_X \nu(E_x)d\mu(x) = \int_Y \mu(E^y)d\nu(y)
+\]
+\end{theorem}
+\begin{proof}
+We get uniqueness from the rectangle equality and our previous result about measure uniqueness.
+We then show that the last formula defines a measure with the desired properties.
+\end{proof}
+\subsection{Fubini's Theorem}
+\begin{prop}[Tornelli's Theorem]
+Given $\sigma$-finite measure spaces $(X, \mathcal{A}, \mu)$ and $(Y, \mathcal{C}, \nu)$ and $E\in\mathcal{A}\times \mathcal{C}$ and some function $f:X\times Y \to [0, +\infty]$ which is $(\mathcal{A}\times \mathcal{C})$-measurable, the following holds
+\begin{enumerate}[label=(\alph*)]
+	\item $x\mapsto \int_Y f_x d\nu$ is measurable.
+	\item $\int_{X\times Y} f d(\mu\times\nu)=\int_X\left(\int_Y f_x d\nu\right)d\mu$.
+\end{enumerate}
+\end{prop}
+\begin{proof}
+This proof follows the standard format of proving the result for simple functions and then extending it to measurable function by the monotone convergence theorem.
+\end{proof}
+\begin{theorem}[Fubini's Theorem]
+Given $\sigma$-finite measure spaces $(X, \mathcal{A}, \mu)$ and $(Y, \mathcal{C}, \nu)$ and $E\in\mathcal{A}\times \mathcal{C}$ and some function $f:X\times Y \to \overline{\R}$ which is $(\mu\times\nu)$-integrable then
+\begin{enumerate}[label=(\alph*)]
+	\item For almost every $x\in X$, $f_x$ is $\nu$-integrable and for almost every $y\in Y$, $f^y$ is $\mu$-integrable.
+	\item The function
+		\[
+			I_f(x)\defeq
+			\begin{cases}
+				\int f_x d\nu & \text{if }f_x\text{ is integrable}\\
+				0 & \text{ otherwise}
+			\end{cases}
+		\]
+		is $\mu$-integrable and likewise $I^f(y)$ is $\nu$-integrable.
+	\item $\int_{X\times Y} f d(\mu\times\nu)=\int_X I_f d\mu = \int_Y I^f d \nu$.
+\end{enumerate}
+\end{theorem}
+\begin{eg}
+	\textbf{Algorithm for Fubini's Theorem}
+
+	Given some measurable $f:X\times Y \to \overline{R}$
+	\begin{enumerate}
+		\item Write $f=f^+ - f^-$ which are both measurable.
+		\item Apply Tornelli's tells us $x\mapsto \int f^+_x d\nu $ and $x\mapsto\int f^-_x d\nu$ are both measurable.
+		\item Compute 
+			\begin{align*}
+				A^+&\defeq \int_X\left(\int_Y f^+_x d \nu\right) d\mu\\
+				A^-&\defeq \int_X\left(\int_Y f^-_x d \nu\right) d\mu
+			\end{align*}
+		\item If both $A^+, A^- < \infty$ then Tornelli tells us that
+			\begin{align*}
+				\int_{X\times Y} f^+ d(\mu\times \nu)= A^+ < +\infty\\
+				\int_{X\times Y} f^- d(\mu\times \nu)= A^- < +\infty	
+			\end{align*}
+		\item Hence $f$ is $(\mu\times\nu)$-integrable and Fubini tells us
+			\[
+				\int_{X\times Y} f d(\mu\times\nu)= A^+ - A^-
+			\]
+	\end{enumerate}
+\end{eg}
+
+\subsection{Signed measures}
+\begin{defin}
+	For a measurable space $(X, \mathcal{A})$ and a function $\mu:\mathcal{A}\to[-\infty, +\infty]$ is called a \mdf{signed measure} if
+	\begin{enumerate}[label=(\alph*)]
+		\item $\mu(\emptyset)=0$
+		\item Given any measurable disjoint sets $A_1, A_2, \dots$ we have countable additivity
+			\[
+				\mu\left(\bigcup_{n=1}^\infty\right)=\sum_{n=1}^{\infty}\mu(A_n
+			\]
+	\end{enumerate}
+\end{defin}
+\begin{note}
+	\begin{itemize}
+		\item Since the left hand side of \textit{(b)} is defined so to the right hand side must be defined.
+			Hence there is no disjoint $A, B\in\mathcal{A}$ such that $\mu(A)=\infty$ and $\mu(B)=-\infty$ otherwise their union would not have a well-defined measure.
+		\item Even more strongly, if $\mu(A)=\infty$ and $\mu(B)=-\infty$ for some $A, B\in\mathcal{A}$ then one of the following occurs:
+			\begin{itemize}
+				\item $\mu(A\cap B)\neq\mu(B) \implies \mu(A\cap B)=\mu(B)-\mu(A\stcmp\cap B) \implies \mu(B\setminus A)=-\infty$
+				\item $\mu(A\cap B)\neq\mu(A) \implies \mu(A\setminus B)=+\infty$
+			\end{itemize}
+			These are both contradictions and so we can assume that one of $\pm\infty$ never occurs.
+	\end{itemize}
+\end{note}
+\begin{defin}
+	For a signed measure $\mu$ on $(X, \mathcal{A})$, a set $A\subseteq X$ is called a \mdf{positive set} (resp. \mdf{negative set}) if:
+	\begin{enumerate}[label=(\roman*)]
+		\item $A\in \mathcal{A}$.
+		\item $\forall B\subseteq A$ such that $B$ is measurable we have $\mu(B)\geq 0$ (resp. $\mu(B)\leq 0$).
+	\end{enumerate}
+\end{defin}
+\begin{lemma}
+Given a signed measure $\mu$ and $A\in\mathcal{A}$,
+\[
+	-\infty < \mu(A) < 0 \implies \exists \text{ negative set } B\subseteq A \; \text{such that} \; \mu(B)\leq\mu(A)
+\]
+\end{lemma}
+\begin{proof}
+We proceed by induction on $n$, contracting a measurable set $A_n$ each time.
+For each $n\in\N$ define $\delta_n\defeq\sup\left\{\mu(E) \rmv E\text{ measurable },\; E\subseteq A\setminus\left(\bigcup_{i=1}^{n-1}A_i\right)\right\}$.
+Note that $\delta_n\geq 0$ since we may always take the empty set.
+
+Now pick any measurable $A_n\subseteq A\setminus\left(\bigcup_{i=1}^{n-1} A_i \right)$ such that $\mu(A_n)\geq\text{min}(\frac{\delta_n}{2},1)$.
+
+Having done this process let $A_\infty=\cup_n A_n$ and then let $B\defeq A\setminus A_\infty$.
+
+Then $\mu(A_\infty)=\sum_n\mu(A_n)\geq 0$. So by finite additivity $\mu(A)=\mu(A_\infty)+\mu(B)\geq\mu(B)$.
+
+We claim that $B$ is a negative set.
+Since $\mu(A) > -\infty$ and $\sum_n \mu(A_n)=\mu(A_\infty) < +\infty$.
+Then since the sum converges we must have $\mu(A_n)\to 0$ and hence $\delta_n \to 0$.
+
+Now take any measurable $E\subseteq B$, we must have that $\mu(E) \leq \delta_n$ for all $n$ and hence $\mu(E) \leq 0$.
+\end{proof}
+
+\begin{theorem}[Kahn Decomposition Theorem]
+Given any signed measure $\mu$ on $(X \mathcal{A})$ there is a partition $X=P\sqcup N$ such that $P$ is a positive set and $N$ is a negative set.
+\end{theorem}
+
+\begin{proof}
+WLOG we can assume that $\mu:\mathcal{A}\to (-\infty, +\infty]$ then we define
+\[
+	L\defeq\inf\left\{\mu(A) \rmv A \text{ is a negative set}\right\}
+\]
+then choose any negative sets $A_n$ such that $\mu(A_n)\to L$ (note we don't know yet whether they are disjoint).
+
+Define $N\defeq\cup_n A_n$ which is negative since for all measurable $B\subseteq N$
+\[
+	\mu(B) = \underbrace{\mu(B\cap A_1)}_{\subseteq A_1} + \underbrace{\mu(B \cap (A_2 \setminus A_1))}_{\subseteq A_2} + \dots \leq 0
+\]
+and hence $L \leq \mu(N)$.
+Now for every $n$ we have that
+\[
+	\mu(N) = \mu(A_n) + \underbrace{\mu(N\setminus A_n)}_{\leq 0} \leq \mu(A_n) \implies \mu(N) \leq L
+\]
+by taking the limit.
+Hence we have $\mu(N)=L > -\infty$.
+Now let $P= X \setminus n$, this is a positive set.
+\end{proof}
+
+\begin{theorem}[Jordan Decomposition Theorem]
+For every Hahn decomposition theorem of $X=P\sqcup N$ of a signed measure $\mu$ on $(X, \mathcal{A})$ then there are measures $\mu^+, \mu^-$ such that at least one one is finite such that $\mu=\mu^+ - \mu^-$ and $\mu^+(N)=0$ and $\mu^-(P)=0$.
+
+Moreover, such measures are unique and do not depend on the choice of $N$ and $P$.
+\end{theorem}
+
+\begin{proof}
+\textbf{Existence:}
+Define $\mu^+(A)=\mu(A\cap P)$ and $\mu^-(A) = - \mu(A\cap N)$ for all $A\in\mathcal{A}$.
+Then since $A$ is measurable we have that $\mu(A) = \mu(A\cap P) + \mu(A \cap N) = \mu^+(A) - \mu^-(A)$ and $\mu(N\cap P) = \mu(\emptyset)=0$.
+At least one of the holds $\mu(N)=-\infty$, $\mu(P)=-\infty$ since they are disjoint sets.
+Hence one of the new measures is finite.
+
+\textbf{Independence on decomposition:}
+Given any $A\in\mathcal{A}$ we would like to show that 
+\begin{align*}
+	\mu^+(A) &= \sup\left\{\mu(B) \rmv B\subseteq A \text{ measurable}\right\}\\
+	\mu^-(A) &= \sup\left\{-\mu(B) \rmv B\subseteq A \text{ measurable}\right\}
+\end{align*}
+These do not depend on $N$ or $P$ so we get our uniqueness, we will just prove the first identity.
+Given any $B\subseteq A$ we can notice
+\[
+	\mu(B) = \mu^+(B) - \mu^-(B) \leq \mu^+(B) \leq \mu^+(A)
+\]
+and hence we have $\geq$.
+Then we need to find a measurable $B$ such that $\mu(B) \geq \mu^+(A)$.
+Well notice
+\[
+\mu^+(A)=\mu^+(A\cap P) + \mu^+(A\cap N) = \mu^+(A\cap P) = \mu^+(A\cap P) - \mu-(A\cap P) = \mu(A \cap P)
+\]
+and so we can just take take $B=A \cap P$.
+\end{proof}
+
+\subsection{Absolute continuity}
+\begin{defin}
+	Given two measures $\mu, \nu$ on a $(X, \mathcal{A})$ we say that $\nu$ is \mdf{absolutely continuous} with respect to $\mu$ if 
+	\[
+		\forall A \in \mathcal{A} \quad \mu(A) = 0 \implies \nu(A) = 0
+	\]
+	and we write $\nu << \mu$.
+\end{defin}
+
+\begin{lemma}
+Suppose that $\mu$ and $\nu$ are measures on $(X, \mathcal{A})$ and that $\nu(X) < +\infty$, Then
+\[
+	\nu << \mu \iff \forall \epsilon >0 \;\; \exists \delta >0 \;\; s.t. \;\; \mu(A) < \delta \implies \nu(A) < \epsilon
+\]
+\end{lemma}
+
+\begin{proof}
+"$\Longleftarrow$" : Let $\mu(A) = 0$ then given any $\epsilon > 0 $ there is a $\delta>0$ such that $\mu(A) < \delta \implies \nu(A) < \epsilon$.
+But $\mu(A) < \delta$ for any such delta and hence $\nu(A)<\epsilon$ for any such $\epsilon$ and hence $\nu(A)=0$.
+
+"$\Longrightarrow$" : Suppose not then there exists an $\epsilon >0$ and a sequence of sets $A_k\in\mathcal{A}$ such that
+\[
+	\mu(A_k) < \frac{1}{2^k} \quad \text{but} \quad \nu(A_k) \geq \epsilon
+\]
+Now let $B_n\defeq=\bigcup_{k-n}^\infty A_k$.
+Notice that $\mu(B_n) \leq\sum_{k=n}^{\infty}\mu(A_k) < \sum_{k=n}^{\infty}\frac{1}{2^k} = \frac{1}{2^{n-1}}$.
+Moreover, $\nu(B_n) \geq \nu(A_n) \geq \epsilon$.
+Let $B\defeq \bigcap_{n=1}^\infty B_n$ so that
+\[
+B_1 \supseteq B_2 \supseteq B_3 \supseteq \dots \supseteq B
+\]
+Since we assumed that $\nu$ was finite, Borel-Cantelli tells us that
+\[
+	\nu(B)=\lim_{n\to\infty}\nu(B_n)\geq \epsilon
+\]
+But by assumption $\mu(B) = 0$.
+This contradicts absolute continuity.
+\end{proof}
+
+\begin{theorem}[Radon-Nikodyn Theorem]
+Suppose $\mu$ and $\nu$ are $\sigma$-finite measures on $(X, \mathcal{A})$ such that $\nu << \mu$.
+Then $\exists$ a measurable function $f: x \to [0, +\infty)$ such that
+\[
+	\forall A \in \mathcal{A}, \quad \nu(A)=\int_A f \dm
+\]
+Moreover, for all such functions h, we have that $h=f$ $\mu$-almost everywhere.
+We call such function the \mdf{Radon-Nikodyn derivative} which we denote $\frac{d\nu}{d\mu}$.
+\end{theorem}
+\begin{proof}
+Look over this!
+\end{proof}
+\begin{note}
+	\textbf{We do need the $\sigma$-finite assumption}
+
+	Let $\mu$ be the counting measure and $\lambda$ the Lebesgue measure on $([0,1], \mathcal{B})$.
+	Then $\lambda << \mu$ since $\mu$ is only 0 on the empty set.
+
+	Can we have $\lambda(A) = \int_A g \dm$?
+	No:
+
+	If $g$ is non-zero on at least one point then look at $A=\left\{x\right\}$ then $\lambda(A)=0$ but $\int_A g \dm = g(x)\neq 0$.
+	So $g$ must be identically zero which easily leads to a contradiction.
+\end{note}
+
+\subsection{$\mathcal{L}^p$ spaces}
+\begin{defin}
+Fix some $(X, \mathcal{A})$ measure space and real number $p\in [1, +\infty)$ then
+\[
+	\mathcal{L}^p\defeq\left\{\text{measurable }f:X\to\R \rmv \abs{f}^p \text{ is integrable}\right\}
+\]
+We can also define
+\[
+	\mathcal{L}^\infty\defeq\left\{\text{bounded measurable }f:X\to\R\right\}
+\]
+We can give this space a norm by
+\[
+	\norm{f}_\infty \defeq \inf\left\{M\geq 0 \rmv \left\{\abs{f} > M\right\}\text{ is locally }\mu\text{-null}\right\}\in[0, +\infty)
+\]
+$A\subseteq X$ is called \mdf{$\mu$-null} if $\exists N \in\mathcal{A}$ such that $\mu(N)=0$ and $N\supseteq A$.
+
+$A$ is called \mdf{locally $\mu$-null} if $\forall B \in\mathcal{A}$ with $\mu(B)< +\infty$, $A\cap B$ is null.
+
+$p,q\in (1, +\infty)$ are \mdf{conjugate exponents} if $\frac{1}{p}+\frac{1}{q}=1$ or $\left\{p,q\right\}=\left\{1, \infty\right\}$.
+\end{defin}
+
+\begin{lemma}[Young's Inequality]
+Given conjugate exponents $p,q\in (1,\infty)$ and $x,y \geq 0$
+\[
+	xy\leq \frac{x^p}{p}+\frac{y^q}{q}
+\]
+\end{lemma}
+
+\begin{prop}[Holder's Inequality]
+Given conjugate exponents $p,q\in [1, + \infty]$.
+If $f\in\mathcal{L}^p$ and $g\in\mathcal{L}^q$ then $fg\in\mathcal{L}^1$ and
+\[
+	\int\abs{fg}\dm \leq \norm{f}_p\norm{g}_q
+\]
+\end{prop}
+
+\begin{prop}[Minkowski's Inequality]
+Given any $p\in[1, + \infty]$,
+\[
+f,g\in\mathcal{L}^p \implies \norm{f+g}_p \leq \norm{f}_p + \norm{g}_p
+\]
+\end{prop}
+
+\begin{cor}
+	Given any $p\in[1, +\infty]$, then $\mathcal{L}^p(X, \mathcal{A}, \mu)$ is a vector space and $\norm{\cdot}_p$ is a semi-norm.
+\end{cor}
+
+\begin{defin}
+	Let $\mdf{\mathcal{N}^p=\mathcal{N}^p(X, \mathcal{A}, \mu)}\defeq\left\{f\in\mathcal{L}^p \rmv \norm{f}_p =0 \right\}$
+
+	Then we can define $\mdf{L^p}\defeq\frac{\mathcal{L}^p}{\mathcal{N}^p}$.
+	This can be seen to be a normed space.
+\end{defin}
+
+\begin{theorem}
+Given any $p\in[1, +\infty]$, $(L^p, \norm{\cdot}_p)$ is complete.
+\end{theorem}
+
+\begin{proof}
+It is enough to show that for all $\left\{f_n\right\}$ in $\mathcal{L}^p$
+\[
+	\sum_{k=1}^{\infty}\norm{f_k}_p < +\infty \implies \exists f\in\mathcal{L}^p \quad s.t. \quad \norm{\sum_{k=1}^{n}f_k-f}_p \to 0
+\]
+Define $g_n:X\to [0, +\infty]$ by $g_n(x)=\sum_{k=1}^{n}\abs{f_k(x)}$ and then $g(x)\defeq \lim_{n\to\infty}g_n(x)^p$.
+
+By the monotone convergence theorem we can see that $\int\abs{g}\dm < + \infty$.
+
+Then define
+\[
+	f(x)\defeq
+	\begin{cases}
+		\sum_{k=1}^{\infty} & \text{if } g(x)\neq + \infty \\
+		0 & \text{otherwise}
+	\end{cases}
+\]
+Then by the dominated convergence theorem wee see that
+\[
+	\int\abs{f}^p \dm \leq \lim_{n\to\infty}\int\sum < +\infty
+\]
+so on and so forth...
+\end{proof}
+
+\section{Modes of Convergence}
+\begin{defin}
+Given a measure space \msrspc	 and measurable functions $f,f_1, f_2, f_3, \dots:X\to \R$ we say
+\begin{itemize}
+	\item $(f_n)$ \mdf{converges to $f$ almost everywhere} if
+		\[
+			\lim_{n\to\infty}f_n (x) = f(x) \quad \text{for almost every }x\in X
+		\]
+	\item $(f_n)$ \mdf{converges to $f$ in measure} if
+		\[
+			\forall\epsilon >0 \quad \quad\lim_{n\to\infty}\mu\left(\left\{x\in X \rmv \abs{f_n(x)-f(x)}>\epsilon\right\}\right)=0
+		\]
+		
+\end{itemize}
+\end{defin}
+\begin{prop}
+Given a finite measure space, almost everywhere convergence $\implies$ convergence in measure.
+\end{prop}
+\begin{lemma}[Borel-Cantelli]
+Given a measure space \msrspc and $A_1, A_2, \dots \in \mathcal{A}$ such that $\sum_{n}\mu(A_n)<\infty$, let
+\[
+	A\defeq\left\{x \in X \rmv x\in A_n \text{ for infinitely many }n\right\}=\bigcap_{n=1}^\infty\left(\bigcup_{k=n}^\infty A_k\right)
+\]
+then $\mu(A) = 0$.
+\end{lemma}
+\begin{cor}
+Given a measure space \msrspc and $f_1, f_2, f_3, \dots:X \to \R$ all measurable, if $f_n\to f$ in measure then $\exists n_1 < n_2 < \dots$ such that $f_{n_i}\to f$ almost everywhere.
+\end{cor}
+\begin{theorem}[Ergoff's Theorem]
+\msrspc a measure space and $f, f_1, f_2, \dots: X \to \R$ measurable such that $f_n\to f$ almost everywhere.
+If $\mu(X)< \infty$ then
+\[
+	\forall\epsilon > 0 \; \exists B\in\mathcal{A}\;s.t.\;\mu(B\stcmp)<\epsilon\;\text{ and }\;f_n\to f\text{ uniformly on }B
+\]
+\end{theorem}
+\begin{proof}
+Probably worth going over.
+\end{proof}
+\begin{defin}
+	For $f, f_1, f_2, \dots\in \mathcal{L}^1(X, \mathcal{A}, \mu)$ we say \mdf{$(f_n)$ converges to $f$ in mean} if
+		\[
+			\int \abs{f_n(x)- f(x)} d\mu(x) \to 0 \quad \text{ as }n \to\infty
+		\]
+\end{defin}
+\begin{lemma}
+Convergence in mean $\implies$ convergence in measure.
+\end{lemma}
+\begin{proof}
+Using Markov's inequality, given any $\epsilon >0$,
+\[
+	\mu\left\{\abs{f_n-f} > \epsilon\right\}\leq \frac{1}{\epsilon}\int\abs{f_n-f}\dm\to 0
+\]
+\end{proof}
+\begin{prop}
+\msrspc a measure space and $f, f_1, f_2, \dots\in \mathcal{L}^1(X, \mathcal{A}, \mu)$ If $f_n\to f$ almost everywhere or in measure and there is an integrable $g:X \to [0, + \infty]$ such that for almost every $x$, $\abs{f}\leq g$ and for all $n\in\N$ $\abs{f_n}\leq g$ then $f_n \to f$ in mean.
+\end{prop}
+\begin{proof}
+Suppose $f_n\to f$ almost everywhere then almost everywhere we have $\abs{f_n -f}\leq 2g$.
+We then apply dominated convergence theorem to get
+\[
+	\lim_{n\to\infty}\int\abs{f_n-f}\dm=\int\lim_{n\to\infty}\underbrace{\abs{f_n-f}}_{\text{0 a.e.}}\dm = 0
+\]
+Now suppose $f_n\to f$ in measure but, for contradiction, not in mean.
+So there is an $\epsilon > 0$ and a sequence $n_1 < n_2 < \dots $ such that for all $k$
+\begin{equation}
+	\int\abs{f_{n_k}-f}\dm > \epsilon
+	\label{eq:bigints}
+\end{equation}
+Convergence in measure implies the existence of an almost everywhere convergent subsequence so we have $k_1 < k_2 < \dots$ such that $f_{n_{k_i}}\to f$ almost everywhere as $i\to\infty$.
+By the first part of the proof $f_{n_{k_i}}\to f$ in mean which contradicts (\ref{eq:bigints}).
+\end{proof}
+\begin{theorem}[Lusin's Theorem]
+Let $A\in\mathcal{L}(\R^d)$ with $\lambda(A)< \infty$ and $f:A\to \R$ Lebesgue measurable.
+Then $\forall\epsilon>0\;\exists\text{compact }K\subseteq A$ such that $\lambda(A\setminus K)< \epsilon$ and $\restr{f}{K}$ is continuous.
 \end{theorem}
 \end{document}

@@ -1,0 +1,780 @@
+\documentclass[11pt]{article}
+
+%{{{ Packages
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathdots}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{microtype}
+\usepackage{silence}
+\WarningFilter{mdframed}{You got a bad break}
+\setlength{\parindent}{0pt}
+%}}}
+%{{{ Custom commands
+% Nice maths commands
+\newcommand{\defeq}{:=}
+\newcommand{\eqdef}{=:}
+\newcommand{\abs}[1]{|#1|}
+\newcommand{\norm}[1]{||#1||}
+%\renewcommand{\dots}{...}
+\newcommand{\msrspc}{\ensuremath{(X,\mathcal{B},\mu)}}
+\DeclareMathOperator{\inv}{\text{inv}}
+\DeclareMathOperator{\ord}{\text{ord}}
+\newcommand{\relmiddle}[1]{\mathrel{}\middle#1\mathrel{}}
+\newcommand{\rmv}{\relmiddle|}
+\newcommand{\stcmp}{^{\mathsf{c}}}
+\newcommand\restr[2]{{% we make the whole thing an ordinary symbol
+  \left.\kern-\nulldelimiterspace % automatically resize the bar with \right
+  #1 % the function
+  \vphantom{\big|} % pretend it's a little taller at normal size
+  \right|_{#2} % this is the delimiter
+  }}
+
+% Spaces
+\newcommand{\ktor}{\mathbb{T}^k}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+
+% Derivatives
+\newcommand*{\pd}[3][]{\ensuremath{\frac{\partial^{#1} {#2}}{\partial {#3}^{#1}}}}
+\newcommand{\grad}{\bigtriangledown}
+
+% Vectors
+\newcommand{\mv}[1]{\textbf{#1}}
+
+%}}}
+%{{{ Enviornments
+% Definitions environment
+\newenvironment{defin}
+	{\begin{mdframed}[backgroundcolor=white, roundcorner=5pt, linewidth=1pt]}
+	{\end{mdframed}}
+\newcommand{\mdf}[1]{{\color{red} #1}}
+
+% Important notes environment
+\newenvironment{note}
+	{\begin{mdframed}[backgroundcolor=white, linecolor=red, roundcorner=5pt, linewidth=1pt]\bfseries{Note:}\normalfont}
+	{\end{mdframed}}
+
+% Examples enviornmnet
+\definecolor{mylg}{rgb}{0.9,0.9,0.9}
+\newenvironment{eg}
+	{\begin{mdframed}[backgroundcolor=myld,roundcorner=5pt,linewidth=0pt]\bfseries{Example:}}
+	{\end{mdframed}}
+
+% Theorem enviornment
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{cor}[theorem]{Corollary}
+\newtheorem{prop}[theorem]{Prop}
+\newtheorem{lemma}[theorem]{Lemma}
+%}}}
+%{{{ Document metadata
+\title{Complex Analysis Notes}
+\author{Thomas Chaplin}
+\date{}
+%}}}
+
+\begin{document}
+\maketitle
+
+\section{Complex Algebra}
+\begin{defin}
+	\begin{itemize}
+		\item The \mdf{principal value of the argument} is the unique $\theta\in (-\pi, \pi]$.	
+			This is a continuous function on $\C$ without any half-line (including $0$). 
+		\item $\xi + i \eta$ is the \mdf{logarithm} of $re^{i\theta}$ id
+			\[
+				\xi = \log(r) \quad\quad \eta = \theta + 2\pi n \;\; n\in \Z
+			\]
+		\item The \mdf{principal value of the logarithm} corresponds to $n=0$.
+		\item We say that $\xi+ i \eta$ is an element of $z_0^{z_1}$ if
+			\[
+				\xi + i \eta \in e^{z_1\log(z_0)}
+			\]
+		\item The \mdf{extended complex plane} is $\hat{\C}\defeq \C \cup \left\{\infty\right\}$.
+		\item We can extended inversion to the $\hat{\C}$ by setting
+		\[
+			\frac{1}{0}\defeq\infty \quad\quad \frac{1}{\infty}\defeq 0
+		\]
+	\end{itemize}
+\end{defin}
+
+\subsection{Riemann Sphere}
+To represent the complex plane, we use stereographic projection of $S^2\setminus\left\{\text{north pole}\right\}$ into $\C$ and then send the north pole to $\infty$.
+\begin{align*}
+	\pi:S^2\setminus\left\{(0,0,1)\right\}&\to \C \\
+	(x_1, x_2, x_3) &\mapsto \frac{x_1}{1-x_3}+i\frac{x_2}{1-x_3}
+\end{align*}
+
+\begin{lemma}
+A \mdf{circle on $S^2$} is the intersection of $S^2$ with some plane.
+The image of every non-vanishing circle on $S^2$, under $\pi$ is a line or circle in $\C$.
+\end{lemma}
+
+In this proof we notice that circles through the north pole go to lines and circles not through the north pole go to circles.
+So we can define $\pi(\text{north pole})\defeq\infty$ and see that $\pi(S^2)=\hat{\C}$.
+
+We can use this to define a metric on $\hat{\C}$.
+\[
+	\forall z, w\in \C \quad\quad d(z, w)\defeq\norm{\pi^{-1}(z) - \pi^{-1}w}
+\]
+where $\norm{\cdot}$ is the Euclidean norm on $S^2$.
+
+\begin{note}
+We can compute everything in this definition in terms of complex algebra to find
+\begin{align*}
+	d(z, w) &= \frac{2\abs{z-w}}{\sqrt{1+\abs{z}^2}+\sqrt{1+\abs{w}^2}}\\	
+	d(z, \infty) &= \frac{2}{\sqrt{1+\abs{z}^2}}\\	
+\end{align*}
+\end{note}
+When doing complex algebra we stick to the following conventions
+\begin{itemize}
+	\item $\infty + z = z + \infty = \infty \quad\quad\forall z\in\C$
+	\item $\infty \cdot z = z \cdot \infty = \infty \quad\quad\forall z\in\hat{\C}\setminus\left\{0\right\}$
+	\item $\frac{z}{\infty}=0 \quad\quad\forall z\in\C$
+	\item $\frac{z}{0}=\infty \quad\quad\forall z\in\hat{\C}\setminus\left\{0\right\}$
+\end{itemize}
+\section{Mobius Transformations}
+
+Given $a, b, c, d\in \C$ such that $ad-bc\neq 0$ we can define a \mdf{Mobius transformation}
+\[
+	f(z)\defeq\frac{az+b}{cz+d}\quad\quad\forall z\in\C\setminus\left\{-\frac{d}{c}\right\}
+\]
+We can extend this to $\hat{\C}$ by defining $\hat{f}(-\frac{d}{c})=\infty$ and $\hat{f}(\infty)=\frac{a}{c}$.
+
+Notice we can multiply $a, b, c, d$ by any non-zero complex number and recover the same function.
+We say that $f$ is \mdf{normalised} if $ad-bc=1$.
+
+It can be noticed that composing two Mobius transformations yields another Mobius transformation.
+We can calculate the coefficients of the transformation by multiplying the corresponding matrices
+\[
+\begin{pmatrix}
+	a & b \\
+	c & d
+\end{pmatrix}
+\]
+\begin{lemma}
+Extended Mobius transforms are invertible and their inverse is another Mobius transform.
+\end{lemma}
+
+\subsection{Decomposing Mobius transformations}
+Let $\inv$ be the inversion map $z\mapsto\frac{1}{z}$.
+\begin{lemma}
+Let $\mathcal{C}$ be a circle or a line then $\inv(\mathcal{C})$ is a circle or a line.
+\end{lemma}
+\begin{proof}
+Worth going over.
+\end{proof}
+
+\begin{defin}
+	The \mdf{elementary Mobius transformations} are
+	
+	\begin{tabular}{rll}
+		\textit{(a)} & \mdf{Inversion}: & $\inv(z)=\frac{1}{z}$ \\
+		\textit{(b)} & \mdf{Translation}: & $z\mapsto z+b$\\
+		\textit{(c)} & \mdf{Rotation}: & $z\mapsto az$ for $a=e^{i\theta}$\\
+		\textit{(d)} & \mdf{Expansion/Contraction}: & $z \mapsto rz$ for $z\in\R, z>0$
+	\end{tabular}
+\end{defin}
+
+\begin{lemma}
+Every Mobius transformation can be written as a composition of elementary Mobius transformations.
+\end{lemma}
+
+\begin{proof}
+\textbf{Case 1:} $c\neq 0$
+
+We can write 
+\[
+\frac{az+b}{cz+d}=\frac{a}{c}+\frac{b-\frac{ad}{c}}{cz+d}
+\]
+\textbf{Case 2:} $c=0$
+
+$c=0$ and $ad-bc\neq 0$ $\implies$ $d\neq 0$ and hence we can write 
+\[
+\frac{az+b}{cz+d}=\frac{a}{d}z + \frac{b}{d}
+\]
+
+In both cases these transformations can be easily decomposed.
+\end{proof}
+
+\begin{theorem}
+The image of a circle or line in $\hat{\C}$ under a Mobius transformation is another circle or line.
+\end{theorem}
+
+\begin{theorem}
+Given 3 distinct points $z_1, z_2, z_3\in\hat{\C}$ and three other distinct points $w_1, w_2, w_3\in\hat{\C}$ there exists a unique Mobius transform $f$ with $f(z_i)=w_i$ for all $i$.
+\end{theorem}
+
+\begin{proof}
+\textbf{Existence: }
+We define two helper functions, assuming that none of the points are $\infty$
+\[
+	S(z)\defeq\frac{z-z_2}{z-z_3}\cdot\frac{z_1-z_3}{z_1-z_2}
+\]
+and if any $z_i$ is $\infty$ then we simply remove any term containing that $z_i$.
+Notice
+\[
+	S(z_1) = 1 \quad S(z_2) = 0 \quad S(z_3) = \infty
+\]
+We define $T$ in the same way but replacing each $z_i$ with $w_i$.
+Then we can notice that defining $f\defeq T^{-1}S$ yields a function with the desired properties.
+
+\textbf{Uniqueness: }
+It suffices to check the cases when $w_1=1$, $w_2=0$ and $w_3=\infty$ because we can always compose with $T$.
+Then we can just pick two suitable Mobius transformations $f_1$ and $f_2$, then show that $g\defeq f_1\circ f_2^{-1}$ is the identity Mobius transformation.
+\end{proof}
+
+\begin{note}
+Look up the cross ratio.
+\begin{itemize}
+	\item A non-identity Mobius transform has at most two fixed points because
+		\[
+			z=\frac{az+b}{cz+d}\iff 0 =cz^2 + (d-a)z -b
+		\]
+\end{itemize}
+\end{note}
+
+\section{Complex Differentiability}
+
+\begin{defin}
+	Given $D\subseteq \C$ open, a function $f:D\to \C$ is \mdf{complex differentiable at $z_0\in\C$} if
+	\[
+		f'(z_0)\defeq\lim_{z\to z_0}\frac{f(z)-f(z_0)}{z-z_0}\quad\text{exists}
+	\]
+\end{defin}
+
+\begin{note}
+This definition of $f'$ can be restated as 
+\[
+	\forall \epsilon >0 \;\; \exists\delta >0 \;\; s.t. \;\; \abs{z- z_0} < \delta \implies \abs{f(z)-f(z_0)- f'(z_0)(z- z_0)} \leq \epsilon \abs{z- z_0}
+\]
+\end{note}
+
+\begin{prop}
+$f:D\to\C$ complex differentiable at $z_0\in D$ $implies$ $f$ is continuous at $z_0$.
+\end{prop}
+
+The complex derivative also satisfies all of the usual algebra of derivative functions from real analysis, including the chain rule
+\[
+	(g\circ f)'(z_0) = g'(f(z_0))f'(z_0)
+\]
+
+\begin{theorem}[Cauchy-Riemann Equations]
+The following are equivalent, given $f:D\to\C$ and $z_0=x_0 + i y_0\in D$
+\begin{enumerate}[label=(\alph*)]
+	\item $f$ is $\C$-differentiable at $z_0$.
+	\item $f$ is $\R$-differentiable at $(x_0,y_0)$ and $df(z_0)$ is complex linear
+	\item $f$ is $\R$-differentiable at $(x_0,y_0)$ and the CR equations hold:
+		\[
+			u_x=v_y \quad\quad u_y = -v_x
+		\]
+\end{enumerate}
+
+\begin{proof}
+\textit{(i)}$\iff$\textit{(ii)} is somewhat immediate.
+Consider the alternative definition given in the notes.
+We see that being $\C$-differentiable is equivalent to the existence of a complex number $\xi$ such that
+\[
+	\lim_{h\to 0}\frac{f(z_0+h)-f(z_0)-\xi\cdot h}{h}=0
+\]
+We can view thus view the derivative as a $\C$-linear function $h\mapsto \xi\cdot h$.
+This is equivalent to the definition of $\R$-differentiability with the additional requirement that the map is $\C$-linear.
+In practice this means that the Jacobian matrix is some real number multiplied by a rotation matrix.
+
+This explains $\textit{(ii)}\iff\textit{(iii)}$ as well because the Jacobian must be given by
+\[
+	r
+	\begin{pmatrix}
+		\cos(\theta) & -\sin(\theta)	\\
+		\sin(\theta) & \cos(\theta)
+	\end{pmatrix}
+\]
+Alternatively, writing out the Jacobian we see that the derivative as a $\C$-linear map
+\[
+	M(h)=
+\begin{pmatrix}
+	u_x & u_y \\
+	v_x & v_y \\
+\end{pmatrix}
+	\begin{pmatrix}
+	h_x \\
+	h_y
+	\end{pmatrix}
+\]
+and then the condition $M(ih)=iM(h)\; \forall h\in \C$ is equivalent to the Cauchy-Riemann equations.
+\end{proof}
+\end{theorem}
+
+\begin{theorem}[Power Series Expansion]
+Given a sequence $(a_k)_{k\in\N_0}$ with $a_k\in\C$, consider the power series
+\begin{equation}
+	\sum_{k=0}^{\infty}a_k z^k	
+	\label{eq:seriesexpansion1}
+\end{equation}
+\begin{enumerate}[label=(\alph*)]
+	\item There exists a \mdf{radius of convergence} $r\in [0,\infty]$ such that for all $z$ with $\abs{z}<r$ the series (\ref{eq:seriesexpansion1}) converges, and for all $z$ with $\abs{z}=r' > r$ the series (\ref{eq:seriesexpansion1}) does not converge.
+	\item The series
+		\begin{equation}
+			\sum_{k=1}^{\infty}k a_k z^{k-1}
+			\label{eq:seriesexpansion2}
+		\end{equation}
+		head the same radius of convergence.
+	\item $f(z)\defeq\sum_{k=0}^{\infty}a_k z^k$ is holomorphic on $\mathcal{B}_r(0)=\left\{\abs{z}< r\right\}$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\begin{enumerate}[label=(\alph*)]
+	\item If we convergence for some $z_0$ then $(a_kz_0^k)\to 0$ is bounded by $C>0$ say and hence for all $z$ with $\abs{z}<\abs{z_0}$ we have
+		\[
+			\sum_{k=0}^{\infty}\abs{a_kz^k}=\sum_{k=0}^{\infty}\abs{a_k z_0^k}\frac{\abs{z}^k}{\abs{z_0}^k}\leq C \frac{1}{\abs{z_0}-\abs{z}}
+		\]
+		and hence we get convergence.
+		
+		The radius of convergence is therefore $\sup\left\{\eta \geq 0 \rmv \exists z \text{ with }\abs{z}=\eta \;\; s.t. \;\; (\ref{eq:seriesexpansion1}) \text{ converges}\right\}$
+	\item We now consider (\ref{eq:seriesexpansion2}).
+		Suppose $\abs{z}<\hat{r} < r$, then we have
+		\[
+			\sum_{k=1}^{\infty}\abs{ka_k z^{k-1}} \leq \frac{1}{\hat{r}}\sum_{k=1}^{\infty}\underbrace{k\left(\frac{\abs{z}^{k-1}}{\hat{r}^{k-1}}\right)}_{\to 0}\underbrace{\abs{a_k\hat{r}^k}}_{\text{convergent}}
+		\]
+		and hence the sum converges.
+		Likewise the sum diverges wherever the other one does.
+	\item Confusing proof.
+\end{enumerate}
+\end{proof}
+
+
+\section{Cauchy's Collection of Complex Corollaries}
+
+\subsection{Complex Integration}
+\begin{defin}
+	Let $f:D\to\C$ be continuous and $\gamma$ a smooth curve with $\Gamma=\gamma[a,b]\subseteq D$
+	\[
+		\int_\Gamma f(z)\;dz=\int_\gamma f(z)\;dz \defeq \int_a^bf(\gamma(t))\dot{\gamma}(t)\; dt
+	\]
+	The length of a curve is defined to be
+	\[
+		L(\gamma)\defeq\int_a^b\abs{\dot{\gamma}}\; dt
+	\]
+
+	Two curves $\gamma:[a,b]\to\C$ and $\lambda:[c, d]\to\C$ are \mdf{smoothly equivalent parametrisations} for $\Gamma$ if there is a smooth  function $\rho:[a,b]\to[c, d]$ such that
+	\begin{enumerate}[label=(\roman*)]
+		\item $\dot{\rho}(t)\neq0 \quad \forall t$.
+		\item $\rho^{-1}\in\mathcal{C}^1$ and is never zero.
+		\item $\gamma = \lambda \circ \rho$.
+		\item $\rho(a)=c$ and $\rho(b)=d$.
+	\end{enumerate}
+\end{defin}
+\begin{lemma}
+The complex line integral is invariant under change of parametrisation.
+\end{lemma}
+\begin{lemma}
+If $\gamma$ and $\lambda$ are smoothly equivalent then $L(\gamma)=L(\lambda)$.
+\end{lemma}
+
+\begin{lemma}
+$f:D\to \C$ holomorphic and $\gamma\in\mathcal{C}^1([a, b])$ such that $\Gamma\subseteq D$ then
+\begin{align*}
+	\int_\gamma f'(z)\;dz &=\int_a^b f'(\gamma(t))\dot{\gamma}(t)\;dt	\\
+						  &=\int_a^b \frac{d}{dt}f(\gamma(t))\;dt \\
+						  &=f(\gamma(b)) = f(\gamma(a))
+\end{align*}
+\end{lemma}
+
+\subsection{My First Sony Cauchy's Theorem}
+\begin{theorem}[Goursat's Theorem]
+Take $D\subseteq \C$ open and $f:D\to\C$ holomorphic.
+Take a rectangle $Q\subseteq D$ such that $Q\cup \partial Q = \overline{Q}\subseteq D$.
+Take a $\mathcal{C}^1$ parametrisation $\gamma:[a, b]\to\C$ such that $\gamma[a, b]=\partial Q$ and $\gamma$ circles around $Q$ exactly once in the positive direction.
+Then
+\[
+	\int_\gamma f(z)\; dz =0
+\]
+\end{theorem}
+
+\begin{proof}
+We split the proof into a number of steps:
+\begin{enumerate}
+	\item $f\equiv 1$.
+
+	This proof follows easily from the FTC.
+	\item $f(z)=z$.
+
+	This proof also follows easily from the FTC because
+	\[
+		\int\gamma(t)\dot{\gamma}(t)\;dt=\frac{1}{2}\int_a^b \frac{d}{dt}\left(\gamma(t)\right)^2\; dt = \frac{1}{2}\left[\gamma(b)^2 - \gamma(a)^2\right]
+	\]
+	\item $f$ holomorphic in $D$.
+
+	Divide into rectangles, this is a very long proof in Lecture 9.
+\end{enumerate}
+\end{proof}
+
+\begin{cor}[Cauchy's Theorem for images of rectangles]
+	Given $D\subseteq\C$ open and $f:D\to\C$ holomorphic such that $\overline{Q}\subseteq D$.
+	Suppose $\phi:\overline{Q}\to D$ is $\mathcal{C}^1$.
+Let $\gamma$ be a $\mathcal{C}^1$ parametrisation of $\partial Q$ then
+\[
+	\int_{\phi\circ\gamma} f(z)\;dz =0
+\]
+\end{cor}
+
+\begin{defin}
+We say $D\subseteq \C$ is
+\begin{itemize}
+	\item a \mdf{region} if it is non-empty and connected.
+	\item \mdf{polygonally connected} if between every two points are joined by a path consisting of a finite collection of straight lines all contained within $D$.
+\end{itemize}
+A \mdf{contour} is a simple closed curve.
+\end{defin}
+
+\begin{theorem}
+Given a non-empty open set $D\subseteq C$
+\[
+	D\text{ is a region}\quad\iff\quad D\text{ is polygonally connected}
+\]
+\end{theorem}
+
+\begin{theorem}[Jordan Curve Theorem]
+Let $\gamma$ be a contour and $\Gamma=\gamma[a, b]$ then $\stcmp{\gamma}$ consists of
+\[
+	I(\gamma)\cup O(\gamma)
+\]
+where $I(\gamma)$ is bounded and $O(\gamma)$ is unbounded and the two regions are disjoint.
+\end{theorem}
+
+\begin{note}
+Jordan Curve Theorem $\implies$ Cauchy's theorem for contours
+\end{note}
+
+\subsection{Cauchy's Integral Formula}
+\begin{theorem}[Cauchy's Integral Formula]
+Given $D\subseteq \C$ open and $f:D\to\C$ holomorphic, suppose that $\overline{\mathcal{B}_r(a)}\subseteq D$ for some $a\in D$ and $r>0$.
+Then for all $z_0\in\mathcal{B}_r(a)$
+\[
+	f(z_0)=\frac{1}{2\pi i}\int_{\partial\mathcal{B}_r(a)}\frac{f(\xi)}{\xi-z_0}d\xi
+\]
+\end{theorem}
+
+\begin{proof}
+Not too difficult, worth going over (Lecture 11)
+\end{proof}
+
+\subsection{Applications}
+\subsubsection{Immediate Applications}
+
+\begin{theorem}[Taylor's Theorem]
+Given $D\subseteq C$ open and polygonally connected and $f:D\to C$ holomorphic.
+Assume $\exists R>0$ and $z_0\in D$ such that $\overline{\mathcal{B}_R(z_0)}\subseteq D$ then for all $z\in\mathcal{B}_R(z_0)$ we have
+\[
+	f(z)=\sum_{k=0}^{\infty}a_k(z-z_0)^k\quad\text{with}\quad a_k=\frac{1}{2\pi i}\int_{\partial \mathcal{B}_r(z_0)} \frac{f(\xi)}{(\xi - z_0)^{k+1}}d\xi
+\]
+\end{theorem}
+
+\begin{cor}
+	Every homolomorphic function on $D$ is in fact $C^\infty(D)$.
+\end{cor}
+
+\begin{cor}
+$D\subseteq \C$ is open and polygonally collected and $f:D\to\C$ then the following are equivalent:
+\begin{enumerate}[label=(\roman*)]
+	\item $f$ is holomorphic in $D$.
+	\item $f$ is real differentiable on $D$ and the CR equations hold.
+	\item $f$ can be expressed in a power series.
+\end{enumerate}
+\end{cor}
+
+\begin{cor}
+	Suppose $f(z)=\sum_{k\in\N}a_k z^k$ is holomorphic on $\mathcal{B}_R(0)$ for some $R>0$ and suppose $f$ is bounded in that ball, say by M.
+	Then for all $k\in\N$
+	\[
+		\abs{a_k}\leq \frac{M}{R^k}
+	\]
+	where $R$ is the radius of convergence.
+\end{cor}
+
+\begin{theorem}[Liouville's Theorem]
+Any entire, bounded function is constant.
+\end{theorem}
+
+\begin{proof}
+Pick $z_0\in\C$ and $M>0$ such that $\abs{f(z)}\leq M \; \forall z\in\C$.
+Define
+\[
+m(f,R,z_0)\defeq\max_{z\in\partial\mathcal{B}_R(z_0)}\abs{f(z)}
+\]
+Then by Taylor's theorem we see that
+\[
+	\abs{f^(n)(z_0)}\leq\frac{n!}{R^n}m(f, R, z_0) \leq \frac{n!}{R^n}M
+\]
+and in particular $\abs{f'(z_0)}\leq\frac{M}{R}\to 0$ as $R\to\infty$.
+Hence $f'(z_0)=0$.
+\end{proof}
+
+\begin{cor}[Fundamental Theorem of Algebra]
+	Every non-constant polynomial has at least one zero in $\C$.
+\end{cor}
+
+\begin{proof}
+Take some polynomial $P(z)\defeq a_nz^n + \dots + a_1 z + a_0$ such that $a_n\neq 0$.
+Then for any $\epsilon >0$ there is a radius $R$ such that $\forall\abs{z}> R$ we have
+\[
+	(1-\epsilon)\abs{a_n}\abs{z}^n\leq\abs{P(z)}\leq(1+\epsilon)\abs{a_n}\abs{z_n}^n
+\]
+Suppose $P(z)$ has no zeros in $\C$ then $\frac{1}{P(z)}$ is complex differentiable in $\C$ and there is an $R>)$ such that for all $\abs{z}>R$
+\[
+	\frac{1}{2}\abs{a_n}{z_n}\leq\abs{P(z)}\implies\abs{\frac{1}{P(z)}}\leq\frac{2}{\abs{a_n}\abs{z^n}}\leq\frac{2}{\abs{a_n}R^n}
+\]
+and hence $\frac{1}{P}$ is bounded on $\left\{\abs{z}>R\right\}$ and it is obviously bounded inside by compactness.
+Hence by Liouvilles's Theorem $P$ is constant.
+This is a contradiction.
+\end{proof}
+
+\begin{theorem}[Morea's Theorem]
+Given a region $D\subseteq\C$ and a $f:D\to\C$ continuous, suppose given any triangle $T$ with $T\cup\partial T\subseteq D$ we have $\int_{\partial T}f(z)\;dz=0$.
+Then $f$ is holomorphic in $D$.
+\end{theorem}
+
+\begin{theorem}[Schwarz Reflection Principle]
+Suppose $D$ is open in $\overline{H^+}\defeq\left\{z\in\C \rmv \mathcal{I}(z)\geq 0\right\}$ and $f:D\to\C$ is continuous on $D$ and holomorphic on $D^\circ$.
+Then
+\[
+	\widetilde{f}(z)\defeq
+	\begin{cases}
+		f(z) & z\in D \\
+		\overline{f(\overline{z})} & z\in\widetilde{D}
+	\end{cases}
+\]
+where $\widetilde{D}$ is the complex conjugate of $D$, is well-defined and holomorphic on $D\cup\widetilde{D}$.
+\end{theorem}
+
+\begin{proof}
+By composition of reflections we can easily sow that $\widetilde{f}$ is holomorphic on $\widetilde{D}^\circ$ so that only the lines remain.
+We show that the integral of $f$ over any triangle with one edge on the line is $0$ by a continuity argument, approaching from both sides.
+\end{proof}
+
+\section{Zeros of Holomorphic Functions}
+\begin{defin}
+	Given $D\subseteq\C$ open and connected and $f:D\to\C$ holomorphic, the \mdf{order} of any zero $z_0\in D$ is
+	\[
+		\mdf{\ord(f,z_0)}\defeq\inf\left\{k\in\N \rmv f^{(k)}(z_0)\neq 0\right\}\in\N\cup\left\{\infty\right\}
+	\]
+	We say that $f:D\to\C$ is a \mdf{conformal mapping} if $f$ is holomorphic in $D$ and it's derivative is non-vanishing on $D$.
+
+	We say that $f$ is \mdf{biholomorphic} if $f$ is a conformal mapping such that $f^{-1}$ exists and is also conformal.
+\end{defin}
+
+\begin{prop}
+Given $D\subseteq \C$ open and connected and $f:D\to\C$ holomorphic, suppose we have a zero $z_0\in D$ of order $k\in\N$.
+Then there is a neighbourhood $U_0$ of $z_0$ and a holomorphic function $h:U_0\to V_0$ such that $h(z_0)=0$, $\ord(f,z_0)=1$ and
+\[
+	f(z)=(h(z))^k\quad\forall z\in U_0
+\]
+\end{prop}
+
+\begin{proof}
+WLOG we may assume that $z_0=0$, then we apply Taylor's theorem to write $f$ as
+\[
+	f(z)=\sum_{n=k}^{\infty}c_nz^n
+\]
+because $\ord(f,z_0)=k$ and hence the first $k$ terms vanish.
+For simplicity we can also assume that $c_k=1$.
+Hence we can write
+\[
+	f(z)=z^k\left(1+\underbrace{\sum_{n=k+1}^{\infty}c_nz^{n-k}}_{\eqdef g(z)}\right)=\left(\underbrace{z\sqrt[k]{1+ g(z)}}_{\text{\eqdef h(z)}}\right)^k
+\]
+Note that $g$ is holomorphic and $g(0)=0$, and $h(0)=0$.
+Moreover, $h'(0)=\sqrt[k]{1+g(0)}+0\left(\sqrt[k]{1+g(z)}\right)' = 1 \neq 0$.
+Hence $\ord(h, 0)=1$.
+Read up on making it holomorpic (Lecture 14).
+\end{proof}
+
+\begin{note}
+	This implies that all zeros of finite order are isolated.
+\end{note}
+
+\begin{theorem}
+If $\ord(f, z_0)=k\in\N$ for $f:D\to\C$ holomophic then $\forall\epsilon >0$ the exists a $U_\epsilon\subseteq D$ with $z_0\in U_\epsilon$ such that $f(U_\epsilon)=\mathcal{B}_\epsilon(0)$ and $\restr{f}{U_\epsilon}$ takes every $w$ with $0<\abs{w}<\epsilon$ exactly $k$ times and $0$ for $z_0$.
+\end{theorem}
+
+\begin{proof}
+Without loss of generality we may assume that $z_0=0$.
+
+If $f(z)=z^k$ then any $w=re^{i\theta}$ has exactly $k$ roots.
+
+In the general case we can write $f(z)=(h(z))^k$ for $h:U\to V$ holomorphic such that $h(0)=0$ and $h'(0)\neq 0$.
+Moreover, $h$ is locally biholomorphic around a neighbourhood of $0$.
+Choose $\epsilon>0$ sufficiently small that
+\[
+	A\defeq\left\{\xi\in\C \rmv \abs{\xi}\leq\sqrt[k]{\epsilon}\right\}\subseteq V
+\]
+Then define $U_\epsilon\defeq h^{-1}(A)$.
+This set has the desired properties because the original roots of $z\mapsto z^k$ lie in $A$.
+\end{proof}
+
+\begin{note}
+Every bijective holomorphic function is biholomorphic.
+\end{note}
+
+\begin{theorem}[Identity Theorem]
+Given $D\subseteq\C$ open and connected with $f_1, f_2:D\to\C$ holomorphic, assume that $\left\{f_1=f_2\right\}$ has at least one accumulation point in $D$.
+Then $f_1=f_2$ on $D$.
+\end{theorem}
+
+\begin{proof}
+Define $g\defeq f_1 - f_2$ and let $z_0$ be one of the accumulation points.
+Then $z_0$ is a zero of infinite order for $g$.
+Apparently this is a proof?
+\end{proof}
+
+\begin{theorem}[Open Mapping Theorem]
+Given $D\subseteq\C$ open and connected and $f:D\to\C$ holomorphic and non-constant, $f(D)$ is open and connected.
+\end{theorem}
+
+\begin{theorem}[Maximum Modulus Principle]
+Given $D\subseteq\C$ open and connected and $f:D\to\C$ holomorphic and non-constant, $\abs{f}$ does not have any maxima.
+\end{theorem}
+
+\begin{lemma}[Schwarz Lemma]
+Suppose $f:\Delta\to\Delta$ is holomorphic such that $f(0)=0$ then
+\begin{enumerate}[label=(\roman*)]
+	\item $\abs{f(z)}\leq\abs{z}$ for all $z\in\Delta$.
+	\item $\abs{f'(0)}\leq 1$.
+	\item If for some $z\in\Delta\setminus\left\{0\right\}$ we have $\abs{f(z)}=\abs{z}$ or $\abs{f'(z)}=1$ then $\exists\theta\in\R$ such that $f(\widetilde{z})=e^{i\theta}\widetilde{z}$ for all $\widetilde{z}\in\Delta$.
+\end{enumerate}
+\end{lemma}
+
+\section{Singularities}
+
+\begin{defin}
+	Given $D\subseteq \C$ open and connected and $f\in\mathcal{H}(D)$,
+	\begin{itemize}
+		\item $f$ has an \mdf{isolated singularity} at $z_0\not\in D$ if there is an $\epsilon >0$ such that $f$ is defined on $\mathcal{B}_\epsilon(z_0)\setminus\left\{z_0\right\}$.
+		\item $z_0\in D$ is a \mdf{regular point} if $f$ is complex differentiable at $z_0\in D$.
+	\end{itemize}
+	Given an isolated singularity $z_0$ then it has \mdf{order}
+	\[
+		\mdf{\ord(f,z_0)}\defeq-\inf\left\{n\in\Z \rmv \lim_{z\to z_0} (z-z_0)^n f(z) \text{ exists and }<\infty\right\}
+	\]
+	then we say $z_0$ is a
+	\begin{itemize}
+		\item \mdf{removable singularity} if $\ord(f,z_0)\geq 0$.
+		\item \mdf{pole of order $n\in\N$} if $\ord(f, z_0)=-n\in(-\infty, -1]$.
+		\item \mdf{essential singularity} if $\ord(f, z_0)=-\infty$.
+	\end{itemize}
+	Let $S\subseteq D$ be a discrete set, then a holomorphic function $f:D\setminus S\to\C$ is called \mdf{meromorphic on $D$} if none of the isolated singularities in $S$ are essential.
+\end{defin}
+
+\begin{prop}
+Let $\mathcal{Z}_f$ and $\mathcal{P}_f$ be the set of zeros and poles respectively of $f:D\to\C$ meromorphic.
+Then neither set has an accumulation point in $D$.
+\end{prop}
+
+\begin{proof}
+Certainly any pole of $f$ is an isolated singularity and hence cannot be an accumulation point of $\mathcal{P}_f$.
+Any other $z\in D$ where $f$ is holomorphic cannot be an accumulation point either.
+
+Suppose now that $\mathcal{Z}_f$ has an accumulation point at $z_0\in D$ then $z_0$ cannot be a pole otherwise we'd be able to write
+\[
+	f(z)=\frac{g(z)}{(z-z_0)^m}\quad\text{with }m\in\N, g(z_0)\neq 0
+\]
+and hence $f(z)\neq 0$ for all $0\leq\abs{z-z_0}\epsilon$ which means that $z_0$ is not an accumulation point.
+
+So any accumulation pole must be a complex differentiable point.
+We are left to show that $D\setminus\mathcal{P}_f$ see open and connected because then the identity theorem tells us $\mathcal{Z}_f$ cannot have an accumulation point in $D\setminus\mathcal{P}_f$.
+\end{proof}
+
+\begin{lemma}
+Suppose $D\subseteq\C$ is open and connected.
+Suppose $M\subseteq D$ has no accumulation point in D.
+Then $D\setminus M$ is open and connected.
+\end{lemma}
+
+\begin{proof}
+Openness is immediate, for connectedness just draw a picture.
+\end{proof}
+
+\subsection{Laurent Series}
+\begin{defin}
+	A \mdf{Laurent series} is a series of the form
+	\[
+		\sum_{k\in\Z}a_k(z-z_0)^k
+	\]
+	such that the positive terms converge inside some ball around $z_0$ and the negative terms converge outside sum larger ball around $z_0$.
+	Hence the Laurent series converges in an annulus around the point $z_0$.
+\end{defin}
+
+\begin{theorem}[Cauchy's Theorem for annuli]
+Given $0\leq R_1 < R_2 < \infty$ and $D\subseteq\C$ open and connected such that $\overline{A}\defeq\overline{A(R_1, R_2, z_0)}\subseteq D$, for any $z\in A$ we have
+\[
+	f(z) = \frac{1}{2\pi i}\int_{\partial \mathcal{B}_{R_2}(z_0)}\frac{f(\xi)}{\xi-z_0}d\xi - \frac{1}{2\pi i}\int_{\partial \mathcal{B}_{R_1}(z_0)}\frac{f(\xi)}{\xi-z_0}d\xi
+\]
+\end{theorem}
+
+\begin{proof}
+Do normal Cauchy on a small ball contained in the annulus then do some appropriate contour integration.
+\end{proof}
+
+\begin{theorem}[Laurent's Theorem]
+Given $f$ holomorphic on a neighbourhood of an annulus $A=A(R_1, R_2, z_0)$ and any $z\in A$,
+\[
+	f(z)=\sum_{k\in\Z}a_k(z-z_0)^k
+\]
+where for all $\rho\in [R_1, R_2]$ we can write
+\[
+	a_k=\frac{1}{2\pi i}\int_{\partial \mathcal{B}_{\rho}(z_0)}\frac{f(\xi)}{\left(\xi-z_0\right)^{k+1}}d\xi
+\]
+\end{theorem}
+
+\begin{cor}
+	Under the same assumption, if $f$ is bounded on $\left\{\abs{z-z_0}=\rho\right\}$ for sum $\rho\in[R_1, R_2]$ then
+	\[
+		\abs{a_k}\leq\frac{M}{\rho^k}\quad\text{for all }k\in\Z
+	\]
+\end{cor}
+
+\subsection{Classification of Singularities}
+\begin{theorem}[Riemann's removable singularity theorem]
+Gain an isolated singularity $z_0$ for a function $f\in\mathcal{H}(D\setminus\left\{z_0\right\})$, assume that $\abs{f}$ is bounded in a neighbourhood of $z_0$.
+Then there is a holomorphic function $\widetilde{f}\in\mathcal{H}(D)$ which extend to $f$.
+Moreover, $z_0$ was a removable singularity.
+\end{theorem}
+
+\begin{proof}
+In the neighbourhood we can expand in a Laurent series
+\[
+	f(z)=\sum_{k\in\Z}a_k(z-z_0)^k
+\]
+and then for all sufficiently small $\rho>0$ we have $\abs{a_k}\leq\frac{M}{\rho^k}$ for all $k\in\Z$.
+Taking $\rho\to 0$ we see that $a_k=0$ for all $k<0$.
+So we can extend $f$ by taking $\widetilde{f}(z_0)=a_0$.
+\end{proof}
+
+\begin{cor}
+Given $f:D\to\C$ which is holomorphic except for an isolated singularity at $z_0$, the following are equivalent:
+\begin{enumerate}[label=(\roman*)]
+	\item $f$ has a pole at $z_0$.
+	\item At least coefficient of negative order in the Laurent series around $z_0$ in non-zero, but at most finitely many.
+	\item $\lim_{z\to z_0}\abs{f(z)}=+\infty$.
+\end{enumerate}
+\end{cor}
+
+\begin{theorem}[Casorati-Weirstrass]
+Given $f\in\mathcal{H}(D\setminus\left\{z_0\right\})$ with an isolated, essential singularity at $z_0$, for all $\epsilon>0$ the set $f(\mathcal{B}_\epsilon(z_0)\setminus\left\{z_0\right\})$ is dense in $\C$.
+\end{theorem}
+
+\section{Residual Theory}
+
+\section{Rouches Theorem}
+
+\section{Montels Theorem}
+
+\section{Riemann Mapping Theorem}
+\end{document}
