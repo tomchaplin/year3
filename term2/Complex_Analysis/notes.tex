@@ -19,12 +19,16 @@
 % Nice maths commands
 \newcommand{\defeq}{:=}
 \newcommand{\eqdef}{=:}
-\newcommand{\abs}[1]{|#1|}
-\newcommand{\norm}[1]{||#1||}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\norm}[1]{\left|\left|#1\right|\right|}
 %\renewcommand{\dots}{...}
 \newcommand{\msrspc}{\ensuremath{(X,\mathcal{B},\mu)}}
 \DeclareMathOperator{\inv}{\text{inv}}
 \DeclareMathOperator{\ord}{\text{ord}}
+\DeclareMathOperator{\ind}{\text{ind}}
+\DeclareMathOperator{\res}{\text{res}}
+\DeclareMathOperator{\Int}{\text{Int}}
+\DeclareMathOperator{\Ext}{\text{Ext}}
 \newcommand{\relmiddle}[1]{\mathrel{}\middle#1\mathrel{}}
 \newcommand{\rmv}{\relmiddle|}
 \newcommand{\stcmp}{^{\mathsf{c}}}
@@ -34,6 +38,7 @@
   \vphantom{\big|} % pretend it's a little taller at normal size
   \right|_{#2} % this is the delimiter
   }}
+\newcommand{\contr}{\Rightarrow\Leftarrow}
 
 % Spaces
 \newcommand{\ktor}{\mathbb{T}^k}
@@ -468,7 +473,6 @@ Not too difficult, worth going over (Lecture 11)
 \end{proof}
 
 \subsection{Applications}
-\subsubsection{Immediate Applications}
 
 \begin{theorem}[Taylor's Theorem]
 Given $D\subseteq C$ open and polygonally connected and $f:D\to C$ holomorphic.
@@ -770,11 +774,460 @@ Given $f:D\to\C$ which is holomorphic except for an isolated singularity at $z_0
 Given $f\in\mathcal{H}(D\setminus\left\{z_0\right\})$ with an isolated, essential singularity at $z_0$, for all $\epsilon>0$ the set $f(\mathcal{B}_\epsilon(z_0)\setminus\left\{z_0\right\})$ is dense in $\C$.
 \end{theorem}
 
+\begin{proof}
+Suppose it's not dense.
+Then $\exists\delta >0$ and $w\in\C$ such that $\abs{f(z)-w}>\delta$ for all $z\in\mathcal{B}_\epsilon(z_0)\setminus\left\{z_0\right\}$.
+So we can define a function
+\[
+	g(z)\defeq\frac{1}{f(z)-w}
+\]
+and it may be extended to a function which is holomorphic on $\mathcal{B}_\epsilon(z_0)$ because the bottom is always bigger than $\delta$ hence $g$ is bounded.
+So we can write $f(z)=\frac{1}{g(z)}+w$ which clearly doesn't have an essential singularity $\contr$.
+\end{proof}
+
 \section{Residual Theory}
+
+\subsection{Winding Numbers}
+\begin{defin}
+	Given $z_0, z_1\in\C\setminus\left\{0\right\}$ such that $\frac{z_0}{\abs{z_0}}\neq\frac{-z_1}{\abs{z_1}}$ then there is a unique $\theta\in (-\pi, pi)$ such that
+	\[
+		\frac{z_0}{\abs{z_0}}e^{i\theta}=\frac{z_1}{\abs{z_1}}
+	\]
+	then we define $\mdf{\measuredangle(z_0,z_1)}\defeq\theta$.
+	
+	We say $\gamma[t_0, t_1]$ is a \mdf{half-plane curve} if the image of $\gamma$ is contained entirely in one half plane.
+	Then we define $\mdf{\measuredangle\gamma}\defeq\measuredangle(\gamma(t_0),\gamma(t_1))$.
+
+	Given any other piecewise $\mathcal{C}^1$ curve we can break it up into a sequence of half-plane curves and then sum the angles to define $\measuredangle\gamma$.
+\end{defin}
+
+\begin{lemma}
+Given a closed $\mathcal{C}^1$ curve $\gamma;[t_0, t_1]\to\C\setminus\left\{0\right\}$, there exists a unique integer \mdf{$\inf(\gamma,0)$} called the \mdf{index} or \mdf{winding number} of $\gamma$ around $0$ such that $\measuredangle\gamma=2\pi \ind(\gamma, 0)$.
+\end{lemma}
+
+\begin{prop}
+Given a closed $\mathcal{C}^1$ curve $\gamma$ with $a\not\in\gamma[t_0, t_1]$ we have
+\[
+	\ind(\gamma, a)=\int_\gamma\frac{dz}{z-a}
+\]
+\end{prop}
+
+\begin{proof}
+Assume $a=0$, $t_0=0$ and $t_1=1$ then we can split up into the half-plane decomposition: 
+\[
+0=\tau_0 \leq \dots \leq \tau_n =1
+\]
+Let $\alpha_i$ be the straight line connected $\gamma(\tau_i)$ with $\frac{\gamma(\tau_i)}{\abs{\gamma(\tau_i)}}$ and let $\beta_i$ be the counter-clockwise path along the unit circle connecting $\frac{\gamma(\tau_{i-1}}{\abs{\gamma(\tau_{i-1}}}$ with $\frac{\gamma(\tau_i)}{\abs{\gamma(\tau_i)}}$.
+Then we can see
+\[
+	\int_{\gamma[\tau_{i-1}, \tau_i]}\frac{dz}{z}=\int_{\alpha_{i-1}}\frac{dz}{z}+\int_{\beta_i}\frac{dz}{z}-\int_{\alpha_i}\frac{dz}{z}\quad\forall i
+\]
+Then summing over $i$ and noting $\alpha_0=\alpha_n$ obtains the result.
+\end{proof}
+
+\begin{defin}
+	A \mdf{cycle} is a formal linear combination of closed curves $\gamma=\sum_{i=1}^{n}\alpha_i\gamma_i$ with $\alpha_i\in\Z$ then we define
+	\[
+		\ind(\gamma,a)=\sum_{i=1}^{n}\alpha_i\ind(\gamma_i, a)
+	\]
+	Then $\gamma$ is called \mdf{homologous to $0$ in $D$} if for every $a\in\C\setminus D$ we have
+	\[
+		\ind(\gamma, a)=0
+	\]
+\end{defin}
+
+\begin{theorem}[Cauchy's Theorem (homotopy version)]
+Let $D\subseteq C$ be open and connected and $\gamma$ a $\mathcal{C}^1$ cycle that is homologous to $0$ in $D$.
+Then $\forall f\in\mathcal{H}(D)$
+\[
+	\int_\gamma f(z)\;dz=0
+\]
+\end{theorem}
+
+\subsection{Residual Theorem}
+
+\begin{defin}
+	Given $f$ holomorphic with an isolated singularity at $z_0$, the \mdf{residue of $f$ at $z_0$} is defined to be
+	\[
+		\mdf{\res(f,z_0)}\defeq\frac{1}{2\pi i}\int_{\partial \mathcal{B}_\epsilon(z_0)}f(\xi)\;d\xi
+	\]
+\end{defin}
+
+There are a number of convenient ways of calculating the residue.
+\begin{enumerate}
+	\item For a Laurent series
+	\[
+		f(z)=\sum_{k\in\Z}a_k(z-z_0)^k
+	\]
+	we have $\res(f, z_0)=a_{-1}$.
+\item Suppose that $f$ has a pole of order $n$ at $z_0$.
+	Define $g(z)\defeq(z-z_0)^nf(z)$ then $g$ is holomorphic at $z_0$ and in fact
+	\[
+		\res(f,z_0)=a_{-1}=\frac{g^{(n-1)}(z_0)}{(n-1)!}=\lim_{z\to z_0}\left[\frac{1}{(n-1)!}\frac{d^{n-1}}{dz^{n-1}}\left((z-z_0)^nf(z)\right)\right]
+	\]
+\item If $f(z)=\frac{h(z)}{k(z)}$ and $k(z)$ has a simple zero at $z_0$ then
+	\[
+		\res(f,z_0)=\lim_{z\to z_0} \frac{h(z)}{\left(\frac{k(z)-k(z_0)}{z-z_0}\right)}=\frac{h(z_0)}{k'(z_0)}
+	\]
+\end{enumerate}
+
+\begin{defin}
+	Given $\gamma;[t_0, t_1]\to\C$ a closed curve with image $\Gamma$
+	\begin{align*}
+		\mdf{\Int(\gamma)}&\defeq\left\{z\in\C\setminus\Gamma \rmv \ind(\gamma, z)\neq 0\right\} \\
+		\mdf{\Ext(\gamma)}&\defeq\left\{z\in\C\setminus\Gamma \rmv \ind(\gamma, z) = 0\right\}
+	\end{align*}
+\end{defin}
+
+\begin{lemma}
+\begin{enumerate}[label=(\alph*)]
+	\item $\left[a\mapsto\ind(\gamma, a)\right]$ is locally constant in $\C\setminus\Gamma$.
+	\item $\Int(\gamma)$ is bounded.
+	\item $\Ext(\gamma)$ is non-empty and unbounded.
+\end{enumerate}
+\end{lemma}
+
+\begin{theorem}[The Residue Theorem]
+Given $D\subseteq\C$ open and connected and $f\in\mathcal{H}(D\setminus S)$ for some discrete set $S$ of isolated singularities, suppose $\gamma$ is a closed $\mathcal{C}^1$ curve homologous to $0$ in $D$ such that $\Gamma\cap S = \emptyset$ and $\Gamma\subseteq D$.
+Then $\gamma$ winds around at most a finite number of singularities in $S$ and
+\[
+	\int_\gamma f(z)\;dz = 2\pi i \sum_{a\in S}\ind(\gamma, a)\res(f, a)
+\]
+\end{theorem}
+
+\begin{proof}
+First things first, $A\defeq\left\{a \in S \rmv \ind(\gamma, a)\neq 0 \right\}$ is bounded.
+Assume that $\gamma$ winds around infinitely many points in $S$ then $A$ is infinite.
+Hence there is a sequence of points $(a_n)$ in $A$ such that $a_n\to a$.
+
+\textbf{Case 1:} $a\in\Gamma$
+
+\textbf{Case 2:} $\ind(\gamma, a)\neq 0$
+
+Both lead to a contradiction apparently.
+
+Now suppose $a_1, \dots, a_N$ are the points around with $\gamma$ winds and define $\alpha_i\defeq\ind(\gamma,a_i)$.
+
+Choose $\epsilon >0$ small such that $\overline{\mathcal{B}_\epsilon(a_i)}\cap\Gamma=\emptyset$ for all $i$.
+Then define $\gamma_i(t)\defeq a_i+\epsilon e^{i 2 \pi t}$ for $t\in [0, 1]$.
+Let $\beta_i$ be some little paths joining $\gamma$ to $\gamma_i$ and then concatenate all the $\gamma_i$s and $\beta_i$s with $\gamma$ in some appropriate way to form $\widetilde{\gamma}$
+Then 
+\[
+	\int_{\widetilde{\gamma}}=0\implies\int_\gamma f(z)dz = 2\pi i \sum_{a\in S}\ind(\gamma, a)\res(f, a)
+\]
+\end{proof}
+
+\begin{theorem}[Argument Principle]
+Given $D\subseteq\C$ open and connected and $f$ meromorphic on $D$, let $A\subseteq D$ be open with boundary $\partial A$ being a closed $\mathcal{C}^1$ curve $\gamma$.
+Assuming $\partial A \subseteq D$ and $\Gamma\cap\mathcal{P}(f)=\Gamma\cap\mathcal{Z}(f)=\emptyset$, then
+\[
+	\frac{1}{2\pi i}\int_\gamma \frac{f'(z)}{f(z)}dz = \mathcal{Z}_A(f)-\mathcal{P}_A(f)
+\]
+where
+\[
+	\mathcal{Z}_A(f)\defeq\sum_{z\in f^{-1}(0)\cap A}\ord(f, z) \quad \text{and} \quad \mathcal{P}_A(f)\defeq\sum_{z\in\mathcal{P}(f)\cap A}\abs{\ord(f, z)}
+\]
+\end{theorem}
 
 \section{Rouches Theorem}
 
-\section{Montels Theorem}
+\begin{theorem}[Rouches Theorem]
+Given $D\subseteq\C$ open and connected and $\gamma$ a closed $\mathcal{C}^1$ curve with $\Gamma=im(\gamma)\subseteq D$.
+Suppose $f,g\in\mathcal{H}(D)$ satisfy
+\begin{equation}
+	\abs{f(\xi)-g(\xi)} < \abs{g(\xi)}\quad\forall\xi\in\Gamma	
+	\label{eq:roche}
+\end{equation}
+Then $f$ and $g$ have the same number of zeros in $\Int(\gamma)$.
+\end{theorem}
+
+\begin{proof}
+Thanks to the strict inequality in \textit{(\ref{eq:roche})}, there is a neighbourhood $U\supseteq \Gamma$ such that $h\defeq\frac{f}{g}$ is holomorphic in $U$.
+Then again by \textit{(\ref{eq:roche})}, we see
+\[
+	\abs{h(z)-1}=\abs{\frac{f(z)}{g(z)}-1}<1 \quad \forall z\in U
+\]
+and hence $h(U)\subseteq \mathcal{B}_1(1) \subseteq \C\setminus\left\{z\in\C \rmv \mathcal{R}(z)\leq 0, \; \mathcal{I}(z)=0\right\}$ and so $\log(h)$ is well-defined on $U$ and we can write
+\[
+	(\log(h))'=\frac{h'}{h}=\frac{f'}{f}-\frac{g'}{g}
+\]
+then since $h$ is holomorpic on $U$ we can integrate its derivative over $\gamma$ and get
+\[
+	0=\frac{1}{2\pi i}\int_\gamma\frac{f'(\xi)}{f(\xi)}\;d\xi - \frac{1}{2\pi i}\int_\gamma\frac{g'(\xi)}{g(\xi)}\;d\xi
+\]
+\end{proof}
+
+\begin{note}
+This can alternatively be restated as follows:
+
+Given $h,w\in\mathcal{H}(D)$, such that we can write $h=f+g$ and $w=f$, suppose that
+\[
+	\abs{g(\xi)} < \abs{f(\xi)} \quad \forall\xi\in\Gamma
+\]
+then $f+g$ and $f$ have the same number of zeros in $\Int(\gamma)$.
+\end{note}
+
+\section{Functional Convergence}
+\begin{defin}
+Suppose $f_n:D\to\C$ where $D\subseteq\C$ is open.
+We say that $f_n$ \mdf{converges locally uniformly} to $f$ as $n\to\infty$ if
+\[
+	\forall\text{compact }K\subseteq D, \quad \restr{f_n}{K}\to\restr{f}{K}\;\text{uniformly}
+\]
+\end{defin}
+\begin{theorem}[Weirstrass Convergence Theorem]
+Given $D\subseteq\C$ open and connected and a sequence $(f_n)$ of holomorphic functions on $D$ such that $f_n$ converges locally uniformly to $f$, then $f\in\mathcal{H}(D)$.
+\end{theorem}
+
+\begin{proof}
+Pick $z_0\in D$ and $\delta>0$ sufficiently small that $\overline{\mathcal{B}_\delta(z_0)}\subseteq D$.
+We will prove that $f$ is holomorphic on all of this ball by use of Morea's Theorem.
+So take $\gamma$ closed curve in $\mathcal{B}_\delta(z_0)$.
+We can write
+\[
+	\int_\gamma f = \int_\gamma f_n + \int_\gamma (f - f_n)
+\]
+But $f(z)-f_n(z)\to 0$ uniformly on $\gamma$ and hence $\int_\gamma (f-f_n) \to 0$ as $n\to\infty$.
+Moreover, $f_n$ is holomorphic on $D$ and hence the integral over $\gamma$ is $0$ and thus $\int_\gamma f_n=0$.
+We may conclude $\int_\gamma f=0$ and so by Morea's theorem $f$ is holomorphic in the ball.
+\end{proof}
+
+\begin{theorem}
+Given $D\subseteq\C$ open and connected and a sequence of functions $f_n\in\mathcal{H}(D)$, if $f_n$ converges locally uniformly to $f$ then the derivatives also converge locally uniformly.
+\end{theorem}
+
+\begin{theorem}[Hurwitz Theorem]
+$D\subseteq\C$ open and connected, $f_n:D\to\C$ and $f_n\in\mathcal{H}(D)$.
+Suppose that $f_n$ converges locally uniformly to $f$ and that none of the $f_n$ have more than some $k\in\N$ zeros.
+Then either $f$ is constant or has at most $k$ zeros.
+\end{theorem}
+
+\begin{proof}
+Suppose that $f$ is not constant.
+Suppose that $f$ has $K$ zeros of multiplicity $m_1, \dots, m_k$ at distinct $z_1, \dots, z_K\in D$.
+Fix $\delta >0$ such that for all no other $z_j$ lies in the $\delta$ ball around $z_i$.
+Define
+\[
+	\epsilon\defeq\inf_{i=1, \dots, k}\inf_{\xi\in\partial\mathcal{B}_\delta(z_i)}\abs{f(\xi)} >0
+\]
+By compactness we have that $\epsilon >0$.
+Then by locally uniform convergence we know there is a $n_0$ such that
+\[
+	\sup_{i=1, \dots, k}\sup_{\xi\in\partial\mathcal{B}_\delta(z_i)}\abs{f_n(\xi)-f(\xi)} < \frac{\epsilon}{2}\quad\forall n> n_0
+\]
+Rouche's theorem tells us that $f$ has exactly $m_i$ zeros in $\mathcal{B}_\delta(x_i)$ since
+\[
+	\abs{f_n(\xi)-f(\xi)} < \abs{f(\xi)} \quad \forall\xi\in\mathcal{B}_\delta(z_i)
+\]
+\end{proof}
+
+In words $\epsilon$ was the `minimum' value of $f$ on the boundary of these balls.
+Then thanks to locally uniform convergence we were able to ensure that the difference between $f_n$ and $f$ was always less than this minimum value and thus we could use Rouche's theorem.
+
+\section{Special Functions}
+
+\subsection{The Gamma Function}
+\begin{defin}
+	To begin we define the function for $\mathcal{R}(z)> 0$
+	\[
+		\mdf{\Gamma(z)}\defeq\int_0^\infty t^{z-1}e^{-t}dt
+	\]
+\end{defin}
+
+\begin{theorem}
+The Gamma-integral defines a holomorphic function and the $k$'th derivative is
+\[
+	\Gamma^{(k)}(z)=\int_0^\infty t^{z-1}(\log t)^k e^{-t}dt
+\]
+\end{theorem}
+One can easily show directly from the integral that $\Gamma$ satisfies the functional relationship
+\[
+	\Gamma(z+1)=z\Gamma(z)
+\]
+which we can use to extend $\Gamma$ to the rest of $\C$.
+Given any $z\in\C$ we just choose $n\in\N$ such that $\mathcal{R}(z+n)>0$ and then define
+\[
+	\Gamma(z)\defeq\frac{\Gamma(z+n)}{z(z+1)\dots(z+n)}
+\]
+which is well-defined and does not depend on $n$.
+Of course this gives us $\infty$ at the negative integers and so
+\begin{theorem}
+The gamma function extends via. the functional relationship to a meromorphic function with poles at $z=0, -1, -2 \dots$, each of order $1$ and satisfies
+\[
+	\res(\Gamma, -n)=\frac{(-1)^n}{n!}
+\]
+\end{theorem}
+\subsection{Infinite Products}
+\begin{defin}
+	We say $\prod_{k=1}^\infty  w_k$ \mdf{converges} if
+	\begin{itemize}
+		\item only finitely many $w_n=0$
+		\item The sequence of partial products converge with non-zero limit
+	\end{itemize}
+	Note that if the first few terms are $0$ then we just ignore them.
+
+	Then $\prod_{k=1}^\infty w_K$ \mdf{converges absolutely} if $\exists n_0\in\N$ such that
+	\[
+		\sum_{k=n_0}^{\infty}\log w_k
+	\]
+	converges.
+\end{defin}
+
+\begin{note}
+	\[
+		w_n=\frac{\prod_{k=1}^n w_n}{\prod_{k=1}^{n-1} w_n}\to 1 \quad \text{as} \quad n\to\infty
+	\]
+\end{note}
+
+
+\begin{prop}
+Defining $C^-\defeq\C\setminus\left\{y=0, x\leq 0\right\}$
+\begin{enumerate}[label=(\alph*)]
+	\item $\prod_{n=1}^\infty w_n$ with $w_n\in\C^-\;\forall n\in\N$ converges $\iff$ $\sum_{n=1}^{\infty}\log w_n$ converges.
+	\item $\prod_{n=0}^\infty(1+a_n)$ converges absolutely $\iff$ $\sum_{k=1}^\infty\abs{a_k}$ converges
+\end{enumerate}
+\end{prop}
+
+We can use infinite products to further characterise the Gamma function.
+
+\begin{lemma}
+The infinite product
+\[
+	H(z)\defeq\prod_{n=1}^\infty \left(1+\frac{z}{n}\right)e^{-\frac{z}{n}}
+\]
+converges and absolutely and defines an entire function.
+\end{lemma}
+
+\begin{cor}
+	\begin{align*}
+		G_N(z)&\defeq z e^{-z\log(N)}\prod_{n=1}^N\left(1+\frac{z}{n}\right)	\\
+			  &= ze^{-z\left(\log N - \sum_{n=1}^{N}\frac{1}{n}\right)}\prod_{n=1}^N\left(1+\frac{z}{n}\right)e^{-\frac{z}{n}}
+	\end{align*}
+\end{cor}
+
+\begin{theorem}
+For any $z\in\C\setminus\left\{0, -1, -2, \dots \right\}$ we can write
+\[
+	\frac{1}{\Gamma(z)}=G(z)=\lim_{N\to\infty}G_N(z)
+\]
+\end{theorem}
+
+\subsection{The Zeta Function}
+\begin{defin}
+Given any $z\in\C$ with $\mathcal{R}(z)>1$ we can define the \mdf{Riemann zeta function} by
+\[
+	\mdf{\zeta(z)}\defeq\sum_{n=1}^{\infty}\frac{1}{n^z}
+\]
+\end{defin}
+
+\begin{theorem}
+We can express this as an infinite product over the primes $\mathbb{P}=\left\{2, 3, 5, 7, \dots\right\}$ by
+\[
+	\frac{1}{\zeta(z)}= \prod_{p\in\mathbb{P}}\left(1-\frac{1}{p^z}\right)
+\]
+\end{theorem}
+
+\begin{note}
+	The $\zeta$-function does not have any zeros in $\left\{\mathcal{R}(z)>1\right\}$.
+\end{note}
+
+\begin{lemma}
+We can also relate the $\zeta$-function to the $\Gamma$-function by
+\[
+	\zeta(z)=\frac{1}{\Gamma(z)}\int_0^\infty\frac{t^{z-1}e^{-t}}{1-e^{-t}}dt
+\]
+\end{lemma}
+
+\begin{note}
+The $\zeta$-function can also be characterised by the Hankel contour but we really didn't do much on this.
+It might be worth reading over.
+\end{note}
 
 \section{Riemann Mapping Theorem}
+
+\begin{defin}
+	Two open set $U, V\subseteq\C$ are said to be \mdf{conformally equivalent} if there exists $\phi:U \to V$ such that
+	\begin{itemize}
+		\item $\phi$ is holomorphic.
+		\item $\phi$ is a bijection.
+		\item The inverse map $\phi^{-1}$ is holomorphic.
+	\end{itemize}
+	If $\phi$ can be given by $z\mapsto az+b$ for some complex $a, b$ then we say $U$ and $V$ are \mdf{congruent}.
+
+	Given $D\subseteq\C$ and loops $\gamma_1, \gamma_2:[t_0, t_1]\to D$ then they are \mdf{homotopic} if there exists a continuous mapping $h:[0, 1]\times[t_0, t_1]\to D$ such that for all $t\in[t_0, t_1]$ and $s\in[0, 1]$ we have
+	\begin{itemize}
+		\item $h(0, t)= \gamma_1(t)$
+		\item $h(1, t)=\gamma_2(t)$
+		\item $h(s, t_0)=\gamma_1(t_0)=\gamma_2(t_0)$
+		\item $h(s, t_1)= \gamma_1(t_1)=\gamma_2(t_1)$
+	\end{itemize}
+	Then we define $h_\tau(t)\defeq(\tau, t)$ so that $h_0=\gamma_1$ and $h_1=\gamma_2$.
+
+	Finally, a connected set $D\subseteq\C$ is called \mdf{simply connected} if any two continuous curves with the same base point are homo topic to one another. 
+\end{defin}
+\begin{note}
+	$\text{Congruent}\implies\text{Conformally equivalent}\implies\text{Homeomorphic}$
+\end{note}
+
+\begin{theorem}
+Given $\gamma_1, \gamma_2$ homotopic and $f:D\to\C$ holomorphic
+\[
+	\int_{ \gamma_1 }f(z) dz = \int_{\gamma_2 }f(z)dz
+\]
+\end{theorem}
+
+\begin{theorem}[Cauchy's theorem for simply connected set]
+Given a closed curve $\gamma$ in $D$ an open and simply connected domain along with any $f\in\mathcal{H}(D)$,
+\[
+	\int_\gamma f(z)dz=0
+\]
+\end{theorem}
+
+\begin{proof}
+Using the previous theorem, denote by $e$ the constant path at any point along $\gamma$ then
+$\int_\gamma f(z)dz = \int_e f(z)dz =0$
+\end{proof}
+
+\begin{lemma}
+Given $D\subseteq \C$ open and simply connected, $f:D\to\C\setminus\left\{0\right\}$ holomorphic there exists a holomorphic function $g:D\to \C$ such that
+\[
+	f(z)=e^{g(z)}\quad\forall z\in D
+\]
+moreover, that $g$ is unique up to an additive constant $2\pi n$ for $n\in \Z$.
+\end{lemma}
+
+\begin{proof}
+Choose $z_0\in D$ then $f(z_0)\neq 0$ so there exists $w_o\in\C$ such that $f(z_0)=e^{w_0}$.
+Now given any other $z\in D$ choose a path $\gamma$ in $D$ which connects $z_0$ to $z$.
+Now define
+\[
+	g(z)\defeq w_0+\int_{f\circ\gamma}\frac{1}{z}dz
+\]
+This is well-defined because our set is simply connected.
+Now we can see that in fact
+\[
+	g(z)=w_0+\int_\gamma\frac{f'(z)}{f(z)}dz
+\]
+and so $g$ is holomorphic with derivative $g'(z)\frac{f'(z)}{f(z)}$.
+Hence we have that
+\[
+	\left(f(z)e^{-g(z)}\right)'=f'(z)e^{-g(z)}-f(z)e^{-g(z)}\frac{f'(z)}{f(z)}=0
+\]
+and so $f(z)e^{-g(z)}$ is a constant say $\alpha$ and moreover
+\[
+	\alpha=f(z_0)e^{-g(z_0)}=1
+\]
+\end{proof}
+
+\begin{theorem}[Riemann Mapping Theorem]
+Given $D\subseteq \C$ open and simply connected such that $D\neq\emptyset$ and $D\neq\C$, then $D$ is conformally equivalent to $\Delta=\left\{\abs{z}<1\right\}$.
+\end{theorem}
+\begin{proof}
+Bit of a mess.
+\end{proof}
+
+\[
+	\mathbb{T}\mathbb{H}\mathbb{E}\quad\mathbb{E}\mathbb{N}\mathbb{D}
+\]
+
 \end{document}
