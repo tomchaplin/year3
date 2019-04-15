@@ -14,6 +14,8 @@
 \usepackage[framemethod=TikZ]{mdframed}
 \usepackage{microtype}
 \usepackage{witharrows}
+\usepackage{silence}
+\WarningFilter{mdframed}{You got a bad break}
 \setlength{\parindent}{0pt}
 %}}}
 %{{{ Custom commands
@@ -203,7 +205,7 @@ Here are some useful properties of lifts:
 
 \section{Homotopy Lifting Property}
 \begin{defin}
-	A map $p:Z\to X$ has the \mdf{homotopy lifting property} if given any homotopy $F:Y\times I \to X$ and any lift $g:Y\times\left\{0\right\}\to Z$ there exists a unique homotopy $\widetilde{F}Y\times I \to Z$ satisfying
+	A map $p:Z\to X$ has the \mdf{homotopy lifting property} if given any homotopy $F:Y\times I \to X$ and any lift $g:Y\times\left\{0\right\}\to Z$ there exists a unique homotopy $\widetilde{F}:Y\times I \to Z$ satisfying
 	\begin{enumerate}[label=(\roman*)]
 		\item $\widetilde{f}_0=g$
 		\item $p\circ\widetilde{F}=F$
@@ -603,6 +605,185 @@ Then \[
 \]
 \end{prop}
 \begin{proof}
- 
+
+Let $G\defeq\pi_1(X,x_0)$ and $H\defeq p_\ast(\pi_1(\widetilde{X}, \widetilde{x}_0))$.
+Given any $[\alpha]\in G$ we get a unique lift $\widetilde{\alpha}$ with $\widetilde{\alpha}(0)=\widetilde{x}_0$ and then $\widetilde{\alpha}(1)=\widetilde{x}_1\in p^{-1}(x_0)$.
+
+Now let $[\gamma]\in H$ then we have
+\begin{align*}
+	\begin{WithArrows}
+		[\gamma]\in H &\implies [\gamma]\cdot [\alpha] = [\gamma \ast \alpha]\in H [\alpha]\\
+					  &\implies \widetilde{\gamma}\text{ (a lift of }\gamma\text{) is a loop at }\widetilde{x}_0 \Arrow{unique lift} \\
+					  & \implies (\gamma\ast\alpha) \text{ lifts to }(\widetilde{\gamma}\ast\widetilde{\alpha})\text{ from }\widetilde{x}_0\text{ to }\widetilde{x}_1
+	\end{WithArrows}
+\end{align*}
+
+And hence we can construct a map
+\[
+	\Phi:\frac{G}{H}\to p^{-1}(x_0), \quad H[\alpha]\mapsto\widetilde{\alpha}(1)
+\]
+which we just showed is independent of the representative of $H[\alpha]$.
+We wish to show that $\Phi$ is bijective.
+
+\textbf{Injective: }Assume that $\Phi(H[\alpha])=\Phi(H[\beta])$ then $\widetilde{\alpha}(1)=\widetilde{\beta}(1)$.
+Write $\gamma\defeq\alpha\ast\overline{\beta}$ then $\widetilde{\gamma}=\widetilde{\alpha}\ast\widetilde{\beta}$ is a loop because
+$\widetilde{\alpha}(0)=\widetilde{\beta}(0)=\widetilde{\overline{\beta}}(1)=\widetilde{x}_0$ and the assumption means that $\widetilde{\alpha}$ and $\widetilde{\beta}$ join up in the middle.
+
+Hence $[\gamma]=[\alpha]\cdot[\beta]^{-1}\in H$ so $H[\alpha]=H[\beta]$.
+
+\textbf{Surjective: }This follow from path connectivity.
 \end{proof}
+
+\begin{defin}
+	Let $\left\{X_\alpha, x_\alpha\right\}$ be a collection of pointed topological spaces.
+	The \mdf{wedge product} is then defined to be
+	\[
+\bigvee_\alpha X_\alpha=\bigsqcup_\alpha \frac{X_\alpha}{x_\alpha\sim x_\beta}
+	\]
+
+	Then $\left\{G_\alpha\right\}_\alpha$ be some groups.
+	Then a \mdf{word} on $\left\{G_\alpha\right\}_\alpha$ is a finite sequence
+	\[
+g = g_1 \dots g_m 
+	\]
+	for some $g_i \in G_{\alpha_i}$.
+	Then $m$ is the \mdf{length} of the word $g$.
+
+	We can concatenate words $g=g_1, \dots, g_m$ and $h=h_1, \dots, h_n$ by
+	\[
+		g\ast h = g_1\dots g_m h_1 \dots h_n
+	\]
+
+	A word is said to be \mdf{reduced} if
+	\begin{enumerate}[label=(\alph*)]
+		\item $g_i\neq e_{\alpha_i}\quad\forall i$
+		\item $\alpha_i\neq\alpha_{i+1}\quad\forall i$
+	\end{enumerate}
+
+	We can define the set
+	\[
+		\bigast_\alpha G_\alpha \defeq\left\{\text{reduced words on} \left\{G_\alpha\right\}_\alpha\right\}
+	\]
+	which we can given a product in the following way.
+	Given $g,h\in\ast_\alpha G_\alpha$
+	\begin{enumerate}
+		\item Take the concatenation $g\ast h=g_1\dots g_m h_1 \dots h_n$.
+		\item If $g_m$ and $h_1$ lie in different $G_\alpha$ then $g\cdot h \defeq g\ast h$.
+		\item Else replace $g_m h_1$ by the product.
+		\item If $g_m h_1=e$ then remove it and repeat from step 1 with the word $g_1\dots g_{m-1} h_2 \dots h_n$.
+	\end{enumerate}
+\end{defin}
+
+\begin{theorem}
+So defined, $(\ast_\alpha G_\alpha, \cdot)$ forms a group, called the \mdf{free product} of $\left\{G_\alpha\right\}_\alpha$.
+\end{theorem}
+
+\begin{proof}
+The only difficult part is associativity, worth reading up on.
+\end{proof}
+
+\begin{lemma}
+Let $\left\{\phi_\alpha: G_\alpha\to G \right\}_\alpha$ be a collection of group homomorphisms.
+Then $\exists !$ group homomorphism $\ast_\alpha \phi_\alpha: G_\alpha \to G$ such that $\left(\ast_\alpha\phi_\alpha\right)\circ i_\alpha = \phi_\alpha \quad \forall \alpha$
+\end{lemma}
+
+\begin{proof}
+Really the only thing to prove is that this definition doesn't depend on how the word is reduced.
+\end{proof}
+
+\begin{theorem}[Seifert-van Kampen]
+Let $X=\cup_\alpha A_\alpha$ be an open cover with $x_0\in\cap-\alpha A_\alpha$, then
+\begin{enumerate}[label=(\roman*)]
+	\item If $A_\alpha\cap A_\beta$ is path connected for all $\alpha, \beta$ then the induced map
+		\[
+			\Phi\defeq\bigast_\alpha(i_\alpha)_\ast:\bigast_\alpha \pi_1(A_\alpha, x_0) \to \pi_1(X, x_0)
+		\]
+		is surjective
+	\item If $A_\alpha cap A_\beta \cap A_\gamma$ is path connected for all $\alpha, \beta, \gamma$ then
+		\[
+			\ker(\Phi)=N=\langle\langle\left\{(i_{\alpha\beta})_\ast(\omega)\cdot(i_{\beta\alpha})_\ast(\omega)^{-1} \rmv \omega\in\pi_1(A_\alpha\cap A_\beta, x_0)\text{ for some }\alpha,\beta\right\}\rangle\rangle
+		\]
+		and hence 
+		\[
+			\pi_1(X, x_0)\cong \frac{\bigast_\alpha \pi_1(A_\alpha, x_0)}{N}
+		\]
+\end{enumerate}
+\end{theorem}
+
+\begin{lemma}
+If $X=\cup_\alpha A_\alpha$ is an open cover with $A_\alpha \cap A_\beta$ path connected for every pair $\alpha, \beta$ and $x_0\in\cap_\alpha A_\alpha$, then every loop $\gamma$ based at $x_0$ in $X$ factors as
+\[
+[\gamma]=[\gamma_1]\cdot[\gamma_2]\cdot\dots\cdot[\gamma_m]
+\]
+with each $\gamma_i$ being a loop in $A_{\alpha_i}$.
+\end{lemma}
+
+\begin{proof}
+Note than we can cover $I$ by the $\gamma^{-1}(A_\alpha)$ and since $I$ is compact we can actually reduce this to a finite sub cover.
+Then the Lebesgue covering lemma means that we can find
+\[
+0=t_0 < t_1 < \dots < t_m = 1
+\]
+such that $\gamma[t_i, t_{i+1}]\subseteq A_{\alpha_{i+1}}$ for each $i\in[0, m)$.
+Then for each $t_i$ notice that $\gamma(t_i)\in A_{\alpha_i}\cap A_{\alpha_{i+1}}$ which is path connected and hence there is a path $g_i$ from $\gamma(t_i)$ to $x_0$ in $A_{\alpha_i}\cap A_{\alpha_{i+1}}$.
+
+
+Now we can define a new path $\hat{\gamma}$ by going back to $x_0$ along these paths at each $t_i$ and then returning to continue the loop.
+Since $g\ast\overline{g}$ is homotopic to $e_{\gamma(t_i)}$ we have that $\hat{\gamma}\homrel\gamma$ and hence we can decompose $\gamma$ as required.
+\end{proof}
+
+These essentially proves part \textit{(i)} of the Seifert-van Kampen theorem.
+
+\begin{defin}
+	A \mdf{factorisation} of $[f]\in\pi_1(X, x_0$ is a sequence
+	\[
+		[f_1], \dots, [f_m] \quad \text{with}\quad [f_i]\in\pi_1(A_{\alpha_i}, x_0)
+	\]
+	such that $f\simeq f_1\ast \dots f_m$ (although this is not necessarily in reduced form).
+
+	If $[f_i], [f_{i+1}]\in\pi_1(A_\alpha, x_0)$ then a \mdf{reduction} is
+	\[
+		[f_1] \dots [f_m] \mapsto [f+1] \dots [f_i \ast f_{i+1}] \dots [f_m] 
+	\]
+	(or an \mdf{expansion} if you go in the opposite direction).
+
+	If $[f_i]=(i_{\alpha\beta})_\ast(\omega)$ and $[g_i]=(i_{\beta\alpha})_\ast(\omega)$ for some $\omega\in\pi_1(A_\alpha\cap A_\beta, x_0)$ then an \mdf{exchange} is
+	\[
+		[f_1]\dots[f_i]\dots[f_m]\mapsto [f_1]\dots[g_i]\dots[f_m]
+	\]
+
+	Two factorisations of $f$ are said to be \mdf{equivalent} if tone can be transformed to the other by a sequence of the above operations.
+\end{defin}
+
+\begin{lemma}
+Under the conditions of Seifert-van Kampen \textit{(ii)} any two factorisations of $f$ are equivalent.
+\end{lemma}
+
+\begin{proof}
+In lecture notes.
+\end{proof}
+
+This can then be used to proved Siefert-can Kampen \textit{(ii)}.
+
+\section{CW Complexes}
+\begin{defin}
+	Given a space $X$ we can build up the \mdf{CW complex} recursively as follows:
+	\begin{enumerate}
+		\item $X_0$ is a discrete set called the \mdf{$0$-skeleton}.
+		\item Given $X^{n-1}$ and a collection of \mdf{$n$-cells} $\left\{D_\alpha^n\right\}_\alpha$ and attaching maps $\phi_\alpha:\partial D_\alpha^n\to X^{n-1}$ we subsequently define $X_n$ by
+			\[
+				X^n\defeq\frac{\left[X^{n-1}\sqcup\left(\bigsqcup_\alpha D_\alpha^n \right)\right]}{x\sim \phi_\alpha(x)}
+			\]
+		\item Then $X=\cup_n X^n$, bestowed with the \mdf{weak topology} is a \mdf{CW complex}.
+	\end{enumerate}
+
+
+	Then X is called \mdf{finite dimensional} if $X=X^n$ for some $n\in\N$.
+
+	Lastly, $X$ is \mdf{finite} if $\left\{D_\alpha^n \right\}_{\alpha, n}$ is finite (i.e. it is composed of finitely many cells).
+\end{defin}
+\begin{note}
+		$U\subseteq X \text{ is open in the weak topology} \iff \forall n \quad U\cap X^n \text{ is open in } X^n$
+\end{note}
+
 \end{document}
