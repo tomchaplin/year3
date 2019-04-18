@@ -7,10 +7,15 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{amsthm}
+\usepackage{amsmath}
 \usepackage{mathdots}
+\usepackage{float}
+\usepackage[thicklines]{cancel}
+\renewcommand{\CancelColor}{\color{red}}
 \usepackage[dvipsnames]{xcolor}
 \usepackage[framemethod=TikZ]{mdframed}
 \usepackage{microtype}
+\usepackage{tikz-cd}
 \setlength{\parindent}{0pt}
 %}}}
 %{{{ Custom commands
@@ -19,14 +24,29 @@
 \newcommand{\eqdef}{+:}
 \newcommand{\abs}[1]{|#1|}
 \newcommand{\norm}[1]{||#1||}
+\DeclareMathOperator{\im}{\mathrm{im}}
 %\renewcommand{\dots}{...}
 \newcommand{\msrspc}{\ensuremath{(X,\mathcal{B},\mu)}}
+\newcommand{\relmiddle}[1]{\mathrel{}\middle#1\mathrel{}}
+\newcommand{\rmv}{\relmiddle|}
+\newcommand{\stcmp}{^{\mathsf{c}}}
+\newcommand\restr[2]{{% we make the whole thing an ordinary symbol
+  \left.\kern-\nulldelimiterspace % automatically resize the bar with \right
+  #1 % the function
+  \vphantom{\big|} % pretend it's a little taller at normal size
+  \right|_{#2} % this is the delimiter
+  }}
+\newcommand{\contr}{\Rightarrow\Leftarrow}
+\newcommand{\interior}[1]{%
+  {\kern0pt#1}^{\mathrm{o}}%
+}
 
 % Spaces
 \newcommand{\ktor}{\mathbb{T}^k}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
 
 % Derivatives
 \newcommand*{\pd}[3][]{\ensuremath{\frac{\partial^{#1} {#2}}{\partial {#3}^{#1}}}}
@@ -54,17 +74,343 @@
 	{\begin{mdframed}[backgroundcolor=myld,roundcorner=5pt,linewidth=0pt]\bfseries{Example:}}
 	{\end{mdframed}}
 
-% Theorem enviornment
+% Theorem environment
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{cor}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{prop}[theorem]{Proposition}
 %}}}
 %{{{ Document metadata
-\title{<++>}
-\author{<++>}
+\title{Algebraic Topology Notes}
+\author{Thomas Chaplin}
 \date{}
 %}}}
 
 \begin{document}
 \maketitle
+
+\section{Simplicial Homology}
+
+The \mdf{standard $k$-simplex} is	
+\[
+	\Delta^k\defeq\left\{(x_0, \dots x_k)\in \R^{k+1} \rmv \sum_{i=0}^{k}x_i = 1, \quad x_i\geq 0\right\}
+\]
+
+Given $v_0, \dots, v_k\in \R^N$ we define the \mdf{simplex} by
+\[
+	[v_0, \dots v_k] \defeq \left\{\sum_{i=0}^{k}x_i v_i \rmv \sum_{i=0}^{k }x_i = 1, \quad x_i \geq 0\right\}
+\]
+so than $\Delta^k=[e_0, \dots, e_k]$.
+
+This yields an obvious map $\sigma:\Delta^k\to [ v_0, \dots v_k]$
+\[
+	\sigma(x_0, \dots x_k)=\sum_{x_i v_i}
+\]
+We will often, confusingly, denote this map $[v_0, \dots v_k]$.
+
+We say $v_0, \dots, v_k$ are \mdf{in general position} if they do not lie on any $(k-1)$-dimensional affine subspace.
+
+\begin{prop}
+$v_0, \dots, v_k$ are in general position $\iff$ $\sigma$ is a homeomorphism.
+\end{prop}
+
+We can then define the map $i_j:\Delta^{k-1}\to\Delta^k$ to be the map $[e_0, \dots, e_{j-1}, e_{j+1}, \dots, e_k]$.
+This map then parametrises the face opposite the vector $e_j$.
+The union of the $k-1$ dimensional faces of $[v_0, \dots, v_k]$ is its \mdf{boundary} and its \mdf{interior} is $[v_0, \dots, v_k]$.
+
+\begin{defin}
+	A \mdf{$\Delta$-complex structure} on a space $X$ is a collection of maps $\sigma_\alpha:\Delta^k\to X$ for varying $k$ such that
+	\begin{enumerate}
+		\item $\sigma_\alpha:\interior{\left( \Delta^k \right)}\to X$ is injective and each point of $X$ lies in the image of exactly one interior.
+		\item If $\sigma_\alpha:\Delta^k\to X$ is in the collection then $\sigma_\alpha\circ i_j:\Delta^{k-1}\to X$ is also for $j=0, \dots, k$.
+		\item $U\subseteq X$ is open $\iff$ $\sigma_\alpha^{-1}(U)$ is open in $\Delta^k$ for all $\alpha$.
+	\end{enumerate}
+\end{defin}
+
+
+We then define the spaces of formal sum of simplicies
+\[
+	\Delta_n(X)\defeq\left\{\sum m_\alpha\sigma_\alpha^n \rmv \text{formal sums with integer coeffs and }\\ \sigma_\alpha^n \text{ are n-simplicies}\right\}
+\]
+and then we can define the boundary operator $\partial_n:\Delta_n(X)\to\Delta_{n-1}(X)$ by 
+\[
+	\partial_n(\sigma_\alpha^n)=\sum_{j=0}^{n}(-1)^j(\sigma_\alpha^n \circ i_j) = \sum_{j=0}^{n}(-1)^j\restr{\sigma_\alpha^n}{[e_0, \dots, \hat{e_j}, \dots , e_n]}
+\]
+where $\hat{e_j}$ means that we omit the $j$'th vertex.
+
+Then the loops are elements in $\ker\partial_n$ but we don't care about loops that are themselves the boundaries of higher order simplicies since these loops can be contracted through the higher-order simplicies.
+
+\begin{defin}
+	We define the $n$'th homology of the $\Delta$-complex structure to be
+	\[
+		\mdf{H_n^\Delta}\defeq\frac{\ker(\partial_n)}{\im(\partial_{n+1})}
+	\]
+\end{defin}
+
+\section{Singular Homology}
+Simplicial homology is very computable but has a number of problems that prevent from having far reaching consequences to topology.
+\begin{enumerate}
+	\item $\Delta_n(X)$ depends on the choice of $\Delta$ complex structure so perhaps $H_n^\Delta$ does too?
+	\item We would like functoriality.
+		If $X, Y$ have $\Delta$-complex structures and $f:X\to Y$ is continuous, how do we then define a homomorphism $H_n^\Delta(X)\to H_n^\Delta(Y)$?
+\end{enumerate}
+
+These problems can be remedied by studying the more complicated and seemingly incomputable singular homology.
+Instead of considering only simplicies $\Delta^n\to X$ in the $\Delta$ complex structure we allow all continuous maps $\Delta^n\to X$ which we call \mdf{singular $n$-simplicies}.
+\[
+	C_n(X)\defeq\left\{\text{finite formal sums of singular n-simplicies}\right\}=\text{Free AbGr on singular n-simplicies}
+\]
+We can then define $\partial_n(X)\to C_{n-1}(X)$ in exactly the same way as before and then define \mdf{singular homology}
+\[
+	\mdf{H_n(x)}\defeq\frac{\ker\partial_n}{\im\partial_{n+1}}
+\]
+\begin{note}
+	\[
+		\partial_n\circ\partial_{n+1}=0
+	\]
+\end{note}
+
+\subsection{Functoriality}
+If we have a continuous map $f:X\to Y$ then we can define
+\[
+	f_\#:C_n(X)\to C_n(Y),\quad \sigma\mapsto f\circ\sigma
+\]
+on the $n$-simplicies and then extend it to all of $C_n(X)$ linearly so that
+\[
+	f_\#\left(\sum_{\alpha}m_\alpha \sigma_\alpha\right)=\sum_{\alpha}m_\alpha \left(f \circ \sigma_\alpha\right)
+\]
+
+\begin{lemma}
+\[
+	\partial(f_\#\sigma)=f_\#(\partial\sigma)
+\]
+\end{lemma}
+
+\begin{proof}
+\begin{align*}
+	\partial(f_\#\sigma)&=\partial((f\circ\sigma))=\sum_{j=0}^{n}(-1)^j(f\circ\sigma)\circ i_j \\
+	f_\#(\partial\sigma)&=f_\#\left(\sum_{j=0}^{n}(-1)^j(\sigma\circ i_j)\right)=\sum_{j=0}^{n}(-1)^j f\circ (\sigma \circ i_j)
+\end{align*}
+\end{proof}
+
+We can also extend this result to any formal sum of $n$-simplicies in $C_n(X)$.
+Hence $f_\#$ induces a \mdf{morphism of chain complexes}.
+The morphism arises due to this commutativity and it is of chain complexes because we have $\partial^2=0$.
+\begin{figure}[h]
+	\centering
+\begin{tikzcd}
+	\dots  \arrow[r]  & C_{n+1}(X) \arrow[r, "\partial_{n+1}"] \ar[d, "f_\#"] & C_n(X) \arrow[r, "\partial_n"]\ar[d, "f_\#"] &\ar[d, "f_\#"] C_{n-1}(X) \arrow[r] & \dots \\
+	\dots \ar[r] & C_{n+1}(X) \arrow[r, "\partial_{n+1}"] & C_n(X) \arrow[r, "\partial_n"] & C_{n-1}(X) \ar[r] & \dots
+\end{tikzcd}
+\end{figure}
+
+\begin{cor}
+From this diagram we can see that
+\begin{enumerate}
+	\item $f_\#(\underbrace{\ker\partial_n}_{\subseteq C_n(X)})\subseteq\underbrace{\ker\partial_n}_{\subseteq C_n(Y)}$.
+	\item $f_\#(\im\partial_n)\subseteq \im\partial_n$.
+\end{enumerate}
+and hence $f_\#$ induces a homomorphism $f_\ast:H_n(X)\to H_n(Y)$ because if you differ be an element of $\im\partial_{n+1}$ in $H_n(x)$ then you will still differ by an image element in $H_n(Y)$.
+\end{cor}
+
+\begin{defin}
+	Elements of $\ker\partial$ are called \mdf{cycles} and elements of $\im\partial$ are called \mdf{boundaries}.	
+	\begin{align*}
+		B_n(X)&\defeq\im\partial_{n+1}\subseteq C_n(X) \\
+		Z_n(X)&\defeq\ker\partial_n\subseteq C_n(X)
+	\end{align*}
+	so the $H_n(X)=\frac{Z_n}{B_n}$ and the induced map $f_\ast$ is given be
+	\[
+		f_\ast(c+B_n(X))\defeq f_\#(c) + B_n(Y)
+	\]
+\end{defin}
+
+\begin{theorem}
+\[
+	(f\circ g)_\ast = f_\ast \circ f_\ast \quad \text{and} \quad \left(id_X\right)_\ast = id_{H_n(X)} \;\; \forall n
+\]
+and hence singular homology is a functor.
+\end{theorem}
+
+This implies the important result that
+\[
+	X\underbrace{\cong}_{\text{homeo}}Y \implies H_n(X) \underbrace{\cong}_{\text{iso}} H_n(Y) \;\; \forall n
+\]
+
+\subsection{Basic computation of singular homology}
+Here are some important results.
+\begin{theorem}
+\[
+	H_n(\left\{pt\right\})=
+	\begin{cases}
+		\Z & \text{if }n=0 \\
+		0  & \text{if }n>0
+	\end{cases}
+\]
+\end{theorem}
+
+\begin{note}
+$\Delta^n$ is path connected so every continuous map $\sigma:\Delta^n\to X$ falls in one path component.
+Hence
+\[
+	C_n(X)=\bigoplus_{\text{path components }X_i} C_n(X_i)
+\]
+Moreover $\partial_n (C_n(X_i)\subseteq C_{n-1}(X_i)$ so the chain complexes of the path components are independent of one another and hence we have
+\[
+	H_n(X)=\bigoplus_{X_i} H_n(X_i)
+\]
+\end{note}
+
+\begin{theorem}
+$X$ path connected $\iff$ $H_0(X)\cong X$.
+\end{theorem}
+
+\subsection{Reduced Homology}
+It often makes sense to add one extra space to the chain complex under to state results more succinctly, so we modify the chain complex as so
+
+\begin{figure}[ht]
+	\centering
+	\begin{tikzcd}
+		\dots \ar[r] & C_n(X) \ar[r] & \dots \ar[r] & C_1(x) \ar[r, "\partial_1"] & C_0(X) \ar[r, "\epsilon"] & \Z \ar[r] & 0
+	\end{tikzcd}
+\end{figure}
+where we introduce  anew map $\epsilon:C_0(X)\to\Z$ which just sums coefficients:
+\[
+	\epsilon\left(\sum m_\alpha [p_\alpha]\right)\mapsto \sum m_\alpha
+\]
+then we define the \mdf{reduced homologies} to be the same $\widetilde{H}_n(X)=H_n(X)$ for $n>0$ but then
+\[
+	\widetilde{H}_0(X)\defeq\frac{\ker\epsilon}{\im\partial_1}\neq H_0(X)
+\]
+
+We can realise the relation of $H_0$ and $\widetilde{H}_0$ by the following commutative diagram:
+
+\begin{figure}[ht]
+	\centering
+	\begin{tikzcd}
+		\ker\epsilon \arrow[r, "i"] \arrow[d, "\frac{}{\im\partial_1}"] & C_0(X) \arrow[d, "\frac{}{\im\partial_1}"]\\
+		\widetilde{H}_0(X) \arrow[r, "i"] & H_0(X)
+	\end{tikzcd}
+\end{figure}
+
+This diagram commutes and hence the map $\epsilon$ passes to the quotient to define
+\[
+	\overline{\epsilon}:H_0(X)\to\Z
+\]
+and then $\widetilde{H}_0(X)=\ker\overline{\epsilon}$.
+
+\section{Exact sequences}
+A sequence of abelian groups $A_n$ and homomorphisms $\phi_n$ is a \mdf{complex} if $\im\phi_{n+1}\subseteq\ker\phi_n$ for all $n$.
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}
+		\dots \arrow[r, "\phi_{n+2}"] & A_{n+1} \arrow[r, "\phi_{n+1}"] & A_{n} \arrow[r, "\phi_{n}"] & A_{n-1} \arrow[r, "\phi_{n-1}"] & \dots
+	\end{tikzcd}
+\end{figure}
+
+The complex is \mdf{exact} if $\im\phi_{n+1}=\ker\phi_n$ for all $n$.
+
+\begin{note}
+	Whenever we have such a chain complex we can assign the $n$-th homology to be
+	\[
+		\frac{\ker \phi_n}{\im \phi_{n+1}}
+	\]
+\end{note}
+
+So assuming that $X$ is non-empty we get the following exact sequence
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}
+		0 \arrow[r] & \widetilde{H}_0(X) \arrow[r, hook] & H_0(X) \arrow[r, "\overline{\epsilon}", two heads] & \Z \arrow[r] & 0
+	\end{tikzcd}
+\end{figure}
+
+Given $A\subseteq X$ both topological spaces then we say $(X, A)$ is a \mdf{pair}.
+Further, we say they are a \mdf{good pair} if $A$ is a deformation retract of some neighbourhood in $X$.
+
+\begin{theorem}
+If $(X, A)$ is a good pair then there exists a long exact sequence
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}
+		0 \arrow[r] & \widetilde{H}_n(A)\arrow[r, "i_\ast"] & \widetilde{H}_n(X) \arrow[r, "q_\ast"] & \widetilde{H}_n(\frac{X}{A}) \arrow[lld, "\partial", bend right=5] \\
+		\; &\widetilde{H}_{n-1}(A)\arrow[r, "i_\ast"] & \widetilde{H}_{n-1}(X) \arrow[r, "q_\ast"] & \widetilde{H}_{n-1}(\frac{X}{A}) \arrow[lld, "\dots", bend right=5]\\
+		\; & \widetilde{H}_0(A)\arrow[r, "i_\ast"] & \widetilde{H}_0(X) \arrow[r, "q_\ast"] & \widetilde{H}_0(\frac{X}{A}) \arrow[r] & 0
+	\end{tikzcd}
+\end{figure}
+\end{theorem}
+
+We can then use this long exact sequence with the pair $(S^{n-1}, D^n)$.
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}
+		0 \arrow[r] & 
+		\widetilde{H}_n(S^{n-1})\arrow[r, "i_\ast"] & 
+		\cancelto{0}{\widetilde{H}_n(D^n)} \arrow[r, "q_\ast"] & 
+		\widetilde{H}_n\left(\frac{D^n}{S^{n-1}}\right) \arrow[lld, "\partial", bend right=5] \\
+		\; &
+		\widetilde{H}_{n-1}(S^{n-1})\arrow[r, "i_\ast"] & 
+		\cancelto{0}{\widetilde{H}_{n-1}(D^n)} \arrow[r, "q_\ast"] & 
+		\widetilde{H}_{n-1}\left(\frac{D^n}{S^{n-1}}\right)\arrow[lld, "\dots", bend right=5]\\
+		\; & 
+		\widetilde{H}_0(S^{n-1})\arrow[r, "i_\ast"] & 
+		\cancelto{0}{\widetilde{H}_0(D^n)} \arrow[r, "q_\ast"] & 
+		\widetilde{H}_0\left(\frac{D^n}{S^{n-1}}\right) \arrow[r] & 0
+	\end{tikzcd}
+\end{figure}
+
+Thanks to the exactness of this sequence we see that
+\[
+	\widetilde{H}_n(S^{n-1})\cong\widetilde{H}_n\left(\frac{D^n}{S^{n-1}}\right)\cong\widetilde{H}_n(S^n)
+\]
+
+and hence
+
+\[
+	\widetilde{H}_k(S^n)=
+	\begin{cases}
+		0 & \text{if }k < n \\
+		\Z & \text{if }k =n \\
+		0 & \text{if }k > n
+	\end{cases}
+\]
+
+We will often find \mdf{short exact sequences} with are sequences that look like
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}
+		0 \arrow[r] & A \arrow[r, hook] & B \arrow[r, two heads] & C \arrow[r] & 0
+	\end{tikzcd}
+\end{figure}
+
+in which case the first isomorphism theorem tells us that $C\cong\frac{B}{A}$.
+
+\section{Relative homologies}
+Given a pair $(X, A)$ we can define the \mdf{relative chain group}
+\[
+	C_n(X, A)\defeq\frac{C_n(X)}{C_n(A)}
+\]
+i.e. we consider two continous maps into $X$ to be the same if the agree on $X\setminus A$.
+
+Now our maps $\partial_n$ pass to the quotient by
+\[
+	\overline{\partial}_n(c+C_n(A))\defeq\partial_n(c)+C_{n-1}(A)
+\]
+which is well defined because the boundary of a chain in $A$ is still a chain in $A$.
+We still get $\overline{\partial}_n\circ\overline{\partial}_{n+1}=0$ and hence we can define the \mdf{relative homology groups}
+\[
+	H_n(X, A)\defeq\frac{\ker\overline{\partial}_n}{\im\overline{\partial}_{n+1}}
+\]
 <++>
+
+\section{Useful Results}
+\begin{lemma}
+A continuous bijection from a compact space to a Hausdorff space is a homeomorphism.
+\end{lemma}
+
+
+\begin{prop}
+Given an equivalent relation $\sim$ and a continuous map $f:X\to Y$ that respects the relation, $\frac{f}{\sim}:\frac{X}{\sim}\to Y$ is also continuous.
+\end{prop}
+
 \end{document}
