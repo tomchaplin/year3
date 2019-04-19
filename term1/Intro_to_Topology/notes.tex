@@ -15,8 +15,10 @@
 \usepackage{microtype}
 \usepackage{witharrows}
 \usepackage{silence}
+\usepackage{tikz-cd}
+\usepackage{float}
+\usepackage{faktor}
 \WarningFilter{mdframed}{You got a bad break}
-\setlength{\parindent}{0pt}
 %}}}
 %{{{ Custom commands
 % Nice maths commands
@@ -57,6 +59,7 @@
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\N}{\mathbb{N}}
+\newcommand{\RP}{\mathbb{R}\mathbb{P}}
 
 % Derivatives
 \newcommand*{\pd}[3][]{\ensuremath{\frac{\partial^{#1} {#2}}{\partial {#3}^{#1}}}}
@@ -69,7 +72,9 @@
 %{{{ Enviornments
 % Definitions environment
 \newenvironment{defin}
-	{\begin{mdframed}[backgroundcolor=white, roundcorner=5pt, linewidth=1pt]}
+	{\begin{mdframed}[backgroundcolor=white, roundcorner=5pt, linewidth=1pt]
+		\setlength{\parindent}{0pt}
+		}
 	{\end{mdframed}}
 \newcommand{\mdf}[1]{{\color{red} #1}}
 
@@ -81,7 +86,7 @@
 % Examples enviornmnet
 \definecolor{mylg}{rgb}{0.9,0.9,0.9}
 \newenvironment{eg}
-	{\begin{mdframed}[backgroundcolor=myld,roundcorner=5pt,linewidth=0pt]\bfseries{Example:}}
+{\begin{mdframed}[backgroundcolor=mylg,roundcorner=5pt,linewidth=0pt]\setlength{\parindent}{0pt}\bfseries{Example:}\normalfont}
 	{\end{mdframed}}
 
 % Theorem enviornment
@@ -98,6 +103,7 @@
 
 \begin{document}
 \maketitle
+
 \section{Key Definitions}
 \begin{defin}
 \begin{itemize}
@@ -691,6 +697,18 @@ Then $\exists !$ group homomorphism $\ast_\alpha \phi_\alpha: G_\alpha \to G$ su
 Really the only thing to prove is that this definition doesn't depend on how the word is reduced.
 \end{proof}
 
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}
+	& \pi_1(A_\alpha, x_0) \arrow[rrd, "(i_\alpha)_\ast", bend left=15] \arrow[rd] \\
+	\pi_1(A_\alpha \cap A_\beta, x_0)\arrow[ru, "(i_{\alpha\beta})_\ast"] \arrow[rd, "(i_{\beta\alpha})_\ast"']& \; &
+	\ast_\alpha \pi_1(A_\alpha, x_0) \arrow[r, dashed, "\Phi"] &
+	\pi_1(X, x_0) \\
+	& \pi_1(A_\beta, x_0) \arrow[ru] \arrow[rru, "(i_\beta)_\ast"', bend right =15]
+	\end{tikzcd}
+	\caption{The holy commutative diagram}
+\end{figure}
+
 \begin{theorem}[Seifert-van Kampen]
 Let $X=\cup_\alpha A_\alpha$ be an open cover with $x_0\in\cap-\alpha A_\alpha$, then
 \begin{enumerate}[label=(\roman*)]
@@ -781,9 +799,221 @@ This can then be used to proved Siefert-can Kampen \textit{(ii)}.
 	Then X is called \mdf{finite dimensional} if $X=X^n$ for some $n\in\N$.
 
 	Lastly, $X$ is \mdf{finite} if $\left\{D_\alpha^n \right\}_{\alpha, n}$ is finite (i.e. it is composed of finitely many cells).
+
+	A \mdf{subcomplex} of $X$ is the closure in $X$ of a collection of open cells in $X$.
 \end{defin}
 \begin{note}
 		$U\subseteq X \text{ is open in the weak topology} \iff \forall n \quad U\cap X^n \text{ is open in } X^n$
 \end{note}
+
+\subsection{Examples}
+
+\subsubsection{M\"obius Strip}
+The M\"obius strip $M$ can be defined as $I\times I$ after identifying $(0, x)$ with $(1, 1-x)$ for all $x\in I$.
+
+One can give the M\"obius strip a CW structure by taking two 0 cells for either side of the identified line, three 1 cells (one for the identified line and two for the remaining boundaries) and then gluing a rectangle along the inside in the natural way.
+Note that the M\"obius strip has a circle at its centre and the strip deformation retracts to it by taking the obvious retract on $I\times I $ and then passing to the quotient.
+Hence $\pi_1(M)\cong\Z$.
+Notes, the M\"obius strip has exactly one circle at its boundary.
+
+\subsubsection{Real projective space}
+Recall that we define real projective space $\RP^n$ by
+\[
+	\RP^n\defeq\frac{S^n}{x\sim -x}
+\]
+identifying antipodal points on the $n$-sphere.
+Let $q$ be the quotient map from this definition.
+We can define a CW structure on $\RP^n$ recursively as follows.
+
+Consider the open set $U_0\defeq\left\{\left[(x_0, x_1, \dots, x_n\right] \rmv x_0 \neq 0\right\}$.
+Then $\RP^n\setminus U_0=\left\{\left[0, x_1, \dots, x_n\right]\right\}$ is naturally homeomorphic to $\RP^{n-1}$.
+Moreover, since $q$ is a two-sheeted covering we see that $q^{-1}(U_0)$ consists of the disjoint union of the sets $\left\{x_0 < 0\right\}$ and $\left\{x_0 >0\right\}$.
+Each of these sets is the interior of an $n$-balls and maps homeomorphically to $U_0$ and hence $U_0\cong e^n$.
+
+Set $D^n=\left\{x_0 \geq 0\right\}$ and $S^{n-1}=\partial D^n=\left\{(0, x_1, \dots , x_n)\right\}$ so we get the two-fold covering
+\[
+	\phi:S^{n-1}\to\RP^{n-1}
+\]
+which we can use as the attacking map to glue $D^n$ onto $RP^{n-1}$ where we removed $U_0$ and hence
+\[
+	\RP^n=\RP^{n-1}\sqcup\frac{D^n}{x\sim \phi(x)}
+\]
+Once can continue this process on iteratively and each stage we add one extra $n$-cell and hence
+\[
+	\RP^n=\left\{pt\right\}\cup e^1 \cup e^2 \cup \dots \cup e^n
+\]
+
+\textbf{n=0:} $\RP^0=\left\{pt\right\}$ so there is not much to say here.
+
+\textbf{n=1: }$\RP^1=\RP^0\sqcup \frac{D^1}{0\sim 1}$ which show that $\RP^1$ is just a circle.
+
+\textbf{n=2: }We attach a $2$-cell by gluing the boundary of a disk $D^2$ to $\RP^1$ by the usual two fold covering $S^1\to\RP^1$.
+Perhaps a better way of thinking about $\RP^2$ is to start with the closed upper hemisphere.
+Each point corresponds to a unique point in $\RP^2$ except at the boundary where we identify antipodal points.
+So the boundary becomes a copy of $\RP^1$.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=3in]{rp2.png}
+	\caption{Cell decomposition of $\RP^2$, the boundary circle is a copy of $\RP^1$ but the interior is just a cell}
+	\label{fig:rp2}
+\end{figure}
+
+\subsubsection{From $\RP^2$ to the M\"obius strip}
+Consider Figure \ref{fig:rp2} and the space acquired by removing a circle from the interior of the disk, call this space $X$.
+Formally we can describe $X$ as
+\[
+	X = \frac{S^1 \times I}{(x,1) \sim (-x,1)}
+\]
+We claim that $X\cong M$.
+Visually we can see this by splitting the annulus in half and then re-glueing the segments back together along the boundary curve $\gamma$ which then becomes the middle circle of the M\"obius strip.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=5in]{rp2toM.png}
+	\caption{Showing $X$ is homeomorphic to $M$}
+	\label{fig:rp2toM}
+\end{figure}
+
+Denoting $a=a_1\ast a_2$ we recover the usual characterisation of the M\"obius strip.
+Reversing this, we can in fact obtain the projective pain by glueing a 2-cell along the boundary of the M\"obius strip.
+
+\subsubsection{Computing $\pi_1(\RP^2)$ from the M\"obius strip and S-vk}
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=3in]{rp2svk.png}
+	\caption{Covering $\RP^2$ in order to compute $\pi_1$ by S-vK}
+	\label{fig:rp2svk}
+\end{figure}
+
+We can use our previous construction of $\RP^2$ to create an open cover for $\RP^2$ by sets whose fundamental groups we understand.
+Let $C$ be some small closed disc $C$ in the interior of the 2-cell and then take an open disc $B\supseteq C$.
+Then define $A=\RP^2\setminus C$.
+
+Now $A$ and $B$ form a cover for $\RP^2$, where $B$ is a disc and $A$ is the interior of a M\"obius strip.
+Pick some $x_0\in A\cap B$.
+Their intersection $A\cap B$ is an annulus which deformation retracts to a circle and hence $\pi_1(A\cap B, x_0)$ can be generated by a loop $\omega$ as shown in Figure \ref{fig:rp2svk}.
+
+$A$ is the M\"obius strip and hence $\pi_1(A, x_0)=\langle\gamma\rangle\cong\Z$ the fundamental group is generated by the middle circle.
+Finally $B$ is contractible and hence has trivial fundamental group.
+The free group $\pi_1(A, x_0) \ast \pi_1(B, x_0)$ is generated by $\left[\gamma\right]$.
+Since $B$ is trivial we only have to factor out multiplies of
+\[
+	(i_{A\cap B})_\ast(\left[\omega\right])
+\]
+where $i_{A\cap B}$ is the inclusion of $A\cap B$ in $A$.
+Note $\omega$ is homotopic to the boundary circle of the M\"obius strip where as $\gamma$ is the inner circle.
+Hence going round $\omega$ once is like going round $\gamma$ twice.
+Consequently we have to factor out multiples of $\left[\gamma\right]^2$.
+In conclusion,
+\[
+	\pi(\RP^2, x_0)\cong\frac{\langle\left[\gamma\right]\rangle}{\langle\left[\gamma\right]^2\rangle}\cong\frac{\Z}{2\Z}
+\]
+
+\subsection{Properties of CW complexes}
+Given any $n$-cell $D_\alpha^n$ we construct the characteristic map as follows
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}
+		D_\alpha^n \arrow[r, hook, "i"] \arrow[rrr, bend left, "\Phi_\alpha^n"] & X^{n-1}\sqcup\bigsqcup_\alpha D_\alpha^n \arrow[r, "q"] & X^n \arrow[r, hook] & X
+	\end{tikzcd}
+\end{figure}
+
+Recall that a \mdf{subcomplex} is a space $A$ that is a union of cells $e_\alpha^n$ in $X$ such that for every cell it also contains its closure in $X$.
+\begin{prop}
+A compact topological subspace of a CW complex $X$ is contained in a finite subcomplex.
+\end{prop}
+\begin{proof}
+Might be worth reading this.
+\end{proof}
+\begin{defin}
+The C is in CW complex stands for \mdf{closure finiteness} meaning that the closure of every open cells meets only finitely many other cells.
+The W stands for weak topology.
+
+A topological space is called
+\begin{itemize}
+	\item \mdf{normal} if any two disjoint closed subsets have disjoint open neighbourhoods.
+	\item \mdf{Hausdorff} if any two distinct point have disjoint open neighbourhoods.
+	\item \mdf{locally contractible} if around every point $x$ and neighbourhood $x\in U \subseteq X$ there is an open $V$ with $x\in V \subseteq U $ such that $V$ is contractible.
+\end{itemize}
+\end{defin}
+
+\begin{eg}
+The Warsaw circle is not locally contractible
+\[
+	W=\left\{(c, \sin(1/x) \rmv x \in (0, 1] \right\}\cup \left(\left\{0\right\}\times [-1, 1]\right)\cup L
+\]
+where $L$ is a curve joining the first set to the second set, with the subspace topology.
+\end{eg}
+
+\begin{prop}
+CW complexes are locally contractible.
+\end{prop}
+
+\begin{prop}
+\label{prop:subdr}
+If $A\subseteq X$ is a subcomplex of a CW complex $X$ then there exists an open set $U\subseteq X$  with $A\subseteq U$ such that $U$ deformation retracts to $A$.
+\end{prop}
+
+An important application is that we can decompose CW complexes $A$ and $B$ such that $A\cap B$ is a subcomplex and then use Seifert-can Kampen.
+One can use the above proposition to show that the fundamental group of a CW complex depends only on the 2-skeleton.
+However we will give a proof using the Seifert-van Kampen Theorem.
+
+We begin with the following observation.
+Suppose $X$ is a topological space and $\phi_\alpha:S^1_\alpha \to X$ is a map that attaches a 2-cell $D_\alpha^2$ to $X$ then $\phi_\alpha$ defines a loop $f_\alpha:I \to X$ in $X$ which is based at $\phi_\alpha(1)$.
+This loop may not be null-homotopic in $X$ but it certainly is after we attach $D_\alpha^2$, namely in the space
+\[
+	Y\defeq X\sqcup\frac{D_\alpha^2}{x\sim\phi_\alpha(x)}
+\]
+If $X$ is path-connected then we can choose a base point $x_0\in X$ and a path $h_\alpha:I \to X$ from $x_0$ to $\phi_\alpha(1)$ and then we get a loop
+\[
+	\gamma_\alpha\defeq h_\alpha \ast f_\alpha \ast \overline{h_\alpha}
+\]
+In this way, every attaching map gives us a loop in Y.
+Note that the inclusion map $X \hookrightarrow Y$ induces a map of fundamental groups $\pi_1(X, X_0)\to\pi_1(Y, y_0)$ under which the class of every such loop, $\left[\gamma_\alpha\right]$ is sent to $0$ because these loops are contractible in $Y$.
+
+\begin{prop}
+Let $X$ be a path-connected topological space and for some fixed $N$ let $\phi_\alpha^N:S_\alpha^{n-1}\to X$ be some collection of attaching maps.
+Set
+\[
+	Y\defeq X\sqcup\bigsqcup_\alpha\frac{D_\alpha^n}{x\sim \phi_\alpha^n (X)}
+\]
+Let $x_0\in X$ be a point.
+Then
+\begin{itemize}
+	\item If $n=2$, then
+		\[
+			\pi_1(Y, x_0)\cong \faktor{\pi_1(X,x_0)}{N}
+		\]
+		where $N$ is the normal subgroup generated by the element $\left[\gamma_\alpha\right]$ as defined previously.
+	\item If $n>2$, then
+		\[
+			\pi(Y, x_0)\cong \pi_1(X, x_0)
+		\]
+\end{itemize}
+\end{prop}
+
+\begin{proof}
+There is a sketch proof in the notes that may be worth reading.
+\end{proof}
+
+\begin{theorem}
+For a path-connected CW-complex $X$ with $x_0\in X^2$, the inclusion map $X^2\hookrightarrow X$ induces an isomorphism of fundamental groups $\pi_1(X^2, x_0)\cong \pi_1(X, x_0)$.
+\end{theorem}
+
+\begin{proof}
+This follows automatically from the previous proposition of $X$ is finite dimensional because it tells us that the fundamental group does not change when we add an $n$-cell where $n>2$.
+
+If $X$ is not finite-dimensional then note that a loop $\gamma$ in $X$ is a compact subset and therefore contained in a finite subcomplex in some $X^n$. Since $\pi_1(X^2, x_0\cong \pi_1(X^n, x_0)$ every such loop is homotopic to a loop in $X^2$ and therefore the map $\pi_1(X^2, x_0)\to \pi(X, x_0)$ is surjective.
+
+To see that it is injective, let $\gamma$ be a loop in $X^2$ such that it is homotopic, in $X$, to the constant loop via some homotopy $F:I\times I \to X$.
+The image of $F$ in $X$ is compact and hence contained in a finite subcomplex $X^n$ and we can safely assume that $n>2$.
+It follows therefore that $\left[\gamma\right]=0$ in $\pi_1(X^n, x_0)$.
+Then $\pi_1(X^2, x_0)\to\pi_1(X^n, x_0)$ is injective and hence $\gamma$ is null-homotopic in $X^2$.
+\end{proof}
+
+We can also prove this with Proposition \ref{prop:subdr}.
+For a proof of this consult Lecture 26.
 
 \end{document}
