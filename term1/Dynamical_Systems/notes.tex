@@ -1,0 +1,258 @@
+\documentclass[11pt]{article}
+
+%{{{ Packages
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{mathdots}
+\usepackage{float}
+\usepackage[thicklines]{cancel}
+\renewcommand{\CancelColor}{\color{red}}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{microtype}
+\usepackage{tikz-cd}
+\usetikzlibrary{decorations.pathmorphing}
+\setlength{\parindent}{0pt}
+%}}}
+%{{{ Custom commands
+% Nice maths commands
+\newcommand{\defeq}{:=}
+\newcommand{\eqdef}{+:}
+\newcommand{\abs}[1]{|#1|}
+\newcommand{\norm}[1]{||#1||}
+\DeclareMathOperator{\im}{\mathrm{im}}
+%\renewcommand{\dots}{...}
+\newcommand{\msrspc}{\ensuremath{(X,\mathcal{B},\mu)}}
+\newcommand{\relmiddle}[1]{\mathrel{}\middle#1\mathrel{}}
+\newcommand{\rmv}{\relmiddle|}
+\newcommand{\stcmp}{^{\mathsf{c}}}
+\newcommand\restr[2]{{% we make the whole thing an ordinary symbol
+  \left.\kern-\nulldelimiterspace % automatically resize the bar with \right
+  #1 % the function
+  \vphantom{\big|} % pretend it's a little taller at normal size
+  \right|_{#2} % this is the delimiter
+  }}
+\newcommand{\contr}{\Rightarrow\Leftarrow}
+\newcommand{\interior}[1]{%
+  {\kern0pt#1}^{\mathrm{o}}%
+}
+\newcommand{\sm}{\setminus}
+
+% Spaces
+\newcommand{\ktor}{\mathbb{T}^k}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+
+% Derivatives
+\newcommand*{\pd}[3][]{\ensuremath{\frac{\partial^{#1} {#2}}{\partial {#3}^{#1}}}}
+\newcommand{\grad}{\bigtriangledown}
+
+% Vectors
+\newcommand{\mv}[1]{\textbf{#1}}
+
+%}}}
+%{{{ Enviornments
+% Definitions environment
+\newenvironment{defin}
+	{\begin{mdframed}[backgroundcolor=white, roundcorner=5pt, linewidth=1pt, linecolor=Green]
+		\setlength{\parindent}{0pt}}
+	{\end{mdframed}}
+	\newcommand{\mdf}[1]{{\color{Green} #1}}
+
+% Important notes environment
+\newenvironment{note}
+	{\begin{mdframed}[backgroundcolor=white, linecolor=red, roundcorner=5pt, linewidth=1pt]\bfseries{Note:}\normalfont
+	\setlength{\parindent}{0pt}}
+	{\end{mdframed}}
+
+% Examples enviornmnet
+\definecolor{mylg}{rgb}{0.9,0.9,0.9}
+\newenvironment{eg}
+	{\begin{mdframed}[backgroundcolor=mylg,roundcorner=5pt,linewidth=0pt]\bfseries{Example:}\normalfont
+	\setlength{\parindent}{0pt}}
+	{\end{mdframed}}
+
+% Theorem environment
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{cor}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{prop}[theorem]{Proposition}
+%}}}
+%{{{ Document metadata
+\title{Dynamical Notes - Proofs to Remember}
+\author{Thomas Chaplin}
+\date{}
+%}}}
+
+\begin{document}
+\maketitle
+
+\section{Sharkovskii's Theorem}
+\begin{theorem}[Sharkovskii's Theorem]
+\label{thrm:shark}
+If $f:I \to I $ is continuous and there is a point of prime period 3.
+Then for each $n\in \N$ there is a periodic point of prime period $n$.
+\end{theorem}
+
+The proof proceeds by a number of lemmata.
+
+\begin{lemma}
+Given $I\subseteq[0 ,1 ]$ a closed interval ,if $f(I) \supseteq I$ or $f(I) \subseteq I$ then $I$ contains a fixed point for $f$.
+\end{lemma}
+
+\begin{proof}
+Use the ITV on $g(x)=f(x)-x$ and consider the endpoints.
+\end{proof}
+
+\begin{lemma}[Whittling down intervals]
+If $I, I' \subseteq [0,1]$ are closed intervals and $f(I)=I'$, then $\exists$ a closed interval $I_0\subseteq I$ such that $f(I_0)=I'$.
+\end{lemma}
+\begin{proof}
+Suppose $I'=[a, b]$ then let
+\begin{align*}
+	A & \defeq f^{-1}(a)\cap I \\
+	B & \defeq f^{-1}(b)\cap I
+\end{align*}
+then take $x_0=\sup(A)$ and $y_0=\inf(B)$.
+Then $I_0\defeq [x_0, y_0]$ will do the job.
+\end{proof}
+
+\begin{lemma}
+Assume that we have closed intervals $I_1, \dots, I_n \subseteq [0, 1]$ such that
+\begin{itemize}
+	\item $f(I_n)\supseteq I_1$,
+	\item $f(I_j)\supseteq I_{j+1}$ for all appropriate $j$,
+\end{itemize}
+then there is a fixed point $x$ for $f^n$ such that
+\[
+	x\in I_1, f(x) \in I_2, \dots , f^{n-1}\in I_n
+\]
+\end{lemma}
+
+\begin{proof}
+We can just apply the whittling lemma to the intervals in reverse order so
+\[
+\begin{array}{lcl}
+	\exists I_n' \subseteq I_n & s.t. & f(I_n') = I_1\\
+	\exists I_{n-1}' \subseteq I_{n-1} & s.t. & f(I_{n-1}') = I_n'\\
+	 \; & \vdots & \; \\
+	\exists I_1' \subseteq I_1 & s.t. & f(I_1)' = I_2'
+\end{array}
+\]
+In particular we have that $f^n(I_1')=I_1\supseteq I_1'$ and hence the first lemma gives us the desired fixed point.
+\end{proof}
+
+\begin{proof}
+\textit{of Theorem \ref{thrm:shark}.}
+
+Let $f^3(x)=x$ be our point of prime period 3.
+For now we will assume that 
+\[
+	\left\{x, f(x), f^2(x)\right\} = \left\{x_1, x_2, x_3\right\}
+\]
+where $0\leq x_1 < x_2 < x_3 \leq 1$.
+We also assume $f(x_1)=x_2$, $f(x_2)=x_3$ and $f(x_3)=x_1$.
+Other cases are similar.
+Let $I_0\defeq[x_1, x_2]$ and $I_1\defeq[x_2, x_3]$.
+
+Observe that
+\begin{enumerate}[label=(\alph*)]
+	\item $f(I_0)\supseteq I_1$, and
+	\item $f(I_1)\supseteq I_0\cup I_1$.
+\end{enumerate}
+
+\noindent We now split the proof into a number of cases:
+
+\noindent\textbf{Case 1: }($n=3$) This follows from the assumption.
+
+\noindent\textbf{Case 2: }($n=1$) This follows from the first lemma thanks to \textit{(b)}.
+
+\noindent\textbf{Case 3: }($n=2$ or $n\geq 4$)
+
+Note that we can make a chain of intervals as in the last Lemma.
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}
+		I_0 \arrow[r, rightsquigarrow, "f"]\arrow[rrrrr, bend right=15, dashrightarrow, "n-1 \text{ times}"'] & I_1 \arrow[r, rightsquigarrow, "f"] & I_1 \arrow[r, rightsquigarrow, "f"] & \dots \arrow[r, rightsquigarrow, "f"] & I_1 \arrow[r, rightsquigarrow, "f"] & I_0
+	\end{tikzcd}
+\end{figure}
+where $A\rightsquigarrow B$ means $f(A) \supseteq B$.
+Hence there is a fixed point for $f^n$ which starts in $I_0$ spends $n-1$ in $I_1$ and then returns to $I_0$.
+Because the earliest return is at time $n$ we can be sure that this is our prime period.
+\end{proof}
+
+\section{Dense Irrational Orbits}
+\begin{theorem}
+If $\alpha\in\R\setminus\Q$ then for any $z\in\mathcal{K}$ we have
+\[
+	\left\{R_\alpha^n(x) \rmv n\in \N\right\}
+\]
+is a dense set in the circle $\mathcal{K}$.
+\end{theorem}
+
+\begin{proof}
+Get yourself some pigeons.
+If you put a pigeon on the circle for every point in the orbit up to time $\frac{1}{\epsilon}+1$ then two pigeons, Kenny $k$ and Lenny $l$, must be $\epsilon$ close.
+\[
+	d(R_\alpha^l(p), R_\alpha^k(p)) < \epsilon
+\]
+Without loss of generality, assume that Kenny is further along the orbit then Lenny so that 
+\[m\defeq k-l > 0.\]
+Then for any $x\in\mathcal{K}$ we have $d(R_\alpha^m(x), x < \epsilon)$.
+Hence the orbit $\left\{x, R_\alpha^m(x), R_\alpha^{2m}(x), R_\alpha^{3m}(x) , \dots\right\}$ is $\epsilon$ dense in the circle.
+\end{proof}
+
+\section{Rational Points and Periodic Points}
+\begin{theorem}
+If $f:\mathcal{K}\to\mathcal{K}$ has a periodic point $x_0$ of period $m$ then $\alpha(f)\in\Q$.
+\end{theorem}
+\begin{proof}
+Let $F:\R\to\R$ be some lift then we must have
+\[
+	F^m(x)-x = k\in \Z
+\]
+where $\rho(x)=x_0$.
+Then we can write any integer as $n=pm+r$ where $p\geq 0$ and $r\in[0, m)$.
+Hence
+\[
+	F^n(x)=F^{pm+r}(x)=F^r(x)+pk
+\]
+Then we can conclude
+\[
+	\lim_{n\to\infty}\frac{1}{n}F^n(x)=\lim_{p\to\infty}\frac{1}{pm+r}\left(F^r(x)+pk\right)=\frac{k}{m}\in\Q
+\]
+\end{proof}
+
+\begin{theorem}
+If $f:\mathcal{K}\to\mathcal{K}$ has $0$ rotation number then $f$ has a fixed point.
+\end{theorem}
+
+\begin{proof}
+\begin{itemize}
+	\item Take a lift $\widetilde{F}$ that gives $\lim_{n\to\infty}\frac{\widetilde{F}^n(x)}{n}=m$.
+	\item Create a nicer lift $F\defeq\widetilde{F}-m$ so that the limit becomes $0$.
+	\item Assume $d$ has no fixed point then by the IVT we can assume WLOG $F(y) > y$ for all $y\in\R$.
+	\item Hence $\left(F^n(0)\right)_{n\in\N}$ is increasing so we just need to show boundedness.
+	\item Suppose unbounded then $\abs{F^{n_0}(0)}>1$ and hence for all $m$ we have $\abs{F^{mn_0}(0)} > m$.
+		\[
+			\frac{\abs{F^{mn_0}(0)}}{mn_0} > \frac{m}{mn_0} = \frac{1}{n_0}
+		\]
+		which cause a contradiction with the earlier $0$ limit.
+	\item It can be seen that the limit of this sequence is a fixed point.
+\end{itemize}
+\end{proof}
+
+\begin{note}
+	As a corollary if the rotation number is $\frac{a}{b}\in\Q$ then $f^b$ has $0$ rotation number and hence fixed point.
+	Therefore, $f$ has a periodic point.
+\end{note}
+
+\end{document}
