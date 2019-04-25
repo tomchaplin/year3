@@ -16,7 +16,6 @@
 \usepackage[framemethod=TikZ]{mdframed}
 \usepackage{microtype}
 \usepackage{tikz-cd}
-\setlength{\parindent}{0pt}
 %}}}
 %{{{ Custom commands
 % Nice maths commands
@@ -40,6 +39,7 @@
 \newcommand{\interior}[1]{%
   {\kern0pt#1}^{\mathrm{o}}%
 }
+\newcommand{\sm}{\setminus}
 
 % Spaces
 \newcommand{\ktor}{\mathbb{T}^k}
@@ -59,19 +59,22 @@
 %{{{ Enviornments
 % Definitions environment
 \newenvironment{defin}
-	{\begin{mdframed}[backgroundcolor=white, roundcorner=5pt, linewidth=1pt]}
+	{\begin{mdframed}[backgroundcolor=white, roundcorner=5pt, linewidth=1pt, linecolor=Green]
+		\setlength{\parindent}{0pt}}
 	{\end{mdframed}}
-\newcommand{\mdf}[1]{{\color{red} #1}}
+	\newcommand{\mdf}[1]{{\color{Green} #1}}
 
 % Important notes environment
 \newenvironment{note}
-	{\begin{mdframed}[backgroundcolor=white, linecolor=red, roundcorner=5pt, linewidth=1pt]\bfseries{Note:}\normalfont}
+	{\begin{mdframed}[backgroundcolor=white, linecolor=red, roundcorner=5pt, linewidth=1pt]\bfseries{Note:}\normalfont
+	\setlength{\parindent}{0pt}}
 	{\end{mdframed}}
 
 % Examples enviornmnet
 \definecolor{mylg}{rgb}{0.9,0.9,0.9}
 \newenvironment{eg}
-	{\begin{mdframed}[backgroundcolor=myld,roundcorner=5pt,linewidth=0pt]\bfseries{Example:}}
+	{\begin{mdframed}[backgroundcolor=mylg,roundcorner=5pt,linewidth=0pt]\bfseries{Example:}\normalfont
+	\setlength{\parindent}{0pt}}
 	{\end{mdframed}}
 
 % Theorem environment
@@ -92,6 +95,150 @@
 \section{Orientations}
 \section{Abstract Manifolds}
 \section{Vector Bundles}
+In defining a vector bundle over a manifold we associate a vector space to each point in the manifold and then arrange these together in a smooth way.
+Examples of this will include the tangent and normal bundles as defined in times gone past.
+
+Suppose that $M$ is an $m$-manifold.
+A \mdf{family of vector spaces} over $M$ is a manifold $E$ together with a smooth map $p:E\to M$ such that for all $x\in M$, the \mdf{fibre} $\mdf{E_x}\defeq p^{-1}(x)$ has a vector space structure.
+Given $U\subseteq M$ we write $\restr{E}{U}\defeq p^{-1}U$ which we equip with the restriction of $p$.
+
+Given another family over vector spaces $p':E'\to M$ we define an \mdf{isomorphism} to be a diffeomorphism 
+\[
+\psi:E\to E'
+\]
+with the property that $p'\circ\psi = p$ and $\psi:E_x\to E'_x$ restricts to  a linear isomorphism for all $x\in M$.
+If such a map exists then $E$ and $E'$ are called \mdf{isomorphic}.
+Finally, a family $E$ over $M$ is called \mdf{trivial} if it is isomorphic to $M\times \R^q$ for some $q\in\N$.
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}
+		E' \arrow[rr, "\psi"] \arrow[rd, "p'"']& & E \arrow[dl, "p"] \\
+											  & M
+	\end{tikzcd}
+\end{figure}
+
+\begin{defin}
+	A \mdf{vector bundle} over $M$ is a family of vector spaces $p:E\to M$ such that $\forall x\in M$ there is some open $U\subseteq M$ with $x\in U$ such that $\restr{E}{U}$ is trivial.
+\end{defin}
+
+Putting this another way, $E$ is a vector bundle over $M$ if we can find an atlas $\left\{\phi_alpha : U_\alpha \to V_\alpha \right\}$ for $M$ such that for each $\alpha$ we get a diffeomorphism
+\[
+	\psi_\alpha: \restr{E}{U_\alpha}\to V_\alpha\times\R^q\subseteq\R^{m+q}
+\]
+which restricts to a linear isomorphism on each fibre.
+Note than then the maps $\left\{\psi_\alpha\right\}$ form an atlas for $E$ which is called a \mdf{locally trivialising atlas} for $E$.
+\begin{note}
+	\begin{itemize}
+		\item Given a vector bundle, $p:E\to M$ is a surjective smooth submersion.
+		\item Each fibre $E_x$ is an embedded sub-manifold and the vector space operations are smooth.
+		\item The notion of a vector bundle is preserved under isomorphism.
+	\end{itemize}
+\end{note}
+
+\begin{eg}
+\begin{enumerate}
+	\item If $M$ is a smooth manifold then the tangent bundle is a vector bundle over $M$.
+		For a manifold in Euclidean space, this follows for the proof that $TM$ was a manifold.
+		For an abstract space, we can form a locally trivialising atlas as follows:
+
+		Given a chart $\phi:U\to V\subseteq\R^m$ for $M$ we construct a new map
+		\[
+			\psi:TU\to V\times\R^m \quad\text{by}\quad\psi(v)=(\phi(x),d_x\phi(v))
+		\]
+		where $x=pv$.
+		These maps then form a locally trivialising atlas because when restricted to some $x$ the map becomes the derivative map
+		\[
+			\psi_{p^{-1}(x)}:T_x M \to \left\{\phi(x)\right\}\times\R^m \quad \psi(v)=(\phi(x), d_x\phi(v))
+		\]
+		which is a linear isomorphism.
+	\item When can (and perhaps should) check that the atlas given for the normal bundle consists of maps which restrict to linear isomorphisms on each fibre.
+
+	\item The spaces $B_n$ together with the projection to the circle yields a vector bundles.
+		In particular, the M\"obius band is a bundle over the circle.
+		Note $B_m$ is isomorphic to $B_n$ if $\abs{m-n}$ is even.
+		But, $B_0$ cannot be isomorphic to $B_1$ since they are not even diffeomorphic.
+		Hence the M\"obius band is non-trivial.
+\end{enumerate}
+\end{eg}
+Given a vector bundle $p:E\to M$ we say that \mdf{section} of $E$ is a smooth map $s:E\to M$ such that $p\circ s$ is the identity on $M$.
+This generalises our previous notion of a section of the tangent space which is often referred to as a \mdf{vector field} on $M$.
+We say that a section is \mdf{non-vanishing} if $s(x)\neq 0$ for all $x\in M$.
+Given any smooth map $f:M\to\R^q$ we get a section of $M\times\R^q$.
+\begin{note}
+Any section is an embedding of $M$ into $E$.
+\end{note}
+
+\begin{theorem}[Hairy Ball Theorem]
+Every vector field on $S^2$ has at least one zero.
+\end{theorem}
+
+\begin{note}
+	It turns out that any odd-dimensional manifold admits a non-vanishing vector field.
+	An even-dimensional manifold may or may not.
+	The torus does but it is the only compact connected orientable 2-manifold which does.
+\end{note}
+
+\begin{lemma}
+A vector bundle $E$ is trivial if and only if there are sections $s_1, s_2, \dots, s_q$ such that $\left\{s_1, \dots, s_q(x)\right\}$ forms a basis for $E_x$ for all $x\in M$.
+\end{lemma}
+\begin{proof}
+If $f:M\times \R^q$ is an isomorphism then set $s_i(x)=f(x, e_i)$ for some fixed basis $e_1, \dots , e_q$ for $\R^q$.
+
+Conversely, if we have such sections $s_i$ then we can define a map $f:M\times \R^q \to E$ by
+\[
+	f(x, (\lambda_1, \dots , \lambda_q))=\sum_{i=1}^{q}\lambda_i s_i(x)
+\]
+which yields an isomorphism.
+\end{proof}
+\begin{eg}
+	\begin{enumerate}
+		\item Using the Intermediate Value Theorem, one can show that the M\"obius has no non-vanishing section and is hence a non-trivial bundle by the above Lemma.
+		\item Let $S^n\subseteq\R^{n+1}$ be the unit sphere in $\R^n$ then the normal bundle is trivial because the outward pointing unit normal is a nowhere vanishing section.
+	\end{enumerate}
+\end{eg}
+
+\begin{defin}
+	A manifold $M$ is called \mdf{parallelisable} if the tangent bundle $TM$ is trivial.
+\end{defin}
+
+In view of the last lemma we can say that a manifold is parallelisable if and only if $M$ admits a global frame field.
+Recall, a frame field is a family of vector fields $v_i$ such that the $v_i(x)$ form a basis for $T_x M$ at every $x\in M$.
+We know that frame fields exists locally but not necessarily globally.
+
+\begin{lemma}
+Any parallelisable manifold is orientable.
+\end{lemma}
+\begin{proof}
+Exercise.
+\end{proof}
+
+\begin{eg}
+	\begin{itemize}
+		\item The circle $S^1$ is parallelisable.
+		\item $S^2$ is not by the Hairy Ball Theorem.
+		\item $S^3$ is parallelisable because given $x=(x_1, x_2, x_3, x_4)\in S^3$ we can form a frame field with
+			\[
+			\begin{array}{rrrr}
+				(-x_2,& x_1,& x_4,& -x_3)\\
+				(-x_3,&- x_4,& x_1,& x_2)\\
+				(-x_4,& x_3,& -x_2,& x_1)
+			\end{array}
+			\]
+		\item $S^5$ is not strangely enough but $S^7$ is.
+			It may be worth consulting your written notes from lectures to figure out how this frame was calculated.
+	\end{itemize}
+\end{eg}
+
+\subsection{Vector Fields}
+
+\subsection{Whitney Sums}
+
+\subsection{Cotangent Bundle}
+
+\subsection{1-forms}
+
+
 \section{Smooth Function Extension}
 \section{Differential Forms}
 
