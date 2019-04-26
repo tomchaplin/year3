@@ -189,6 +189,8 @@ Hence there is a fixed point for $f^n$ which starts in $I_0$ spends $n-1$ in $I_
 Because the earliest return is at time $n$ we can be sure that this is our prime period.
 \end{proof}
 
+\section{Independence of Lifts}
+
 \section{Dense Irrational Orbits}
 \begin{theorem}
 If $\alpha\in\R\setminus\Q$ then for any $z\in\mathcal{K}$ we have
@@ -254,5 +256,221 @@ If $f:\mathcal{K}\to\mathcal{K}$ has $0$ rotation number then $f$ has a fixed po
 	As a corollary if the rotation number is $\frac{a}{b}\in\Q$ then $f^b$ has $0$ rotation number and hence fixed point.
 	Therefore, $f$ has a periodic point.
 \end{note}
+
+\section{Pointer\'e's Theorem and Minimality}
+
+\begin{defin}
+	A homeomorphism is called \mdf{minimal} if every orbit is dense.	
+\end{defin}
+
+\begin{eg}
+Any irrational rotation $R_\alpha$ is minimal.
+\end{eg}
+
+\begin{theorem}[Poincar\'e's Theorem]
+Any minimal circle homeomorphism is topologically conjugate to an irrational rotation.
+\end{theorem}
+
+Given a circle homeomorphism $f:\mathcal{K}\to\mathcal{K}$ and some lift $F$ we define the following countable sets
+\begin{align*}
+	\Lambda_{x_0}&\defeq\left\{F^n(x_0)+m \rmv m, n\in \Z\right\}\\
+	\Omega &\defeq \left\{n \rho +m \rmv m, n \in \Z\right\}
+\end{align*}
+for some fixed $x_0\in\R$ and where $\rho = \rho(f)$ is the rotation number.
+Note that $\Lambda_{x_0}=\pi^{-1}\left\{f^n(\pi x_0)\right\}$ and $\Omega=\pi^{-1}\left\{R_\rho ^n (0)\right\}$ where $\pi$ is the usual projection.
+
+\begin{lemma}
+Let $f$ be a circle homeomorphism and $x_0\in\mathcal{K}$.
+If the rotation number $\rho$ is irrational then the map $T:\Lambda_{x_0}\to\Omega$ given be
+\[
+	T(F^n(x_0)+m)=n\rho +m
+\]
+is a bijection.
+Moreover,
+\begin{enumerate}
+	\item $T$ is strictly increasing
+	\item $T(x+1) = T(x) + 1$
+	\item $T(F(x))= T(x) + \rho$ for all $x\in\Lambda_{x_0}$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+This is omitted but might be worth glancing over.
+\end{proof}
+
+\begin{proof}
+\textit{of Poincar\'e's Theorem}
+Since $f$ is minimal, it has no periodic points because their orbits would be finite and hence not dense.
+So the rotation number $\rho$ is irrational.
+
+
+Take a lift $F$ of $f$ and $x_0\in \R$ and write $\Lambda=\Lambda_{x_0}$.
+The sets $\Omega$ and $\Lambda$ are dense in $\R$ due to the minimality of $R_\rho$ and $f$ respectively.
+
+Thus $\pi(\Omega)$ and $\pi(\Lambda)$ must be dense in $\mathcal{K}$.
+Moreover, the Lemma tells us that $T:\Lambda\to\Omega$ is strictly increasing.
+Consequently, we can extend to a unique continuous function $H:\R \to \R$ (which restricts to $T$ on $\Lambda$).
+Moreover, $H$ is strictly increasing, $H$ is continuous and so is its inverse.
+
+\begin{note}
+This is non-trivial.
+It is an exercise to show that given dense sets $X,Y\subseteq \R$ and $f:X\to Y$ a bijection, there exists a unique homeomorphism extension to $\R$.
+\end{note}
+
+By continuity $H$ inherits the properties \textit{(2)} and \textit{(3)} in the previous Lemma.
+The first says that $H$ is a lift of circle homeomorphism $h$.
+The second say that $h\circ f= R_\rho \circ h$.
+\end{proof}
+
+So we now know that if $f$ is a circle homeomorphism then there is a unique homeomorphism $h$ satisfying
+\[
+	h(f(x))= h(x) + \rho \quad (mod 1) \quad \forall x\in\mathcal{K}
+\]
+Note that this is a linear equation on $h$.
+We can conclude that a solution to this equation is unique up to adding a constant corresponding to choosing with point in $\mathcal{K}$ is sent to zero.
+For a hand-wavey explanation of this, see the lecture notes.
+
+\section{Expanding Maps and Shift Spaces}
+\begin{theorem}
+If $f:\mathcal{K}\to\mathcal{K}$ is an expanding map, preserves orientation and has degree 2 then there is a semi-conjugacy $h:\Sigma\to\mathcal{K}$ to the full shift on two symbols.
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}
+		\Sigma \arrow[r, "\sigma"] \arrow[d, "h"'] & \Sigma \arrow[d, "h"]\\
+		\mathcal{K} \arrow[r, "f"] & \mathcal{K}
+	\end{tikzcd}
+\end{figure}
+\end{theorem}
+
+\begin{proof}
+Take any $n\in\N$.
+Then $\deg f^n = (\deg f)^n$ so there are $w^n$ pre-images of $p$ under $f^n$.
+These are numbered $p_j$ starting with $p_0=p$ and number consecutively anticlockwise.
+These points define intervals which we denote $A_{\omega_0\dots\omega_{n-1}}$ where the sequence of $\omega_i$ is just the binary representation of the position in the circle.
+
+Let $K$ denote the uniform bound away from $1$ of the derivative.
+We have a number of results:
+\begin{enumerate}
+	\item $f^n(A_{\omega_0\dots\omega_{n-1}}^\circ)=\mathcal{K}\setminus\left\{p\right\}$
+	\item $A_{\omega_0\dots\omega_{n-1}}$ is a closed interval of length $<K^{-n}$.
+	\item $A_{\omega_0\dots\omega_{n-1}\omega_n}\subseteq A_{\omega_0\dots\omega_{n-1}}$.
+	\item $f^n(A_{\omega_0\dots\omega_{n}})=A_{\omega_n}$.
+	\item $f(A_{\omega_0\dots\omega_{n}})=A_{\omega_1\dots\omega_{n}}$.
+\end{enumerate}
+
+Now we can define our conjugacy $h:\Sigma\to\mathcal{K}$.
+Given $\omega=(\omega_k)_{k=0}^\infty\in\Sigma$ let $B_n(\omega)=A_{\omega_0\dots\omega_{n-1}}$.
+These are the points in the circle that start in the $\omega_0$ interval then go to $\omega_1$, then to $\omega_2$ and after $f^{n-1}$ are in the $\omega_{n-1}$ interval.
+The properties implies that $B_{n+1}(\omega) \subseteq B_n(\omega)$.
+The sets are also closed and their diameters go to $0$.
+Hence their infinite intersection is a single points which we define to be $h(\omega)$.
+The proof of their desired properties is discussed below in vague detail but is written in the lecture notes with more rigour.
+\end{proof}
+
+\section{Finding semi-conjugacies/conjugacies}
+If you can partition your space $X$ into $n$ subsets $I_1, \dots, I_n$ where one could conceivably go from any partition element $I_a$ to any other $I_b$, then you might be able to find a semi-conjugacy to the full shift on $n$ symbols.
+
+The trick is to define a map $\pi:\Sigma\to X$ by
+\[
+	\pi(\mv{x})=\bigcap_{n=1}^\infty T^{-n}I_{x_n}
+\]
+If the sets $I(x_0, \dots, x_n)\defeq\cap_{k=0}^n T^{-k}I_{x_k}$ are closed and nested and their diameter tends to zero as $n\to \infty$ then this map is well-defined because the infinite intersection contains one point.
+Moreover, it is continuous because if $\mv{x}$ and $\mv{y}$ agree up to $N$ places then they both lie in $I(x_0, \dots x_{N-1})$ whose diameters goes to $0$ as $N\to\infty$.
+
+The commutative relationship $T\circ\pi=\pi\circ\sigma$ then follows rather quickly.
+To get surjectivity, it suffices to show that the image of $\Sigma$ is dense.
+This usually involves taking in point $x\in X$ such that no $T^n x$ lies on the boundary between any $I_j$ for some $n\geq 0$ and then this points orbit will describe its pre-image in $\Sigma$.
+
+\begin{note}
+	Shift spaces are \mdf{totally disconnected}, i.e. the connected components are one-point sets.
+	In particular, they are disconnected and so this can often be used to rule out the existence of conjugacies to more familiar sets.
+\end{note}
+
+
+
+\section{Transitivity and Mixing}
+\begin{note}
+A compact metric space has a countable dense set of points!
+\end{note}
+
+\begin{theorem}[Baire's Theorem]
+Given a compact metric space $X$, the intersection of countably many open, dense subsets of $X$ is itself dense in $X$.
+\end{theorem}
+
+\begin{theorem}
+If a map $T:X\to X$ on a compact metric space $X$ is topologically transitive then there exists a dense orbit.
+\end{theorem}
+
+\begin{proof}
+There is a countable dense set of points $\left\{x_k\right\}$ so if we can find an orbit the gets $\epsilon$ close to every $x_k$ for arbitrary $\epsilon$ then we are done.
+So we want $x$ such that for every $x_k$ and $m\geq 1$ there is an $n\in\Z$ such that
+\[
+	x\in T^{-n}\mathbb{B}\left(x_k,\frac{1}{m}\right)
+\]
+or equivalently we want to find
+\[
+	x\in\bigcap_{k, m}\bigcup_{n\in\Z}T^{-n}\mathbb{B}\left(x_k,\frac{1}{m}\right)
+\]
+which is a countable intersection (over $m$) of open dense sets.
+By Baire's Theorem our desired point exists.
+\end{proof}
+
+
+\section{Arithmetic Progressions}
+\begin{defin}
+	We say a subset $C\subseteq \Z$ \mdf{contains arithmetic progressions of arbitrary length} if
+\[
+	\forall k \geq 1 \quad \exists c\in \Z \;\text{ and }\; d\in\N \quad \text{such that}
+\]\[
+	c, c+d, c+ 2d, \dots, c+ (k-1)d\in C
+\]
+Similarly we say a map $T:X\to X$ is \mdf{multiple mixing} if for any non-empty open set $U\subseteq X$ and $k\geq 1$ there exists $d\geq 1$ such that
+\[
+	U\cap T^{-d}U \cap T^{-2d}U \cap \dots \cap T^{-(k-1)d}U\neq \emptyset
+\]
+\end{defin}
+
+\begin{theorem}[van der Waerden's Theorem]
+Given any finite integer partition $\Z=\cup_{i=1}^M C_i$ there is an $i$ such that $C_i$ contains arithmetic progressions of arbitrary length.
+\end{theorem}
+
+To prove this via a dynamical approach we must create a dynamical formulation.
+To a partition of $\Z$ we associate  a single infinite sequence $\mv{x}=(x_n)\in\left\{1, \dots, M\right\}^\Z$ defined by
+\[
+	x_n=i\quad\text{if}\quad n\in C_i
+\]
+Let $X=\overline{\cup_{n\in\Z}\sigma^n\mv{x}}$ be the closure of the orbit of $\mv{x}$ where $\sigma$ is the shift map.
+
+\begin{lemma}[Dynamic Formulation]
+Assume that for some $[i]$ (cylinder set) we have that
+\[
+	X\cap [i] \cap \sigma^{-d}[i]\cap \sigma^{-2d}[i] \cap \dots \sigma^{-(k-1)d}[i]\neq\emptyset
+\]
+for some $k,d\geq 1$ then $C_i$ contains an arithmetic progression of length $k$.
+\end{lemma}
+
+\begin{proof}
+The space is the closure of the orbit of $\mv{x}$ and this set is non-empty and open.
+The orbit itself is dense in $X$ and hence intersects our open set.
+So there is $n\in\Z$ such that $\sigma^n x$ is in our set.
+This means that $x_{n+jd}=i$ for $j=0, \dots, k-1$ and hence $n+jd\in C_i$ for these $j$.
+\end{proof}
+
+\begin{prop}[Multiple Recurrence]
+The shift map is multiple mixing when restricted to a minimal subset $Y\subseteq X$.
+\end{prop}
+
+\begin{proof}
+\textit{of van der Waerden's Theorem}
+Take a minimal subset $Y\subseteq X$.
+Taking $U=[i]$ where $i$ is chosen such that $[i]\cap Y \neq \emptyset$, we see the set from the dynamical formulation is open and hence non-empty by multiple recurrence so we have arbitrary arithmetic progressions.
+\end{proof}
+
+\section{Hyperbolic Toral Automorphisms}
+Fixed points and mixing
+
+\section{Entropy}
+of shift maps and toral automorphisms.
 
 \end{document}
