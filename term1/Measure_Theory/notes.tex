@@ -75,6 +75,7 @@
 {\begin{mdframed}[backgroundcolor=mylg,roundcorner=5pt,linewidth=0pt]\bfseries{Example:}\normalfont}
 	{\end{mdframed}}
 
+\newcommand{\mem}[1]{{\color{red} #1}}
 % Theorem enviornment
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{prop}[theorem]{Proposition}
@@ -1394,6 +1395,20 @@ Given a measure space \msrspc	 and measurable functions $f,f_1, f_2, f_3, \dots:
 \begin{prop}
 Given a finite measure space, almost everywhere convergence $\implies$ convergence in measure.
 \end{prop}
+
+\begin{proof}
+Given $\epsilon >0$ define $A_n\defeq\left\{\abs{f_n -f} > \epsilon \right\}$.
+Let $B_n\defeq \cup_{i \geq n} A_i$ be the set of points where $f_n$ and $f$ differ by more than $\epsilon$ at some point in the future.
+Notice that $B_1 \supseteq B_2 \supseteq \dots$ and all the $B_i$ are measurable.
+Now define $B=\cap_n B_n$ and note that $B \subseteq \left\{x\in X \rmv f_n(x) \not\to f(x)\right\}$ since $B$ is the set of points where no matter how far in the sequence you go there will always be a time in the future where $f_n$ and $f$ disagree significantly.
+Therefore
+\[
+	0 = \mu(B) = \mu(\cap_n B_n) = \lim_{n\to\infty}\mu(B_n)
+\]
+where the last inequality is thanks to $\mu$ being a finite measure.
+But note that $A_n \subseteq B_n$ for all $n$ and hence $\mu(A_n)\to 0$ as required.
+\end{proof}
+
 \begin{lemma}[Borel-Cantelli]
 Given a measure space \msrspc and $A_1, A_2, \dots \in \mathcal{A}$ such that $\sum_{n}\mu(A_n)<\infty$, let
 \[
@@ -1404,7 +1419,7 @@ then $\mu(A) = 0$.
 \begin{cor}
 Given a measure space \msrspc and $f_1, f_2, f_3, \dots:X \to \R$ all measurable, if $f_n\to f$ in measure then $\exists n_1 < n_2 < \dots$ such that $f_{n_i}\to f$ almost everywhere.
 \end{cor}
-\begin{theorem}[Ergoff's Theorem]
+\begin{theorem}[Egorov's Theorem]
 \msrspc a measure space and $f, f_1, f_2, \dots: X \to \R$ measurable such that $f_n\to f$ almost everywhere.
 If $\mu(X)< \infty$ then
 \[
@@ -1412,7 +1427,34 @@ If $\mu(X)< \infty$ then
 \]
 \end{theorem}
 \begin{proof}
-Probably worth going over.
+Take arbitrary $\epsilon >0$.
+For each $n\in\N$ define
+\[
+	\mem{g_n(x)\defeq\sup_{j\geq n}\abs{f_j(x)-f(x)}}
+\]
+Then $g_n:X\to[0, +\infty]$ is measurable and since $f_n\to f$ almost everywhere, so too $g_n\to 0$ almost everywhere.
+Now these $g_n$ may have some infinite points so we define
+\[
+	g_n'(x)\defeq
+	\begin{cases}
+		g_n(x) & \text{if }g_n(x) < \infty \\
+		0 & \text{otherwise}
+	\end{cases}
+\]
+Note we still have $g_n'\to 0$ almost everywhere and hence $g_n'\to 0$ in measure.
+Therefore, for every $k\in \N$ we have $n_k$ such that
+\[
+	\mu\left\{g_{n_k}'> \frac{1}{k}\right\}< \mem{\frac{\epsilon}{2^k}}
+\]
+Define \mem{$B_k\defeq\left\{g_{n_k} \leq \frac{1}{k}\right\}$} and subsequently \mem{$B\defeq\cap_k B_k$}.
+Note also that $\mu(B_k\stcmp)< \frac{\epsilon}{2^k}$ and hence
+\[
+	\mu(B\stcmp) \leq \sum_k\mu(B_k\stcmp) < \sum_k\frac{\epsilon}{2^k} < \epsilon
+\]
+Finally, to prove uniform convergence, given any $\delta >0$ take $k > \frac{1}{\delta}$ then for any $x\in B$ and $n\geq n_k$ we have
+\[
+	\abs{f_n(x)-f(x)}\leq g_{n_k}(x) \underbrace{\leq }_{\text{since }}\frac{1}{k} < \delta
+\]
 \end{proof}
 \begin{defin}
 	For $f, f_1, f_2, \dots\in \mathcal{L}^1(X, \mathcal{A}, \mu)$ we say \mdf{$(f_n)$ converges to $f$ in mean} if
