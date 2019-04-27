@@ -16,6 +16,7 @@
 \usepackage{float}
 \usepackage{silence}
 \WarningFilter{mdframed}{You got a bad break}
+\usepackage{tikzsymbols}
 \setlength{\parindent}{0pt}
 %}}}
 %{{{ Custom commands
@@ -83,7 +84,7 @@
 \newtheorem{lemma}[theorem]{Lemma}
 %}}}
 %{{{ Document metadata
-\title{Radon-Nikodyn - Statement and Proof}
+\title{Radon-Nikodym - Statement and Proof}
 \author{}
 \date{}
 %}}}
@@ -91,14 +92,14 @@
 \begin{document}
 \maketitle
 \section{Statement}
-\begin{theorem}[Radon-Nikodyn Theorem]
+\begin{theorem}[Radon-Nikodym Theorem]
 Suppose $\mu$ and $\nu$ are $\sigma$-finite measures on $(X, \mathcal{A})$ such that $\nu << \mu$.
 Then $\exists$ a measurable function $f: X \to [0, +\infty)$ such that
 \[
 	\forall A \in \mathcal{A}, \quad \nu(A)=\int_A f \dm
 \]
 Moreover, for all such functions h, we have that $h=f$ $\mu$-almost everywhere.
-We call such function the \mdf{Radon-Nikodyn derivative} which we denote $\frac{d\nu}{d\mu}$.
+We call such function the \mdf{Radon-Nikodym derivative} which we denote $\frac{d\nu}{d\mu}$.
 \end{theorem}
 
 \section{Existence}
@@ -158,16 +159,51 @@ This proves that $\rho(X)=0$ and so $\rho\equiv 0$, i.e.
 	\forall A \in \mathcal{A} \quad \nu(A) = \int_A g \dm
 \]
 
-\textbf{Problem: }What if $\mu(X) = \infty$?
+\textbf{Problem: }What if $g(x) = \infty$ for some $x\in X$?
 
 Well we certainly have $\int g \dm \leq \nu (X) < +\infty$ and hence $\mu\left(\left\{g = +\infty\right\}\right)=0$.
 We can just redefine $g$ to be $0$ on the set where it was previously infinity and this won't change any integrals.
-Not sure why this fixes the problem???
+\end{proof}
+
+\subsection{General Case}
+Previously we assumed that $\mu$ and $\nu$ were finite, but actually we can do the proof when they are only $\sigma$-finite.
+
+\begin{proof}
+Decompose the space $X=\sqcup_n B_n$ where the $B_n$ are some measurable sets such that $\mu(B_n),\nu(B_n)< \infty$.
+Then for each $n$ we can define new finite measures by 
+\[
+	\mu_n(A)= \mu(A\cap B_n)\quad\text{and}\quad\nu_n(A)=\nu(A\cap B_n)
+\]
+Note that we still maintain absolute continuity $\nu_n << \mu_n$ for each $n$.
+We can now apply the first existence proof to each $\mu_n$ and $\nu_n$ to find Radon-Nikodym derivatives $g_n:X\to[0, +\infty)$.
+Moreover, we can choose these such that $g_n\equiv 0$ on $B_n\stcmp$ because this won't change anything with respect to $\mu_n$ and $\nu_n$.
+
+We now define our global derivative as
+\[
+	g=\sum_{n}g_n
+\]
+which is measurable and non-negative because it is the sum of measurable and non-negative functions.
+Moreover, $g$ is finite because the $g_n$ are finite and only assume non-zero values on their respective $B_n$.
+Finally given any $A\in\mathcal{A}$ we have
+\[
+	\int_A g \dm \underbrace{=}_{\text{Levi}} \sum_n\int g_n\dm = \sum_n \nu_n(A) = \sum _n \nu(A\cap B_n) = \nu(A)
+\]
+which is what we wanted.
+Woo hoo! \Cooley
 \end{proof}
 
 \section{Uniqueness}
 \begin{proof}
+Suppose $h,g : X \to [0, \infty)$ satisfy $\forall A \in \mathcal{A} \nu(A) = \int_A g \dm = \int_A h \dm$. 
+Suppose that $\nu (X) < +\infty$.
+Then $g-h$ is integrable with respect to $\mu$ and $\int_{\left\{g>f\right\}} g-h \dm = 0 = \int_X (g-h)^+ \dm$. 
+This implies that $(g-h)^+ = 0$ $ \mu$ a.e.
+We have a similar argument for the negative part.
+Thus $g=h$ a.e.
 
+In the $\sigma$- finite case, write $X = \sqcup_n B_n$ with $\nu(B_n) < \infty$.
+So $g=h$ on $B_n$ $\mu-$ a.e.
+Thus $g = h$ $\mu-$ a.e. 
 \end{proof}
 
 \end{document}
