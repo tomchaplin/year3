@@ -124,10 +124,22 @@ We also have the following very important property:
 	\begin{itemize}
 		\item $A_1\subseteq A_2\subseteq \dots$ in $\mathcal{A}$ then
 			$$\mu\left(\bigcup_i A_i\right)=\lim_i\mu(A_i)$$
-		\item $A_1\supseteq A_2\supseteq \dots$ in $\mathcal{A}$ then
+		\item $A_1\supseteq A_2\supseteq \dots$ in $\mathcal{A}$ and $\mu(A_n) < +\infty$ for some $n$, then
 			$$\mu\left(\bigcap_k A_k\right)=\lim_k \mu(A_k)$$
 	\end{itemize}
 \end{prop}
+\begin{note}
+	When taking the limit of an infinite intersection of nested sets, we only get continuity if our measure is finite or one of the nested sets has finite measure.
+\end{note}
+
+\begin{eg}
+Take $\mu$ to be the counting measure on $\N$ then consider the nested sets
+\[
+	A_k\defeq\left\{k, k+1, k+2, \dots \right\}
+\]
+then $\cap_k A_k = \emptyset$ but $\lim_{k\to\infty}\mu(A_k)=+\infty$.
+\end{eg}
+
 A very important measure is the Lebesgue measure since it coincides with our natural intuition for the measure of subsets of $\R^d$.
 First we need to define an outer measure.
 \begin{defin}
@@ -338,7 +350,32 @@ This depends on your view of the Axiom of Choice.
 	Assuming the axiom of choice, $\exists E\subseteq (0, 1)$ such that $E\not\in\mathcal{L}(\R)$.
 \end{theorem}
 \begin{proof}
-Can't be bothered to do this atm.
+We start be defining an equivalence relation $x\sim y$ if $x-y\in\Q$.
+This gives us equivalence classes $\Q + x$ for $x\in \R$.
+By the axiom of choice, we can choose $E\subseteq (0, 1)$ such that we pick exactly one element from each class.
+
+Label the rationals in $(-1,1)$ by $r_1, r_2, \dots$ and define $E_n\defeq E + r_n$ for each rational.
+Then the $E_n$ are pairwise disjoint as follows.
+Suppose $E_n\ni e+ r_n = e' + r_{n'} \in E_{n'}$ for $n\neq n'$.
+Then we have two elements of the Vitali set such that $e-e'=r_n-r_{n'}\in\Q$.
+These two are therefore in the same equivalence class $\Q + x$ so we must have $e=e'$ and hence $n=n'$.
+
+Note also that every real number is a rational distance away from a unique member of the Vitali set and hence
+\[
+	\bigcup_{r\in \Q} (E + r) = \R \quad \text{and} \quad (0,1) \subseteq \bigcup_n E_n \quad \text{and} \quad \bigcup_n E_n \subseteq (-1, 2)
+\]
+Now we wish to show that $E$ is not Lebesgue measurable.
+Suppose for contradiction that $E\in\mathcal{L}$ then by translation invariance so too is $E_n$ for all $n$.
+Then
+\[
+	3 = \lambda( (-1, 2) ) \geq \lambda\left(\cup_n E_n\right) = \sum_n \lambda (E_n) = \sum_n \lambda(E)
+\]
+To avoid the right hand side shooting off to infinity we must have $\lambda(E) = 0$.
+But then
+\[
+	\lambda(0 ,1 ) = 1 \leq \sum_n \lambda(E_n) = \sum_n \lambda(E) = 0
+\]
+This is a clear contradiction.
 \end{proof}
 \section{Extended Real Line}
 We can extend the real line by adding two points
@@ -460,6 +497,10 @@ By applying this proposition to $f^+$ and $f^-$ separately and combining the res
 It is possible to construct a set this is Lebesgue measurable but not Borel measurable.
 Its rather long winded but worth a read.
 \end{note}
+
+\section{Limits of measurable functions}
+Should show that the liminf and what not of measurable functions are measurable and the sets where they are defined.
+
 \subsection{Some Generalisations}
 \begin{defin}
 	Given spaces $(X, \mathcal{A})$ and $(Y, \mathcal{C})$ we can say that $f:X\to Y$ is \mdf{$(A, \mathcal{C})$-measurable} if
@@ -559,8 +600,8 @@ So the previous proposition tells use that
 \[
 	\int g \dm = \lim_{n\to\infty}\int (g\wedge f_n) \dm \leq \lim_{n\to\infty}\int f_n \dm 
 \]
-Again we can show that this new integral is still a linear, increasing operator on $\overline{S_+}$.
 \end{proof}
+Again we can show that this new integral is still a linear, increasing operator on $\overline{S_+}$.
 
 \subsection{Arbitrary Measurable Functions}
 \begin{defin}
@@ -575,6 +616,10 @@ Again we can show that this new integral is still a linear, increasing operator 
 $f$ is called \mdf{$\mu$-integrable} if $\int f^+ \dm < +\infty$ and $\int f^- \dm \ + \infty$.
 \end{defin}  
 In the case $f\in\overline{S_+}$, then $f^-=0$ and hence the definitions coincide.
+
+\begin{note}
+It might be worth going over the proof that the integral is linear in the arbitrary case.
+\end{note}
 
 \subsection{Playing with the Integral}
 One property we will often use to estimate integrals.
@@ -751,9 +796,12 @@ These functions differ on a set contained within a set of measure 0 and hence th
 \begin{cor}[Levi's Theorem]
 	Given measurable $g_n: X\to[0, +\infty]$ for each $n\in\N$.
 	\[
-		\int\left( \sum_{n-1}^{\infty}g_n \right)\dm = \sum_{n=1}^{\infty}\left(\int g_n \dm\right)
+		\int\left( \sum_{n=1}^{\infty}g_n \right)\dm = \sum_{n=1}^{\infty}\left(\int g_n \dm\right)
 	\]	
 \end{cor}
+\begin{proof}
+Take $f_n\defeq\sum_{k=1}^{n}g_k$ then the infinite sum is $\lim_{n\to\infty}f_n$ and the $f_n$ are monotone increasing so we can apply the MCT.
+\end{proof}
 \begin{theorem}[Fatou's Lemma]
 Given a sequence $\left\{f_n\right\}$ of functions in $\overline{S_+}$,
 \[
@@ -994,6 +1042,17 @@ Given $\sigma$-finite measure spaces $(X, \mathcal{A}, \mu)$ and $(Y, \mathcal{C
 \]
 is $\mathcal{A}$-measurable for all $x\in X$.
 \end{prop}
+\begin{proof}
+Show that $I_E$ is measurable for all rectangles and then that the set
+\[
+	\mathcal{F}\defeq\left\{E\in\mathcal{A}\times\mathcal{C} \rmv I_E \text{ is measurable}\right\}
+\]
+is a d-system.
+Then since the rectangles form a $\pi$-system we get
+\[
+	\mathcal{F}\supseteq d(R) = \sigma(R) = \mathcal{A}\times\mathcal{C}
+\]
+\end{proof}
 \begin{theorem}
 Given $\sigma$-finite measure spaces $(X, \mathcal{A}, \mu)$ and $(Y, \mathcal{C}, \nu)$ and $E\in\mathcal{A}\times \mathcal{C}$, there is a unique measure $\mu\times\nu$ on $(X\times Y, \mathcal{A}\times\mathcal{C})$ such that for all $A\times C\in \mathcal{R}$
 \[
@@ -1009,8 +1068,8 @@ We get uniqueness from the rectangle equality and our previous result about meas
 We then show that the last formula defines a measure with the desired properties.
 \end{proof}
 \subsection{Fubini's Theorem}
-\begin{prop}[Tornelli's Theorem]
-Given $\sigma$-finite measure spaces $(X, \mathcal{A}, \mu)$ and $(Y, \mathcal{C}, \nu)$ and $E\in\mathcal{A}\times \mathcal{C}$ and some function $f:X\times Y \to [0, +\infty]$ which is $(\mathcal{A}\times \mathcal{C})$-measurable, the following holds
+\begin{prop}[Tonelli's Theorem]
+Given $\sigma$-finite measure spaces $(X, \mathcal{A}, \mu)$ and $(Y, \mathcal{C}, \nu)$ and some function $f:X\times Y \to [0, +\infty]$ which is $(\mathcal{A}\times \mathcal{C})$-measurable, the following holds
 \begin{enumerate}[label=(\alph*)]
 	\item $x\mapsto \int_Y f_x d\nu$ is measurable.
 	\item $\int_{X\times Y} f d(\mu\times\nu)=\int_X\left(\int_Y f_x d\nu\right)d\mu$.
@@ -1041,13 +1100,13 @@ Given $\sigma$-finite measure spaces $(X, \mathcal{A}, \mu)$ and $(Y, \mathcal{C
 	Given some measurable $f:X\times Y \to \overline{R}$
 	\begin{enumerate}
 		\item Write $f=f^+ - f^-$ which are both measurable.
-		\item Apply Tornelli's tells us $x\mapsto \int f^+_x d\nu $ and $x\mapsto\int f^-_x d\nu$ are both measurable.
+		\item Apply Tonelli's tells us $x\mapsto \int f^+_x d\nu $ and $x\mapsto\int f^-_x d\nu$ are both measurable.
 		\item Compute 
 			\begin{align*}
 				A^+&\defeq \int_X\left(\int_Y f^+_x d \nu\right) d\mu\\
 				A^-&\defeq \int_X\left(\int_Y f^-_x d \nu\right) d\mu
 			\end{align*}
-		\item If both $A^+, A^- < \infty$ then Tornelli tells us that
+		\item If both $A^+, A^- < \infty$ then Tonelli tells us that
 			\begin{align*}
 				\int_{X\times Y} f^+ d(\mu\times \nu)= A^+ < +\infty\\
 				\int_{X\times Y} f^- d(\mu\times \nu)= A^- < +\infty	
