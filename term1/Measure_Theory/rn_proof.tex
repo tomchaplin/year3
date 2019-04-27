@@ -1,0 +1,173 @@
+\documentclass[11pt]{article}
+
+%{{{ Packages
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathdots}
+\usepackage{mathtools}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{microtype}
+\usepackage{witharrows}
+\usepackage{float}
+\usepackage{silence}
+\WarningFilter{mdframed}{You got a bad break}
+\setlength{\parindent}{0pt}
+%}}}
+%{{{ Custom commands
+% Nice maths commands
+\newcommand{\defeq}{:=}
+\newcommand{\eqdef}{+:}
+\newcommand{\abs}[1]{|#1|}
+\newcommand{\norm}[1]{||#1||}
+%\renewcommand{\dots}{...}
+\newcommand{\msrspc}{\ensuremath{(X,\mathcal{A},\mu)}}
+\newcommand{\sigal}{$\sigma$-algebra}
+\newcommand{\relmiddle}[1]{\mathrel{}\middle#1\mathrel{}}
+\newcommand{\rmv}{\relmiddle|}
+\newcommand{\dm}{\ensuremath{\,d\mu}}
+\DeclareMathOperator\vol{vol}
+\newcommand{\stcmp}{^{\mathsf{c}}}
+\newcommand\restr[2]{{% we make the whole thing an ordinary symbol
+  \left.\kern-\nulldelimiterspace % automatically resize the bar with \right
+  #1 % the function
+  \vphantom{\big|} % pretend it's a little taller at normal size
+  \right|_{#2} % this is the delimiter
+  }}
+
+% Spaces
+\newcommand{\pow}[1]{\mathcal{P}(#1)}
+\newcommand{\ktor}{\mathbb{T}^k}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Rb}{\overline{\R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+
+% Derivatives
+\newcommand*{\pd}[3][]{\ensuremath{\frac{\partial^{#1} {#2}}{\partial {#3}^{#1}}}}
+\newcommand{\grad}{\bigtriangledown}
+
+% Vectors
+\newcommand{\mv}[1]{\textbf{#1}}
+
+%}}}
+%{{{ Enviornments
+% Definitions environment
+\newenvironment{defin}
+	{\begin{mdframed}[backgroundcolor=white, roundcorner=5pt, linewidth=1pt]}
+	{\end{mdframed}}
+\newcommand{\mdf}[1]{{\color{red} #1}}
+
+% Important notes environment
+\newenvironment{note}
+	{\begin{mdframed}[backgroundcolor=white, linecolor=red, roundcorner=5pt, linewidth=1pt]\bfseries{Note:}\normalfont}
+	{\end{mdframed}}
+
+% Examples enviornmnet
+\definecolor{mylg}{rgb}{0.9,0.9,0.9}
+\newenvironment{eg}
+{\begin{mdframed}[backgroundcolor=mylg,roundcorner=5pt,linewidth=0pt]\bfseries{Example:}\normalfont}
+	{\end{mdframed}}
+
+\newcommand{\mem}[1]{{\color{red} #1}}
+% Theorem enviornment
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{prop}[theorem]{Proposition}
+\newtheorem{cor}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+%}}}
+%{{{ Document metadata
+\title{Radon-Nikodyn - Statement and Proof}
+\author{}
+\date{}
+%}}}
+
+\begin{document}
+\maketitle
+\section{Statement}
+\begin{theorem}[Radon-Nikodyn Theorem]
+Suppose $\mu$ and $\nu$ are $\sigma$-finite measures on $(X, \mathcal{A})$ such that $\nu << \mu$.
+Then $\exists$ a measurable function $f: X \to [0, +\infty)$ such that
+\[
+	\forall A \in \mathcal{A}, \quad \nu(A)=\int_A f \dm
+\]
+Moreover, for all such functions h, we have that $h=f$ $\mu$-almost everywhere.
+We call such function the \mdf{Radon-Nikodyn derivative} which we denote $\frac{d\nu}{d\mu}$.
+\end{theorem}
+
+\section{Existence}
+\begin{proof}
+Suppose $\mu(x), \nu(X) < \infty$ then let
+\[
+	\mathcal{F}\defeq\left\{f:X\to[0, + \infty) \text{ measurable} \rmv \forall A \in \mathcal{A} \quad \int_A f\dm \leq \nu (A)\right\}
+\]
+Note $\mathcal{F}\neq\emptyset$ because it contains the $0$-function.
+
+\textbf{Claim: }Given $f_1, f_2\in\mathcal{F}$ then $f_1 \vee f_2\in\mathcal{F}$.
+
+Choose a countable sequence $f_1, f_2, \dots \in \mathcal{F}$ such that
+\[
+	\lim_{n\to\infty}\int f_n \dm = \sup \left\{\int f \rmv f\in \mathcal{F}\right\}
+\]
+By replacing $f_i$ with $f_1 \vee \dots \vee f_i$ we can assume that this sequence is increasing.
+Let $g\defeq\lim_{n\to\infty}f_n$.
+Then for all measurable $A\in\mathcal{A}$ we have
+\[
+	\int_A g \dm = \lim_{n\to\infty}\int_A f_n \dm \leq \nu(A)
+\]
+by the monotone convergence theorem.
+Therefore we also have $g\in\mathcal{F}$.
+
+We're going to define a new measure $\rho$ by
+\[
+	\rho(A)\defeq \nu(A)-\int_A g\dm \geq 0
+\]
+We aim to show that this is the 0 measure.
+Suppose for contradiction that $\rho(X) >0$ then we can find an $\epsilon >0$ such that $\rho(X) > \epsilon \mu(X)$ because $\mu(X)$ is finite.
+Now we take a Hahn decomposition $X=P \sqcup N$ of the signed measure $\rho - \epsilon\mu$.
+\[
+	\begin{WithArrows}
+		\forall A \in\mathcal{A} \quad\quad \nu(A)&= \int_A g\dm + \rho(A) \Arrow{smaller set}\\
+				 & \geq \int_A g \dm + \rho (A\cap P) \Arrow{since P positive set for $\rho - \epsilon\mu$} \\
+				 & \geq \int_A g \dm + \epsilon\mu (A\cap P)\\
+				 & \geq \int_A ( g+ \epsilon \chi_P) \dm
+	\end{WithArrows}
+\]
+This is clearly a problem because we've found an integral larger than the largest integral however $g+\epsilon\chi_P$ is the same as $g$ up to measure $0$ if $\mu(P)=0$.
+Therefore we split into two cases:
+
+\textbf{Case 1: }If $\mu(P)=0$ then $\rho(P)=\nu(P)-\int_P g\dm = 0 - 0$ since $\nu < < \mu$.
+Hence, $\rho(X) - \epsilon\mu(X) = \rho(N) - \epsilon\mu(N)$ since both measure vanish on $P$.
+But then $N$ is a negative set so $\rho(X) - \epsilon\mu(X) \leq 0$ which contradicts our definition of $\epsilon$.
+
+
+\textbf{Case 2: }If $\mu(P)\neq 0$ then $g+ \epsilon\chi_P \in \mathcal{F}$ but if we integrate over $X$ we get
+\[
+	\int (g+ \epsilon\chi_P)\dm > \int g \dm
+\]
+which is a contradiction because $g$ was chosen to maximise this integral subject to $\int_A g \dm \leq \nu (A)$.
+
+This proves that $\rho(X)=0$ and so $\rho\equiv 0$, i.e.
+\[
+	\forall A \in \mathcal{A} \quad \nu(A) = \int_A g \dm
+\]
+
+\textbf{Problem: }What if $\mu(X) = \infty$?
+
+Well we certainly have $\int g \dm \leq \nu (X) < +\infty$ and hence $\mu\left(\left\{g = +\infty\right\}\right)=0$.
+We can just redefine $g$ to be $0$ on the set where it was previously infinity and this won't change any integrals.
+Not sure why this fixes the problem???
+\end{proof}
+
+\section{Uniqueness}
+\begin{proof}
+
+\end{proof}
+
+\end{document}
