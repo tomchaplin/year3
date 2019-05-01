@@ -138,7 +138,7 @@ g\circ f \simeq id_X \quad , \quad f\circ g \simeq id_Y
 \end{defin}
 \begin{note}
 	\begin{align*}
-		X \text{ deformation retracts to } A &\implies X \text{ contractible }\\
+		X \text{ deformation retracts to } A &\implies X \text{ homotopy equivalent to }A\\
 											 &\centernot\Longleftarrow
 	\end{align*}
 	The reverse does not hold because the contraction does not necessarily restrict to $id_A$.
@@ -268,7 +268,7 @@ The continuity of this construction follows from the pasting lemma.
 \end{proof}
 
 \begin{theorem}
-Let $\omega_N:I\to S^1$ be defined by $\omega_n(s)=e^{2\pi i n s}$. Then
+Let $\omega_n:I\to S^1$ be defined by $\omega_n(s)=e^{2\pi i n s}$. Then
 \[
 	\pi_1(S^1,1)=\left\{[\omega_n] \rmv n\in\Z\right\}
 \]
@@ -323,7 +323,7 @@ For this define the following useful maps
 		\]
 	\item \underline{$\Phi$ is injective.}
 
-		Assume that $\Phi[\omega_n]=[e]$.
+		Assume that $\Phi(n)=[e]$.
 		We aim to show that in fact $n=0$.
 
 		To start, $\omega_n\homrel e$ and hence we have a homotopy $F:I\times I\to S^1,\;(s, t)\mapsto F(s, t)$ such that $f_0=\omega_n$, $f_1=e$ and $f_t(0)=f_t(1)=1$.
@@ -496,17 +496,95 @@ The Brouwer Fixed Point Theorem also holds for sets $S\cong D^2$ and their bound
 	We then write $f\homrelset{x_o} e_{y_0}$.
 \end{defin}
 \begin{prop}
-If $f:S^1 to S^1$ is odd then $f$ is not null-homotopic.
+If $f:S^1 \to S^1$ is odd then $f$ is not null-homotopic.
 \end{prop}
 \begin{proof}
-Very long.
+Assume that $f$ is odd and null-homotopic to a constant path.
+Without loss of generality we can assume that this constant path is at $1\in S^1$ because the space is path connected.
+Label this homotopy $F:S^1\times I \to S^1$.
+Consider the usual cover $p:\R\to S^1$.
+We proceed by two steps
+\begin{enumerate}
+	\item \textbf{Use the oddity of $f$ to construct a loop in $S^1$ that lifts to a path from $0$ to $2n+1$}
+
+		Define the map $\gamma:I \to S^1$ by  
+		\[
+			\gamma(t)=\frac{f(q(t))}{f(1)}
+		\]
+		where $q$ is the quotient map $[0,1]\to S^1$ or $q(t)=e^{2\pi i t}$.
+		Thanks to the oddity of $f$ we get the property that
+		$\gamma(s+\frac{1}{2})=-\gamma(s)$ for all $s\in[0 , \frac{1}{2}]$.
+		Note also that $\gamma(0)=\gamma(1)=1$ and hence $\gamma(\frac{1}{2})=-1$.
+
+		Now apply the path-lifting property of $p$ to $\gamma$ to get a curve $\widetilde{\gamma}:I\to \R$  such that $\widetilde{\gamma}(0)=0$.
+		Then $\widetilde{\gamma}(\frac{1}{2})=n+\frac{1}{2}$ for some $n\in\Z$.
+		Our aim now is to show that $\widetilde{\gamma}(1)=2n+1$.
+
+		We can consider the following two paths.
+		$\alpha$ represents what we thing $\widetilde{\gamma}$ does on the second half and $\beta$ is what $\widetilde{\gamma}$ actually does
+		\[
+			\alpha(s)\defeq n+\frac{1}{2}+\widetilde{\gamma}\left(\frac{s}{2}\right)
+		\quad\quad	\beta (s)\defeq \widetilde{\gamma}\left(\frac{s+1}{2}\right)
+		\]
+		Then
+		\begin{itemize}
+			\item $p\circ\alpha(s)=-\gamma(\frac{s}{2})=\gamma(\frac{s}{2}+\frac{1}{2})=p\circ\beta(s)$
+			\item $\alpha(0)=\beta(0)=n+\frac{1}{2}$
+		\end{itemize}
+		So by the uniqueness of lifts its follows that
+		\[
+			2n+1 = \alpha(1) = \beta(1) = \widetilde{\gamma}(1)
+		\]
+	
+	\item \textbf{Get a contradiction by showing $\widetilde{\gamma}\simeq e$ and hence $2n+1 = 0$}
+
+		We known that $F$ is a homotopy between $f$ and a constant map $S^1\to S^1$.
+		So we can construct a homotopy from $\gamma$ to a constant path by
+		\[
+			\Gamma:I \times I \to S^1 \quad (s, t)\mapsto \frac{F(e^{2\pi i s}, t)}{F(1, t)}
+		\]
+		where we use complex number division.
+		We see that this is $\gamma$ on the bottom and $1$ on the other boundaries and hence the HLP yields a homotopy with $\widetilde{\gamma}$ on the bottom.
+		The boundaries go to a constant path and hence $0=2n+1$.
+		This is clearly a contradiction so $f$ was not null-homotopic.
+		\begin{figure}[ht]
+			\centering
+			\includegraphics[width=4in]{odd-null.png}
+			\caption{Explaining why $0=2n+1$}
+		\end{figure}
+		
+\end{enumerate}
+
 \end{proof}
+
 \begin{cor}
 	If $f:S^2 \to \R^2$ is odd then there is a point $x\in S^2$ such that $f(x)=0$.
 \end{cor}
+
 \begin{proof}
-Worth doing.
+Assume that $f$ is odd and non-vanishing for all $x\in S^2$.
+We're going to define maps $g,p$ that together form a homotopy from an odd map to a constant path
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}
+		S^1 \times I \arrow[rr, "H"] \arrow[rd, "p"'] & \; & S^1 \\
+		\; & S^2 \arrow[ru, "g"']
+	\end{tikzcd}
+\end{figure}
+We can now define the maps
+\[
+	g:S^2\to S^1 \quad \quad g(x)\defeq\frac{f(x)}{\norm{f(x)}}
+\]
+Note that $g$ is odd.
+Let $U$ denote the upper hemi-sphere of $S^2$ then we can define $p:S^1\times I \to U$ by
+\[
+	p(e^{i\theta}, t) \defeq (t\cos(\theta), t\sin(\theta), \sqrt{1-t^2})
+\]
+Note that $p_0$ is constant and $p_1$ embeds $S^1$ into the equator.
+Finally we construct a homotopy $H\defeq g \circ p$.
+Notice that $h_0=g\circ p_0$ which is constant where as $h_1=g\circ p_1$ is an odd map since $g$ and $p_1$ are both odd.
 \end{proof}
+
 \begin{theorem}[Borsuk-Ulam]
 Given a map $f:S^2\to\R^2$ there is a point $x\in S^2$ such that $f(-x)=f(x)$.
 \end{theorem}
