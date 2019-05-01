@@ -26,6 +26,7 @@
 \newcommand{\abs}[1]{|#1|}
 \newcommand{\norm}[1]{||#1||}
 \DeclareMathOperator{\im}{\mathrm{im}}
+\DeclareMathOperator{\intr}{\mathrm{int}}
 %\renewcommand{\dots}{...}
 \newcommand{\msrspc}{\ensuremath{(X,\mathcal{B},\mu)}}
 \newcommand{\relmiddle}[1]{\mathrel{}\middle#1\mathrel{}}
@@ -87,7 +88,7 @@
 \newtheorem{prop}[theorem]{Proposition}
 %}}}
 %{{{ Document metadata
-\title{Dynamical Notes - Proofs to Remember}
+\title{Dynamical Systems - Proofs to Remember}
 \author{Thomas Chaplin}
 \date{}
 %}}}
@@ -416,6 +417,47 @@ which is a countable intersection (over $m$) of open dense sets.
 By Baire's Theorem our desired point exists.
 \end{proof}
 
+\subsection{Shift Spaces}
+\begin{theorem}
+The shift map $\sigma: \Sigma_A \to \Sigma_A$ is mixing if and only if the matrix $A$ is aperiodic.
+\end{theorem}
+
+\begin{proof}
+Suppose the matrix $A$ is aperiodic.
+Then it suffices to show that any two cylinder sets $U, V$ of the same length have the mixing property, i.e. there is an $N$ such that for all $n\geq N$ we have $T^{-n}U\cap V\neq \emptyset$.
+Write $U\defeq [u_0, \dots u_n]$ and $V\defeq [v_0, \dots, v_n]$.
+Then there is an $N$ such that we can go from any symbol to any other symbol in $N$ or more steps.
+So for all $m\geq N$ we can find a point in $U$ that looks like
+\[
+	u_0, \dots, u_n, \underbrace{\dots, \dots, \dots}_{\text{length }m}, v_0, \dots, v_n, \dots
+\]
+Hence for all $m\geq N$ we have that $\sigma^{m+n+1}(U)\cap V\neq\emptyset$ and hence $\sigma$ is mixing.
+
+Conversely, suppose that $\sigma$ is mixing then the cylinder sets are all open so there is a common $m\geq 1$ such that
+\[
+	\sigma^m [i] \cap [j]\neq\emptyset
+\]
+So then given any pair $(i,j)$ there is a sequence $\omega$ such that $\omega_0=i$ and $\omega_m=j$, and hence $(A^m)_{i,j}\geq 1$ because there is at least one path of length $m$ from $i$ to $j$.
+\end{proof}
+
+\begin{theorem}
+The shift map $\sigma: \Sigma_A \to \Sigma_A$ is transitive if and only if the matrix $A$ is irreducible.
+\end{theorem}
+
+\begin{proof}
+Suppose $A$ is irreducible then given any two open sets we can find cylinders $U$ and $V$ inside them.
+Write
+\[
+	U=[ u_0, \dots, u_n] \quad V=[v_0, \dots, v_n]
+\]
+then $A$ is transitive so there exists an admissible path $p_0, \dots, p_k$ of some length from $u_n$ to $v_0$.
+Then $(u_0, \dots, u_n, p_1, \dots, p_{k-1}, v_0, \dots, v_n, \dots)\in U \cap \sigma^{-(n+k)} V$ where we just fill the rest of the sequence out with random junk.
+
+Now suppose that $\sigma$ is transitive.
+Then the cylinder sets $U\defeq [i]$ and $V\defeq [j]$ are open and hence there is an $n$ such that $\sigma^{-n}U \cap V\neq\emptyset$, i.e. there is a sequence which starts at $j$ and after $n$ arrives at $i$.
+Therefore $(A^n)_{i,j} \geq 1$ and hence $A$ is transitive.
+
+\end{proof}
 
 \section{Arithmetic Progressions}
 \begin{defin}
@@ -468,9 +510,243 @@ Taking $U=[i]$ where $i$ is chosen such that $[i]\cap Y \neq \emptyset$, we see 
 \end{proof}
 
 \section{Hyperbolic Toral Automorphisms}
-Fixed points and mixing
+
+\begin{defin}
+Given a $2\times 2$ matrix $A=
+\begin{pmatrix}
+	a & b \\
+	c & d
+\end{pmatrix}$ such that $ad-bc=1$ we can associate an automorphism $f:\mathbb{T}^2\to\mathbb{T}^2$ by
+\[
+	f(x,y)\defeq (ax + by, cx + dy) \quad \mod 1
+\]
+We say this is \mdf{hyperbolic} if no eigenvalue of $A$ lives on the unit circle.
+\end{defin}
+
+\begin{theorem}
+The fixed points of a hyperbolic toral automorphism are precisely those $(x_1,x_2)\in T^2$ such that $x_1, x_2\in\Q$.
+\end{theorem}
+
+\begin{proof}
+Take $(x_1, x_2)\in\mathbb{T}^2$ such that $x_1, x_2\in\Q$.
+We can therefore write $x_1=\frac{m_1}{d}$ and $x_2=\frac{m_2}{d}$ for some integers $m_1, m_2\in\Z$.
+Write $m\defeq(m_1, m_2)$ then
+\[
+	A^k x^T = \frac{1}{d} A^k m^T\quad\forall k\in\Z
+\]
+But by the pigeonhole principle, since we are only looking for a fixed point $\mod 1$, there are only $l^2$ distinct pairs of values that $A^km^T$ can assume.
+Hence there is $k_1 < k_2$ such that
+\[
+	A^{k_1}m^T = A^{k_2}m^t \mod 1
+\]
+Set $n\defeq k_2 - k_1 > 0 $.
+Then $A^n x^t = x^t \mod 1$.
+
+Conversely, suppose that $x$ is a periodic point of $f$.
+Then $A^n x = x \mod 1$ or, more succinctly, there exists integers $k_1, k_2$ such that
+\[
+	(A^n - I) x =
+	\begin{pmatrix}
+	k_1 \\
+	k_2
+	\end{pmatrix}
+\]
+But then $A^n - I$ is an integer matrix and hence its inverse has rational entries, so $x$ must have rational entries.
+\end{proof}
+
+\begin{theorem}
+The number of fixed points for $f^n$ where $f$ is a hyperbolic toral automorphism is $\abs{tr(A^n)-2}$.
+\end{theorem}
+
+\begin{proof}
+Note that the number of fixed points for $f^n$ precisely the number of $x\in\Delta\defeq[0, 1) \times [0, 1)$ such that
+$(A^n - I)x\in\Z^2$.
+But the number of lattice points in $(A^n - I)(\Delta)$ is equal to the area of the parallelogram $(A^n -I)(\Delta)$.
+But $\Delta$ has unit areas so the parallelogram has area $\abs{\det(A^n - I)}$.
+Then
+\[
+	\abs{\det(A^n-I)} = \abs{(1-\lambda_+^n)(1-\lambda_-^n)} = \abs{2 - (\lambda_+^n + \lambda_-^n)} = \abs{tr(A^n) - 2}
+\]
+\end{proof}
+
+\begin{theorem}
+Hyperbolic toral automorphisms are topologically mixing.
+\end{theorem}
+
+\begin{proof}
+\textit{(Sketch).}
+\begin{itemize}
+	\item Take $U, V\subseteq \mathbb{T}^2$ open and non-empty.
+	\item Let $l_\pm$ be the lines spanned by the eigenvectors. 
+	\item These lines have irrational slope and hence their projection to the torus is dense. (Why!?)
+	\item Take small parallelograms $U'\subseteq U$ and $V'\subseteq V$ with sides parallel to $l_\pm$.
+	\item Density implies that the projected lines intersect $U'$ and $V'$.
+	\item Then as we take $f^n$ on $U'$ for larger and larger $n$ we stretch along $W_+$ and shrink along $W_-$.
+	\item Eventually $f^n(U')$ will reach the part of $W_+$ which intersects $V'$ and continue to intersect for all future $n$.
+\end{itemize}
+\end{proof}
+
+\subsection{Markov Partitions}
+We wish to divide the torus up into a partition $\mathcal{P}\defeq\left\{P_0, \dots, P_{k-1}\right\}$ with the properties
+\begin{itemize}
+	\item $\cup_i P_i = \mathbb{T}^2$
+	\item $\intr(P_i)\cap \intr(P_j)=\emptyset$.
+	\item The \mdf{Markov property} if there are points $x,y\in\mathbb{T}^2$ and a sequence $(\omega_n)_{n\in\Z}$ such that
+		\begin{align*}
+		T_A^n(x)\in\intr(P_{\omega_n})\quad \forall n\geq 0 \\
+		T_A^n(y)\in\intr(P_{\omega_n})\quad \forall n\leq 0 
+		\end{align*}
+		then there is a $z\in\mathbb{T}^2$ such that $\:T_A^n(z)\in\intr(P_{\omega_n})\quad \forall n\in \Z$.
+\end{itemize}
+Such a partition is called a \mdf{Markov partition}.
+
+\begin{theorem}
+We can divide the torus up into a Markov partition for any linear hyperbolic toral automorphisms $f:\mathbb{T}^2\to\mathbb{T}^2$.
+
+Once we have this partition we can create a semi conjugacy to a subshift of finite type $\pi:\Sigma_b\to\mathbb{T}^2$.
+\end{theorem}
+
+\begin{proof}
+\textit{(Sketch).}
+We divide the torus up by extending the eigenvectors sufficiently far and making sure that when we finish we don't leave any dangling ends.
+Having obtained the Markov partition $\mathcal{P}=\left\{P_1, \dots, P_k\right\}$ we define a matrix $B$ by
+\[
+	B(i,j)\defeq
+	\begin{cases}
+		1 & \text{if }f(P_i^\circ)\cap P_j\neq \emptyset \\
+		0 & \text{otherwise}
+	\end{cases}
+\]
+Thanks to the Markov property we have the following property.
+If $i_{-n}, \dots, i_n$ satisfy
+\[
+	\cap_{k=-n}^n f^{-k}(P_{i_k}^\circ)\neq\emptyset
+\]
+and $i_{-(n+1)}, i_n$ and $i_n, i_{n+1}$ are admissible, then
+\[
+	\cap_{k=-(n+1)}^{n+1} f^{-k}(P_{i_k}^\circ)\neq\emptyset
+\]
+That is, along as we take admissible steps, we can be sure that an admissible sequence is non-empty.
+Hence given a sequence $\omega=(\omega_n)_{n=-\infty}^\infty$ we may conclude that
+\[
+	\cap_{k=-\infty}^{\infty} f^{-k}(P_{i_k}^\circ)\neq\emptyset
+\]
+Moreover, since the diameters of the finite intersections are decreasing, it is a single point which we denote by $\pi(\omega)$.
+This is a semi-conjugacy, similar to the proof for circle maps we've seen before.
+\end{proof}
 
 \section{Entropy}
-of shift maps and toral automorphisms.
+
+\begin{theorem}
+We can calculate entropy through minimal spanning sets $S(n,\epsilon)$ and maximal separated sets $N(n,\epsilon)$.
+\end{theorem}
+
+\begin{proof}
+\[
+	S(n,\epsilon) \leq N(n,\epsilon) \leq S\left(n, \frac{\epsilon}{2}\right)
+\]
+For the first inequality, show that an $(n,\epsilon)$ separated set is an $(n,\epsilon)$ spanning set.
+For the second, take an $(n, \frac{\epsilon}{2})$ spanning set and then any $(n,\epsilon)$ separated set would contain at most one point from each $(n, \frac{\epsilon}{2})$ ball.
+Moreover, every element of a separated set would fall in at least one ball.
+Hence $N(n, \epsilon) \leq S\left(n, \frac{\epsilon}{2}\right)$.
+\end{proof}
+
+\subsection{of Shift Maps}
+
+\begin{theorem}[Gelfand's theorem]
+Let $\norm{A}$ be a norm of $A$ and $\lambda_1$ a maximal, positive, real eigenvalue. Then
+\[
+	\lambda_1=\lim_{k\to\infty}\norm{A^k}^{1/k}
+\]
+\end{theorem}
+
+\begin{theorem}
+If the transition matrix $A$ is aperiodic, then the topological entropy is
+\[
+	h\left(\sigma_A\right)=\log\rho(A)
+\]
+where $\rho(A)$ is the spectral radius of the matrix $A$.
+\end{theorem}
+
+\begin{proof}
+\begin{enumerate}
+	\item \textbf{Get your head around the balls}
+		
+		Take a point $\alpha\in\Sigma_A$ then
+		\[
+			B(\alpha, n, 2^{-k})=[a_0, \dots, \alpha_{n+k}]
+		\]
+	\item \textbf{Show that admissible cylinders are non-empty}
+
+		Let $W_m(A)$ denote the set of admissible strings of length $m$.
+		Since $A$ is aperiodic (although irreducible will do), given any admissible $\alpha_0\dots\alpha_m$ the cylinder $\left[\alpha_0\dots\alpha_m\right]$ is non-empty.
+		This is because we can keep adding rubbish on the end.
+	\item \textbf{Relate admissible cylinders to separated and spanning sets}
+
+		Note that admissible cylinders of length $m$ are pairwise disjoint and union to $\Sigma_A$.
+		Hence
+		\[
+			S(n, 2^{-k}) \leq \#W_{n+k+1} \leq N(n, 2^{-k})
+		\]
+	\item \textbf{Compute the entropy}
+
+		When taking the limit we can get rid of the $k$.
+		\[
+			h\left(\sigma_A\right)= \limsup_{n\to\infty}\frac{\log(\#W_{n+1}(A))}{n}
+		\]
+	\item \textbf{Relate \#admissible cylinders to the spectral radius}
+
+		We can choose the norm $\norm{A^n}=\sum_{i,j =1}^N \abs{A^n_{i,j}}$.
+		The $(i,j)$th entry of $A^n$ tells us how many admissible words of length $n$ start at $i$ and end at $j$.
+		Hence $\norm{A^n}=\#W_{n+1}(A)$.
+		Then, using Gelfand's Theorem we have that
+		\[
+			h\left(\sigma_A\right)=\lim_{n\to\infty}\frac{\log(\#W_{n+1}(A))}{n}=\lim_{n\to\infty}\frac{\log\norm{A^n}}{n}=\log\lambda_1
+		\]
+\end{enumerate}
+\end{proof}
+
+\subsection{of Toral Automorphisms}
+\begin{theorem}
+Given a hyperbolic toral automorphism with eigenvalues $\lambda_+ > 1 > \lambda_->0$ then
+\[
+	h(f)=\log \lambda_+
+\]
+\end{theorem}
+
+\section{Preserved Quantities}
+
+\subsection{Semi-Conjugacies}
+
+\subsection{Conjugacies}
+
+\begin{itemize}
+	\item Rotation number of circle homeomorphisms.
+	\item Transitivity and mixing.
+	\item Topological entropy.
+\end{itemize}
+
+\section{Known Conjugacies}
+
+\subsection{Semi-Conjugacies}
+
+\begin{itemize}
+	\item $\pi:\Sigma\to\mathcal{K}$ from full one-sided shift on two symbols to the doubling map.
+\end{itemize}
+
+\subsection{Conjugacies}
+
+\begin{itemize}
+	\item Expanding maps of the same degree are conjugate (through the linear map of the same degree).
+	\item Smale Horseshoe and full two-sided shift on two symbols.
+\end{itemize}
+
+\begin{theorem}[Poincar\'es Theorem]
+A minimal circle homeomorphism with irrational ration number is conjugate to $R_\alpha$.
+\end{theorem}
+
+\begin{theorem}[Denjoy's Theorem]
+If $f:\mathcal{K}\to\mathcal{K}$ is a homeomorphism with irrational rotation, $f\in\mathcal{C}^1$ and $w\defeq \log\abs{f'}$ has bounded variation then $f$ is conjugate to $R_\alpha$.
+\end{theorem}
 
 \end{document}
