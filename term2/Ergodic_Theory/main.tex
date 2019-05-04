@@ -9,16 +9,23 @@
 \usepackage{bbm}
 \usepackage{amsthm}
 \usepackage{mathdots}
+\usepackage[thicklines]{cancel}
+\renewcommand{\CancelColor}{\color{red}}
 \usepackage[dvipsnames]{xcolor}
 \usepackage[framemethod=TikZ]{mdframed}
 \usepackage{microtype}
+\usepackage{mathabx}
+\usepackage{tikz-cd}
+\usepackage{float}
+\usepackage{silence}
+\WarningFilter{mdframed}{You got a bad break}
 \setlength{\parindent}{0pt}
 %}}}
 %{{{ Custom commands
 % Nice maths commands
 \newcommand{\defeq}{:=}
-\newcommand{\abs}[1]{|#1|}
-\newcommand{\norm}[1]{||#1||}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\norm}[1]{\left|\left|#1\right|\right|}
 %\renewcommand{\dots}{...}
 \newcommand{\msrspc}{\ensuremath{(X,\mathcal{B},\mu)}}
 \newcommand{\symd}{\triangle}
@@ -29,6 +36,9 @@
   \vphantom{\big|} % pretend it's a little taller at normal size
   \right|_{#2} % this is the delimiter
   }}
+\newcommand{\relmiddle}[1]{\mathrel{}\middle#1\mathrel{}}
+\newcommand{\rmv}{\relmiddle|}
+\newcommand{\toitself}{\righttoleftarrow}
 
 % Spaces
 \newcommand{\ktor}{\mathbb{T}^k}
@@ -58,7 +68,7 @@
 % Examples enviornmnet
 \definecolor{mylg}{rgb}{0.9,0.9,0.9}
 \newenvironment{eg}
-	{\begin{mdframed}[backgroundcolor=myld,roundcorner=5pt,linewidth=0pt]\bfseries{Example:}}
+	{\begin{mdframed}[backgroundcolor=mylg,roundcorner=5pt,linewidth=0pt]\bfseries{Example:}\normalfont}
 	{\end{mdframed}}
 
 % Theorem enviornment
@@ -210,6 +220,37 @@ $$\underbrace{\frac{1}{n}\sum_{j=0}^{n-1}f\circ T^j }_{\text{Time average}}\to \
 	$$\lim_{n\to\infty}\frac{1}{n}\sum_{j=0}^{n-1}f\circ T^j = f^*$$
 	in $L^p$.
 \end{theorem}
+
+\begin{proof}
+\textbf{Special Case: }$1\leq p < \infty$ but $f\in L^\infty(X)$.
+
+Then by the ergodic theorem and the DCT with dominator $2^p\norm{f}^p$ we have
+\[
+	\abs{\frac{1}{n}\sum_{j=0}^{n-1}f\circ T^j - f*}^p \to 0
+\]
+
+\textbf{General Case: }Take $f\in L^p$
+
+Given $\epsilon >0$ then there is a $g\in L^\infty$ such that $\norm{f-g}_p < \frac{\epsilon}{3}$.
+Then we get $f^\ast$ associated to $f$ and $g^\ast$ associated to $g$.
+Then $(f-g)^\ast$ is associated to $f-g$ and $(f-g)^\ast=f^\ast - g^\ast$.
+By a previous proposition we can see
+
+\[
+	\norm{f^\ast-g^\ast}_p = \norm{(f-g)^\ast}_p \leq \norm{f-g}_p < \frac{\epsilon}{3}
+\]
+Also since $g\in L^\infty$ there must be an $N$ such that
+\[
+	n\geq N \implies \norm{\frac{1}{n}\sum_{j=0}^{n-1}g\circ T^j - g^\ast}_p < \frac{\epsilon}{3}
+\]
+Then
+\begin{align*}
+	\norm{\frac{1}{n}\sum_{j=0}^{n-1}f\circ T^j - f^\ast}_p & \leq \norm{\frac{1}{n}\sum_{j=0}^{n-1}(f-g)\circ T^j}_p +  \underbrace{\norm{\frac{1}{n}\sum_{j=0}^{n-1}g\circ T^j - g^\ast}_p}_{<\epsilon/3 \text{ for }n\geq N} + \underbrace{\norm{g^\ast - f^\ast}}_{<\epsilon/3} \\
+															& \leq \frac{1}{n}\sum_{j=0}^{n-1}\norm{(f-g)\circ \cancelto{\text{m.p.t}}{T^j}}_p + \frac{2\epsilon}{3}\\
+															& = \norm{f-g} + \frac{2\epsilon}{3} < \epsilon
+\end{align*}
+\end{proof}
+
 \section{Examples}
 \subsection{Linear toral automorphism}
 \begin{defin}
@@ -235,7 +276,112 @@ $x\in\R$ is \mdf{absolutely normal} if $x$ is normal base b for all $b\geq 2$.
 Almost every $x\in\R$ is absolutely normal.
 \end{theorem}
 
-\section{Existent of invariant/ergodic measures}
+\section{Von Neumann's Ergodic Theorem \& The Adjoint}
+
+\begin{defin}
+	Given $T:X\to X$ a measure preserving transformation on a probability space $(X, \mu)$, the \mdf{Koopman operator} is given by
+	\[
+		\mdf{Uf}\defeq f\circ T
+	\]
+	for any $f:X\to \R$ measurable.
+
+
+	Suppose $H$ is a complex Hilbert space with inner product $\langle\cdot, \cdot\rangle$ then a linear operator $U:H\to H$ is an \mdf{isometry} if
+	\[
+		\norm{Uf}=\norm{f}\quad\forall f\in H
+	\]
+	where $\norm{f}=\sqrt{\langle f, f\rangle}$.
+	Equivalently $\langle Uf, Ug \rangle= \langle f, g\rangle$ for all $f,g \in H$.
+
+	Given a linear operator $U:H\to H$, the \mdf{adjoint} $U*:H\to H$ is the unique bounded linear operator satisfying
+	\[
+\langle U^\ast f, g \rangle= \langle f, Ug \rangle \quad \forall f, g \in H
+	\]
+
+	Let $V\subseteq H$ be a subspace then the \mdf{orthogonal complement} is
+	\[
+		V^\perp \defeq \left\{ f\in H \rmv \langle f, v \rangle =0 \quad \forall v \in V\right\}
+	\]
+\end{defin}
+
+\begin{lemma}[Properties of the adjoint]
+If $U$ is an isometry then 
+\begin{itemize}
+	\item $\norm{U^\ast f} \leq \norm{f} \quad \forall f\in H$
+	\item $U^\ast U = id $ because
+		\[
+		\langle U^\ast U f, g \rangle = \langle Uf, Ug\rangle = \langle f, g\rangle \quad \forall f,g \in H
+		\]
+\end{itemize}
+\end{lemma}
+\begin{eg}
+	\textbf{Computing the adjoint.}
+	$X=[0,1]$, $\mu=Leb$, $Tx=2x \mod 1$ and $Uf = f\circ T$ where $U:L^2(X)\toitself$ and our inner product is
+	\[
+		\langle f, g\rangle \defeq \int_0^1 f \overline{g} \; d\mu
+	\]
+	\begin{align*}
+		\langle U^\ast f, g\rangle & = \langle f, Ug\rangle = \int_0^1 f \overline{Ug} \; dx \\
+								   & = \int_0^1 f(x)\overline{g(Tx)}\; dx \\
+								   & = \int_0^{\frac{1}{2}} f(x)\overline{g(2x)} \; dx + \int_{\frac{1}{2}}^1 f(x)\overline{g(2x-1)}\; dx \\
+								   & = \frac{1}{2}\int_0^1 f\left( \frac{x}{2}\right)\overline{g(x)}\; dx + 
+										\frac{1}{2}\int_0^1 f\left( \frac{x+1}{2}\right)\overline{g(x)}\; dx
+	\end{align*}
+	Hence we can conclude 
+	\[
+		(U^\ast f)(x) = \frac{1}{2}\left[ f \left( \frac{x}{2}\right) + f \left( \frac{x+1}{2}\right)\right]
+	\]
+\end{eg}
+
+\begin{prop}
+Suppose $U$ is an isometry then
+\[
+Uf=f \iff U^\ast f = f
+\]
+\end{prop}
+
+Given a bounded linear operator $A:H\to H$ we can define the \mdf{kernel} to be
+\[
+	\ker(A) \defeq \left\{ f\in H \rmv Af = 0\right\}
+\]
+then this a closed subspace in $H$.
+Moreover, if $U$ is an isometry then the above proposition tells us that $\ker(U-I)=\ker(U^\ast - I)$.
+
+\textbf{Fact: }
+For every closed subspace $V\subseteq H$ we can write $H=V \oplus V^\perp$ and hence
+\[
+\forall f\in H \quad \exists ! v\in V, w\in V^\perp \; s.t. \; f= v+ w
+\]
+then we can define \mdf{orthogonal projection} $\pi: H \to V$ by
+\[
+	\pi(f) = \pi (v+ w) = v
+\]
+
+\begin{theorem}[Von Neumann]
+If $H$ is a Hilbert space and $U:H\toitself$ is an isometry.
+Let $\pi$ denote orthogonal projection into $V=\ker(U-I)$ then
+\[
+	\frac{1}{n}\sum_{j=0}^{n-1}U^j f \to \pi (f) \quad \text{in }H \quad \text{as} \; n\to \infty
+\]
+that is
+\[
+\lim_{n\to\infty}\norm{\frac{1}{n}\sum U^j f - \pi(f)} = 0
+\]
+\end{theorem}
+
+\begin{proof}
+The proof of this is about a page long and definitely warrants a read.
+\end{proof}
+
+\begin{cor}
+	Given a measure preserving transformation and $Uf=f\circ T$ and $H=L^2(x)$. Then
+	\[
+		\norm{\frac{1}{n}\sum_{j=0}^{n-1}f\circ T^j - \pi f}_2 \to 0 \quad \text{as} \; n\to\infty
+	\]
+	If $T$ is ergodic then $\pi f = \int f\; d\mu$.
+\end{cor}
+
+\section{Existence of invariant/ergodic measures}
 \begin{defin}
 Let $\mdf{M(X)}$ be the set of all probability measure on X.
 
@@ -264,7 +410,15 @@ The motivation for a definition of entropy is as a vehicle to distinguish betwee
 		\item $T(B)\subseteq B, S(C)\subseteq C$
 		\item $\pi: B\to C$ and $\pi^{-1}:C\to B$ are measure preserving transformations
 		\item $\pi\circ T = S\circ\pi$
+		\begin{figure}[H]
+			\centering
+			\begin{tikzcd}
+				X \arrow[r, "T"] \arrow[d, "\pi"'] & X \arrow[d, "\pi"] \\
+				Y \arrow[r, "S"'] & Y
+			\end{tikzcd}
+		\end{figure}	
 	\end{itemize}
+	
 Assume $\msrspc$ is a probability space and $\alpha=\{A_i\}$ a countable collection of subsets $A_i\subseteq B$.
 \begin{itemize}
 	\item We say $\alpha$ is a \mdf{partition} of $X$ if $\cup A_i$ = X and $A_i\cap A_j=\emptyset$ up to measure 0.
