@@ -258,6 +258,39 @@ If $f:\mathcal{K}\to\mathcal{K}$ has $0$ rotation number then $f$ has a fixed po
 	Therefore, $f$ has a periodic point.
 \end{note}
 
+\subsection{Tending to periodic orbits}
+\begin{theorem}
+Let $f$ be a circle homeomorphism.
+Prove that if its rotation number $\rho\in\Q$ is rational then any point $x\in\mathcal{K}$ is either period or converges to some periodic orbit.
+More succinctly there is a point $p\in\mathcal{K}$ such that
+\[
+	\lim_{n\to\infty}d(f^n(x), f^n(p))=0
+\]
+\end{theorem}
+
+\begin{proof}
+We have seen that circle homeomorphisms of rational degree certainly have periodic orbits.
+We can therefore partition the circle using the periodic points of some period $m$.
+For simplicity let's assume $m=1$.
+
+By slicing the circle into arcs between fixed points we can assume that on each arc $f(z)>z$ or $f(z)<z$.
+Without loss of generality lets assume the former.
+
+\textbf{Claim: }The iterates $(f^n(z))_{n=0}^\infty$ form a bounded, increasing sequence.
+
+This follows because $f$ is a circle homeomorphism.
+This is thanks to injectivity which prevents iterated from "jumping over" a fixed point into the next arc where we might have $f(z) < z$.
+
+So the sequence must have a limit $x_\ast$.
+Moreover, this limit can easily be shown to be a fixed point and therefore (thanks to our previous division of the circle) must be the fixed point at the end of the arc.
+
+\textbf{What about $m> 1$?}
+
+We can certainly get the iterated $f^{nm}(x)$ and $f^{nm}(p)$ to tend to one another as $n\to\infty$, but what about the points in between?
+Since $\mathcal{K}$ is compact there is a fixed $\delta$ such that points $\delta$ close will stay $\epsilon$ close over the next $m-1$ iterates.
+This gives convergence of the entire sequence.
+\end{proof}
+
 \section{Poincar\'e's Theorem and Minimality}
 
 \begin{defin}
@@ -331,7 +364,41 @@ Note that this is a linear equation on $h$.
 We can conclude that a solution to this equation is unique up to adding a constant corresponding to choosing with point in $\mathcal{K}$ is sent to zero.
 For a hand-wavey explanation of this, see the lecture notes.
 
-\section{Expanding Maps and Shift Spaces}
+\section{Expanding Maps}
+
+\subsection{Fixed Points}
+\begin{theorem}
+If $f:\mathcal{K}\to\mathcal{K}$ is an expanding, orientation preserving map and $d=\deg(f)$, then there are exactly $d^n-1$ points $p\in\mathcal{K}$ such that $f^n(p)=p$.
+\end{theorem}
+
+\begin{proof}
+We'll do $n=1$ then $\deg(f^n)=\deg(f)^n$ implies the rest.
+Take a lift $F:\R\to\R$ and recall that $F(1)=F(0)+d$.
+
+\begin{align*}
+	\#\text{fixed points for }f & = \#\left\{x\in[0,1) \rmv x=F(x) \mod 1\right\} \\
+								& = \#\text{integer values assumed by }g(x)\defeq F(x) -x \text{ in the range }[0,1)
+\end{align*}
+But $g$ is monotone increasing (take derivative) and $g(1)-g(0)= F(1)- F(0) - 1 = d-1$.
+Therefore $g$ assumes $d-1$ integer values on the range $[0,1)$.
+\end{proof}
+
+\begin{theorem}
+Let $f:\frac{\R}{\Z}\to\frac{\R}{\Z}$ be an expanding map, than there exists a dense $G_\delta$ set of points whose orbits are dense.
+(Recall that a dense $G_\delta$ set is a countable intersection of open dense sets).
+\end{theorem}
+
+\begin{proof}
+Choose a countable dense set of points $\left\{x_n\right\}$ and for each natural $m\geq 1$ consider the ball $B\left(x_n, \frac{1}{m}\right)$.
+A point $x$ has a dense orbit if and only if it intersects every one of these balls.
+That is for all $n$ and $m$ there is a $k$ such that $f^k(x)\in B\left(x_n, \frac{1}{m}\right)$ or more precisely
+\[
+	x\in \bigcap_n \bigcap_m \bigcup_k f^{-k} B\left(x_n, \frac{1}{m}\right)
+\]
+Note that the $\cup_k f^{-k}B\left(x_n, \frac{1}{m}\right)$ are open and dense since any expanding map is mixing and so at least transitive.
+\end{proof}
+
+\subsection{Conjugacy to shift maps}
 \begin{theorem}
 If $f:\mathcal{K}\to\mathcal{K}$ is an expanding map, preserves orientation and has degree 2 then there is a semi-conjugacy $h:\Sigma\to\mathcal{K}$ to the full shift on two symbols.
 
@@ -417,6 +484,27 @@ which is a countable intersection (over $m$) of open dense sets.
 By Baire's Theorem our desired point exists.
 \end{proof}
 
+\begin{proof}
+\textit{(Alternate).}
+Since we're in a compact space, there is a countable dense set.
+Then we can choose a sequence of open discs around these dense set $(U_n)_{n=1}^\infty$.
+Choose $N_1$ such that $T^{-N_1}(U_2)\cap U_1 \neq \emptyset$.
+Then choose an open disc $V_1$ of radius less than a half such that 
+\[
+	V_1 \subseteq \overline{V_1}\subseteq U_1 \cap T^{-N_1}(U_2)
+\]
+Then choose $N_2$ such that $T^{-N_2}(U_3)\cap V_1\neq\emptyset$ and subsequently choose an open disc $V_2$ of radius less that $\frac{1}{4}$ such that
+\[
+	V_2\subseteq \overline{V_2} \subseteq V_1 \cap f^{-N_2}(U_3)
+\]
+By induction we get a sequence of discs
+\[
+V_1 \supseteq V_2 \supseteq V_3 \supseteq \dots
+\]
+such that $diam(V_n)\leq\frac{1}{2^n}$.
+So choose the point $x$ in $\cap_{n}V_n$ then $T^{N_{n-1}}(x)\in U_n$ for each $n\geq 1$.
+Therefore $(T ^n(x))$ forms a dense orbit.
+\end{proof}
 \subsection{Shift Spaces}
 \begin{theorem}
 The shift map $\sigma: \Sigma_A \to \Sigma_A$ is mixing if and only if the matrix $A$ is aperiodic.
@@ -717,6 +805,35 @@ Given a hyperbolic toral automorphism with eigenvalues $\lambda_+ > 1 > \lambda_
 \section{Preserved Quantities}
 
 \subsection{Semi-Conjugacies}
+
+\begin{defin}
+Given continuous maps $T:X\to X$ and $S:Y\to Y$, a semi-conjugacy from $T$ to $S$ is a continuous surjective map $\pi:Y\to X$ such that
+\[
+T\circ \pi = \pi \circ S
+\]
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}
+		X \arrow[r, "T"] & X  \\
+		Y \arrow[r, "S"'] \arrow[u, "\pi"] & Y \arrow[u, "\pi"']
+	\end{tikzcd}
+\end{figure}
+\end{defin}
+
+\begin{theorem}
+Let $T:X\to X$ and $S:Y\to Y$ be continuous maps on compact metric spaces and $\pi:Y\to X$ a semi-conjugacy then $h(S)\geq h(T)$.
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}
+		X \arrow[r, "T"] & X  \\
+		Y \arrow[r, "S"'] \arrow[u, "\pi"] & Y \arrow[u, "\pi"']
+	\end{tikzcd}
+\end{figure}
+
+This makes sense because the dynamics of $T$ are contained in the dynamics of $S$ and hence $S$ must be at least as "complex" as $T$.
+
+\end{theorem}
 
 \subsection{Conjugacies}
 
