@@ -19,6 +19,7 @@
 \usepackage[dvipsnames]{xcolor}
 \usepackage[framemethod=TikZ]{mdframed}
 \usepackage{microtype}
+\usepackage{bm}
 %}}}
 %{{{ Custom commands
 % Partial Derivative command
@@ -54,11 +55,11 @@
 }
 
 % Custom formatting commands
-\newcommand{\mv}[1]{\textbf{#1}}
+\newcommand{\mv}[1]{\bm{#1}}
 \newcommand{\mdf}[1]{{\color{red}#1}}
 
 % Norms
-\newcommand{\abs}[1]{|#1|}
+\newcommand{\abs}[1]{\left|#1\right|}
 
 %}}}
 %{{{ Custom environments
@@ -69,11 +70,16 @@
 \newtheorem{prop}{Proposition}[section]
 \newtheorem{corollary}{Corollary}[section]
 \newtheorem{lemma}{Lemma}[prop]
-\newtheorem{defin}{Definition}[section]
+
+\newenvironment{defin}
+	{\begin{mdframed}[backgroundcolor=white, roundcorner=5pt, linewidth=1pt]
+		\setlength{\parindent}{0pt}
+		}
+	{\end{mdframed}}
 
 \definecolor{mylg}{rgb}{0.9,0.9,0.9}
 \newenvironment{eg}
-    {\begin{mdframed}[backgroundcolor=mylg, roundcorner=5pt, linewidth=0pt]}
+{\begin{mdframed}[backgroundcolor=mylg, roundcorner=5pt, linewidth=0pt]\textbf{Example: }\normalfont}
     {\end{mdframed}}
     
 \newenvironment{note}
@@ -606,11 +612,331 @@ $$Z\defeq I_2 = \int_V \omega^2\;dV$$
 
 \subsection{Circulation}
 We define the \mdf{velocity circulation} $\Gamma$ over an evolving closed contour $C=C(t)$ via the following contour integral
-$$\gamma=\oint_{C(T)}\mv{u}\cdot\dl$$
+$$\gamma=\oint_{C(t)}\mv{u}\cdot\dl$$
 where $\dl$ is an infinitesimal segment of the contour $C$.
 By Stokes' theorem we can rewrite this a surface integral of the vorticity over the surface $A=A(t)$ spanned by the contour C,
 $$\Gamma=\oint_{C(t)} \mv{u}\cdot\dl=\int_{A(t)}(\grad\times\mv{u})\cdot\mv{n}\;dA=\int_{A(t)}\omega\cdot\mv{n}\;dA$$
 where $\mv{n}$ is the normal to $A$.
 \subsection{Motion of a Material Line Element}
 For the next statement we need to know how to describe the motion of line elements that `follow the fluid'. We consider a \emph{material} contour $C$ that `follows the fluid', so that the points of $C$ move together with the fluid particles.
+
+We consider the evolution of an infinitesimal segment of the contour
+\[
+	d\mv{l}= \mv{x}_2 - \mv{x}_1
+\]
+Both ends move with the flow, i.e. $D_t{\mv{x}_i}(t)= \mv{u}(\mv{x}_i(t), t)$ because the $\mv{x}_i$ are a unction of $t$ only and hence $D_t=\partial_t$.
+So we can write
+\[
+	\frac{D(d\mv{l})}{Dt}= \frac{D}{Dt}(\mv{x}_2 - \mv{x}_1) = \mv{u}(\mv{x}_2(t), t) - \mv{u}(\mv{x}_1(t), t) = (d\mv{l} \cdot\grad)\mv{u}
+\]
+where we have only keep the leading term in the Taylor expansion of $d\mv{l}$.
+
+\subsection{Kelvin's Circulation Theorem}
+\begin{theorem}
+In an ideal fluid flow (inviscid and incompressible), where all external forces are conservative (e.g. gravity), the circulation $\Gamma$ over any material contour $C=C(t)$ is conserved, i.e.
+\[
+	\frac{D\Gamma}{Dt}=0
+\]
+\end{theorem}
+
+\begin{proof}
+If we differentiate the circulation we get
+\[
+	\md{\Gamma}=\oint_{C(t)}\md{\mv{u}} \cdot d\mv{l} + \oint_{C(t)} \mv{u} \cdot \md{(d\mv{l})}
+\]
+Then in an ideal flow we have the Euler equation
+\[
+	\md{\mv{u}}=\grad\left( \frac{-p}{\rho}-gz\right)
+\]
+and using the expression for $D_t(d\mv{l})$ we just figured out we get
+\begin{align*}
+	\md{\Gamma} & = \oint_{C(t)}\left[ \grad\left( \frac{-p}{\rho}-gz\right)\right]\cdot d\mv{l} + \oint_{C(t)} \mv{u} \cdot \left[ (d\mv{l}\cdot\cdot)\mv{u}\right] \\
+				& = \oint_{C(t)} \left[ \grad \left( \frac{-p}{\rho}-gz - \frac{u^2}{2}\right)\right]\cdot d\mv{l} \\
+				& = \left[ \frac{-p}{\rho}-gz+\frac{u^2}{2}\right]_{C(t)}
+\end{align*}
+The expression in the brackets is the increment in the internal value after going once round $C$.
+This expression is $0$ because the function is single-valued.
+\end{proof}
+
+\begin{note}
+	\begin{enumerate}
+		\item $C$ must be a material contour. The theorem would not work for a fixed contour.
+		\item Kelvin's Theorem also works for certain classes of compressible flows.
+		\item Kelvin's Theorem does not require $C$ to be simply connected.
+		\item The inviscid equations were only used on $C$.
+			Viscosity can happen in the flow so long as it does not take place on $C$.
+	\end{enumerate}
+\end{note}
+
+\begin{eg}
+	\textbf{Starting vortices}
+\end{eg}
+
+\subsection{Cauchy-Lagrange Theorem}
+\begin{theorem}
+In an ideal flow, in the presence of conservative forces, if a portion of fluid is initially in irrotational motion then it will remain irrotational at any time.
+\end{theorem}
+
+\begin{proof}
+For contradiction suppose that the flow starts irrotational but at a later time some material element ceases to be irrotational.
+At $t_0 >0$ choose a small contour $C(t_0)$ within this material element of fluid such that the surface $A$ enclosed by the contour has a non-zero flux of vorticity through it.
+\[
+	\int_A \mv{\omega}\cdot\mv{n} \; dA\neq 0
+\]
+Therefore, the circulation around $C(t_0)$ is non-zero.
+Tracing this contour back to $t=0$ we see that the circulation around $C(0)$ is non-zero by Kelvin's Theorem
+Therefore the flow cannot be irrotational at $t=0$.
+\end{proof}
+
+\subsection{Vortex Lines, Surfaces and Tubes}
+\begin{defin}
+	A \mdf{vortex line} is a field line of vorticity. That is a curve $\mv{x}(s, t)$ to which $\mv{\omega}=(\omega_x, \omega_y, \omega_z)$ is tangential at every point
+	\[
+		\frac{\pd{x}{s}}{\omega_x}=\frac{\pd{y}{s}}{\omega_y}=\frac{\pd{z}{s}}{\omega_z}
+	\]
+	Here $s$ is the distance measured along the vortex line and derivatives are taken at a fixed time.
+	Vortex lines are to the vorticity as streamlines are to the vorticity.
+
+	A \mdf{vortex surface} is formed by a set of vortex lines passing through some curve which is not a vortex line.
+	Note that the vorticity is tangent to the vortex surface at every point and a vortex line is the intersection of two vortex surfaces.
+
+	Finally, a \mdf{vortex tube} is a vortex surface formed by a closed curve.
+\end{defin}
+
+\subsection{Helmholtz Theorems}
+In an ideal flow in the presence of conservative forces we have the following theorems:
+
+\begin{theorem}
+\begin{enumerate}
+	\item Vortex lines cannot start or end in the fluid. 
+		They either form a closed path, end at a boundary or go to infinity.
+	\item Fluid elements on a vortex line will remain on a vortex line (i.e. vortex lines follow the fluid).
+	\item Circulation is the same for any cross-section of a vortex tube.
+		Therefore the \mdf{strength of a vortex tube}, defined by its circulation about any cross-section, is constant in time.
+\end{enumerate}
+\end{theorem}
+
+\begin{eg}
+	\textbf{Tornadoes}
+
+Consider a tornado.
+One can think of a tornado as a vortex tube with vorticity $\omega$ constant across cross sections $\delta A$.
+Then the circulation (the strength of the vortex tube) is fixed by Kelvin's Theorem at
+\[
+\Gamma = \omega \delta A
+\]
+\textbf{Question: }What happens to the vorticity as it travels over a hump in the train.
+
+\textbf{Answer: }The volume of the tube is approximately $V= h \delta A$ where $h$ is its height.
+$V$ remains the same as it travels over the hump and no fluid can enter or leave the tube.
+Therefore the reduction in heigh leads to an increase in cross-sectional area $\delta A$.
+The circulation is unchanged so $\omega$ must decrease.
+
+The vortex surface forming the boundary of the tube moves with the fluid.
+Hence when there is a velocity shear at the top of the tornado, the fluid inside the tornado is stretched.
+It cross-section must decrease because the fluid is incompressible so the vorticity gets magnified.
+\end{eg}
+
+\subsection{Vortex Rings}
+Consider a joined up vortex tube which is axisymmetric.
+That is, in polar coordinates, the velocity has no dependence on $\theta$:
+\[
+	\mv{u}=u_r(r, z, t)\mv{e}_r + u_z(r, z, t)\mv{e}_z
+\]
+Then the vorticity is $\mv{\omega}=\omega \mv{e}_\theta$ where
+\[
+	\omega = \pd{u_r}{z}-\pd{u_z}{r}
+\]
+The tubes are ring-shaped and must move with the fluid.
+
+If the fluid is incompressible then the volume inside a thin vortex tube of radius $r$ and cross-section $\delta A$ will be unchanged at $2\pi r \delta A$.
+Helmholtz tells us that $\omega \delta A$ is constant.
+Dividing these two suggests that $\omega / r$ is constant.
+More precisely
+\[
+	\frac{D}{Dt}\left( \frac{\omega}{r}\right)=0
+\]
+and so the vorticity of a fluid element changes in proportion to $r$.
+
+\section{2D Flows}
+In this section we focus our attention to flows of the form
+\[
+	\mv{u} = (u (x, y, t), v(x, y, t), 0)
+\]
+in which the vorticity component looks like
+\[
+	\mv{\omega}=(0, 0, \omega(x, y, t))
+\]
+The vorticity equation then becomes
+\[
+	\md{\omega} = \left( \pd{}{t}+ (\mv{u} \cdot \grad) \right)\omega = \nu \grad^2 \omega
+\]
+
+\subsection{The Stream Function}
+In 2D incompressible flows, we can represent the velocity field in terms of the \mdf{stream function} as
+\[
+	\mv{u}=\grad\psi \times \mv{e}_z
+\]
+or in component form
+\[
+	u=\pd{\psi}{y}, \quad \quad v = - \pd{\psi}{x}
+\]
+which automatically satisfies the condition of incompressibility.
+Then we can find the vorticity by
+\[
+	\omega = \pd{v}{x} - \pd{u}{y} = - \grad^2 \psi
+\]
+
+\subsection{Streamlines}
+We can see from the component form that
+\[
+	\mv{u}\cdot \grad \psi = 0
+\]
+So in steady flows where $\partial_t\psi =0$ we can see
+\[
+	\mv{u}\cdot\grad\psi=D_t\psi = 0
+\]
+Therefore $\psi$ is conserved along fluid paths.
+So in steady flows the fluid particles move along lines of constant $\psi$ so the streamlines are $\psi=c$ for some $c$.
+
+\subsection{Fluid Flux}
+The \mdf{volume flux of fluid}, per unit length (since we're in 2D) across a curve between points $a$ and $b$ is
+\[
+	Q = \int_a^b \mv{u}\cdot\mv{n} ds
+\]
+where $s$ is the arc length along a curve between $a$ and $b$ and $\mv{n}=(\partial_s y, -\partial_s x)$ is the normal to the curve.
+Substituting in the stream function we get
+\[
+	Q = \int_a^b \left( \pd{\psi}{y}\pd{y}{s} + \pd{\psi}{x}+ \pd{x}{s}\right)ds = \int_a^v \frac{d\psi}{ds}ds = [\psi]_a^b = \psi(b) - \psi(a)
+\]
+So the difference of the stream function at the two end points tells us the value of $Q$.
+
+\subsection{Plane-Parallel Shear Flow}
+This is a flow of the form
+\[
+	\mv{u}(\mv{x}, t) = ( u(y, t), 0, 0)
+\]
+Then the stream function is
+\[
+	\psi(y, t) = \int_{-h}^y u(y' , t) \;dy'
+\]
+where we assume that there is a boundary at $y=-h$.
+Incompressibility is automatically satisfied and the $(\mv{u}\cdot\grad)\mv{u}$ term is automatically $0$.
+Writing NS in component form we get
+
+\begin{align*}
+	\pd{u}{t}&= - \frac{1}{\rho}\pd{p}{x} + \nu \pd{^2 u}{y^2} \\
+	0 &= -\frac{1}{\rho}\pd{p}{y}
+\end{align*}
+
+The second equation tells us that pressure is independent of $y$ and so $p$ must have the form $p=p(x, t)$.
+In the first equation we see that the dependence on $x$ is linear. So we can write
+\[
+	\frac{-\grad p}{\rho}= f(t) \mv{e}_x
+\]
+which leads us to the equation
+\begin{formula}
+	\[
+		\pd{u}{t} = f + \nu \pd{^2 u}{y^2}
+	\]
+\end{formula}
+
+\subsubsection{Inviscid and Steady Plane-Parallel Flow}
+Consider the same flow with the additional assumptions that $\pd{\mv{u}}{t}=0$ and $\nu=0$. 
+Then we get
+\[
+	0 = - \frac{1}{\rho}\pd{p}{x}, \quad \quad 0 = -\frac{1}{p}\pd{p}{y}
+\]
+The equations are therefore satisfied by constant pressure and $\mv{u}=(u(y), 0, 0)$.
+
+\subsubsection{Couette Flow (surface driven)}
+Consider a steady but viscous plane shear flow
+\[
+	\mv{u} = (u(y), 0 ,0)
+\]
+between two infinite plates at $y=h$ and $y=-h$ with are moving in the $x$-direction at speeds $U$ and $-U$.
+Assume that pressure in the flow is uniform in space.
+What is the velocity profile?
+
+Since we are assuming that pressure is constant our equation reduces to
+\[
+	\partial_{yy}u(y)=0
+\]
+which is solved by
+\[
+	u(y) = Ay + B
+\]
+The boundary conditions tell us $B=0$ and $A=\frac{U}{h}$ and hence
+\[
+	u(y) = \frac{U}{h}y
+\]
+Using this we can calculate the stream function
+\[
+	\psi(y) = \int_{-h}^\psi \frac{Us}{h}ds = \frac{U}{2h}(y^2 - h^2)
+\]
+so the volume flux at a channel cross section is $Q = \psi(h) - \psi(-h) = 0$, as one might expect.
+
+We can calculate the friction at the bottom plate using the formula
+\begin{align*}
+	D & = \nu\rho\cdot\abs{\pd{u}{y}}_{\partial V} \\
+	  & = \nu\rho\cdot\abs{\pd{u}{y}}_{y=-h} = \frac{U\nu\rho}{h}=\frac{\mu U}{H}
+\end{align*}
+
+\subsubsection{Poiseuille Flow (pressure driven)}
+We now consider the opposite situation where we still have steady viscous plane parallel flow but the boundaries are stationary and the flow is driven by a pressure fradient.
+\[
+	\mv{u}=(u(y), 0, 0)
+\]
+with infinite, fixed plates at $y=\pm h$.
+The flow is driven by a uniform pressure gradient in the $x$-direction
+\[
+	-\frac{\grad p}{\rho}=f\mv{e}_x
+\]
+where $f$ is some constant.
+Solving the usual equation yields a quadratic in $y$
+\[
+	u(y)= \frac{f}{2\nu}(h^2 = y^2)
+\]
+and the drag at the top and bottom plates is given by $D=\rho f h$.
+One can show that the stream function is cubic and the volume flux is proportional to the cube of the channel radius $h$.
+
+\subsection{Round vortices}
+In a similar vein we consider flow whose vorticity distributions depend only on the radial coordinate and not on angle.
+Consider a vorticity field for a steady inviscid 2D flow $\mv{\omega}= (0, 0, \omega)$ so that, in polar coordinates, $\omega=\omega(r)$.
+From the incompressibility condition with $\mv{u}=\mv{u}(r)=u_r(r)\mv{e}_r + u_\theta(r)\mv{e}_\theta$ we get
+\[
+	\grad\cdot\mv{u} = \frac{1}{r}\pd{(ru_r)}{r}+\frac{1}{r}\pd{u_\theta}{\theta}=0
+\]
+Which leaves us with either $u_r=A/r$ or $u_r\equiv 0$.
+We see that it must be the latter because the former would imply a mass source at $r=0$.
+So we can conclude
+\[
+	\mv{u} = u_\theta(r) \mv{e}_\theta
+\]
+and hence the velocity and vorticity gradient are perpendicular.
+So $\mv{u}\cdot\grad\omega = 0$ and hence $D_t\omega = 0$ is satisfied.
+Such a vorticity distribution must therefore be a steady-state solution although this solution is not necessarily a realisable solution.
+
+To find the stream function we have to use the cylindrical coordinate equivalent
+\begin{formula}
+	\[
+		u_\theta(r, t) = - \pd{\psi(r, t)}{r}
+	\]
+	which gives us that
+	\[
+		\psi(r, t) = - \int_0^r u_\theta(r', t) \;dr'
+	\]
+\end{formula}
+To get a relation between velocity and vorticity we us Stokes' Theorem.
+Consider a contour $C$, a circle of radius $r$ centred at the origin.
+\[
+	\Gamma = \oint_c \mv{u}\cdot d\mv{l} \equiv 2\pi r u_\theta (r) = \int(A) \mv{\omega}\cdot\mv{} \; dA \equiv 2\pi \int_0^r \omega r'\;dr'
+\]
+which means
+\[
+	u_\theta(r) = \frac{1}{r}\int_0^r \omega(r') r' \; dr'
+\]
+\subsubsection{Solid Body Rotation}
+\subsubsection{Point Vortices}
+\subsection{Unsteady 2D Flow - Similarity Solution}
 \end{document}
