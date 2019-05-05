@@ -1,0 +1,266 @@
+\documentclass[11pt]{article}
+
+%{{{ Packages
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{centernot}
+\usepackage{amsthm}
+\usepackage{mathdots}
+\usepackage{mathtools}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{microtype}
+\usepackage{witharrows}
+\usepackage{silence}
+\usepackage{tikz-cd}
+\usepackage{float}
+\usepackage{faktor}
+\WarningFilter{mdframed}{You got a bad break}
+%}}}
+%{{{ Custom commands
+% p-forms
+\DeclareFontFamily{U}{skulls}{}
+\DeclareFontShape{U}{skulls}{m}{n}{ <-> skull }{}
+\newcommand{\skull}{\text{\usefont{U}{skulls}{m}{n}\symbol{'101}}}
+
+% Nice maths commands
+\newcommand{\defeq}{:=}
+\newcommand{\eqdef}{=:}
+\newcommand{\abs}[1]{|#1|}
+\newcommand{\norm}[1]{||#1||}
+%\renewcommand{\dots}{...}
+\newcommand{\msrspc}{\ensuremath{(X,\mathcal{B},\mu)}}
+\newcommand{\homrel}{\stackrel{\partial}{\simeq}}
+\newcommand{\homrelset}[1]{\stackrel{#1}{\simeq}}
+\newcommand\restr[2]{{% we make the whole thing an ordinary symbol
+  \left.\kern-\nulldelimiterspace % automatically resize the bar with \right
+  #1 % the function
+  \vphantom{\big|} % pretend it's a little taller at normal size
+  \right|_{#2} % this is the delimiter
+  }}
+\newcommand{\relmiddle}[1]{\mathrel{}\middle#1\mathrel{}}
+\newcommand{\rmv}{\relmiddle|}
+
+% Custom operators
+\makeatletter
+\DeclareRobustCommand\bigop[1]{%
+  \mathop{\vphantom{\sum}\mathpalette\bigop@{#1}}\slimits@
+}
+\newcommand{\bigop@}[2]{%
+  \vcenter{%
+    \sbox\z@{$#1\sum$}%
+    \hbox{\resizebox{\ifx#1\displaystyle.9\fi\dimexpr\ht\z@+\dp\z@}{!}{$\m@th#2$}}%
+  }%
+}
+\makeatother
+\newcommand{\bigast}{\DOTSB\bigop{\ast}}
+
+% Spaces
+\newcommand{\ktor}{\mathbb{T}^k}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\RP}{\mathbb{R}\mathbb{P}}
+\newcommand{\Lp}{\Lambda^p}
+
+% Derivatives
+\newcommand*{\pd}[3][]{\ensuremath{\frac{\partial^{#1} {#2}}{\partial {#3}^{#1}}}}
+\newcommand{\grad}{\bigtriangledown}
+
+% Vectors
+\newcommand{\mv}[1]{\textbf{#1}}
+
+%}}}
+%{{{ Enviornments
+% Definitions environment
+\newenvironment{defin}
+	{\begin{mdframed}[backgroundcolor=white, roundcorner=5pt, linewidth=1pt]
+		\setlength{\parindent}{0pt}
+		}
+	{\end{mdframed}}
+\newcommand{\mdf}[1]{{\color{red} #1}}
+
+% Important notes environment
+\newenvironment{note}
+	{\begin{mdframed}[backgroundcolor=white, linecolor=red, roundcorner=5pt, linewidth=1pt]\bfseries{Note:}\normalfont}
+	{\end{mdframed}}
+
+% Examples enviornmnet
+\definecolor{mylg}{rgb}{0.9,0.9,0.9}
+\newenvironment{eg}
+{\begin{mdframed}[backgroundcolor=mylg,roundcorner=5pt,linewidth=0pt]\setlength{\parindent}{0pt}\bfseries{Example:}\normalfont}
+	{\end{mdframed}}
+
+% Theorem enviornment
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{prop}[theorem]{Proposition}
+\newtheorem{cor}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+%}}}
+%{{{ Document metadata
+\title{Manifolds Notes}
+\author{}
+\date{}
+%}}}
+
+\begin{document}
+\maketitle
+
+\section{Differential Forms}
+\begin{defin}
+Given vector spaces $E, F$ and $p\in \N$ we denoted
+\[
+	A(E^p, F)\defeq p-\text{linear alternating maps }E^p\to F
+\]
+where by alternating we mean that swapping any two coordinates negates the output.
+Equivalently, if two coordinates are the same then the output is $0$.
+\end{defin}
+
+\begin{lemma}
+Given $E$ and $p$ there is a vector space $V$ together with a surjective map $\mu\in A(E^p, V)$ with the property that if $\theta\in A(E^p, F)$ then there is a linear map $\hat{\theta}:V\to F$ such that $\theta = \hat{\theta}\circ\mu$
+\end{lemma}
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}
+		\; & V \arrow[rd, "\hat{\theta}", dashed] & \; \\
+		E^p \arrow[ru, "\mu", two heads] \arrow[rr, "\theta"']& \; & F
+	\end{tikzcd}
+\end{figure}
+
+\begin{note}
+	The $\hat{\theta}$ is unique given $\theta$ and $V$.
+	The $V$ is unique up to isomorphism.
+\end{note}
+
+\begin{defin}
+We write $V = \Lambda^p E$ and given $v_1, \dots , v_p\in E$ we write
+\[
+	v_1 \wedge \dots \wedge v_p \defeq \mu(v_1, \dots ,v_p)
+\]
+We say $\Lambda^p E$ is the \mdf{$p$-th exterior power of $E$}.
+\end{defin}
+
+\subsection{Basis for $\Lambda^p E$}
+Let $e_1, \dots , e_m$ be a basis for $E$.
+Since $\mu$ is surjective $\Lambda^p E$ is spanned by
+\[
+	\left\{ e_{i_1} \wedge \dots \wedge e_{i_p} \rmv i_k\in I(m) \right\}
+\]
+where we can assume that the $i_k$ are distinct else their image would be null.
+We can also assume that the indices are in order up to sign.
+
+\begin{lemma}
+These elements are linearly independent and hence form a basis.
+\end{lemma}
+
+Therefore we can say $\dim(\Lambda^p E) = \binom{m}{p}$.
+
+\subsection{Wedge Product}
+Given $p, q\in\N$ with $p, q \geq 1$ we can define the bilinear wedge product
+\[
+	\cdot \wedge \cdot : (\Lambda^p E \times \Lambda^q E) \to \Lambda^{p+q}E
+\]
+First we define on it on a basis.
+So take a basis $e_1, \dots , e_m$ of $E$ and then define
+\[
+	(e_{i_1} \wedge \dots \wedge e_{i_p}) \wedge (e_{j_1} \wedge \dots \wedge e_{j_q}) = e_{i_1} \wedge \dots \wedge e_{i_p} \wedge e_{j_1} \wedge \dots \wedge e_{j_q}
+\]
+This can then be extended linearly to arbitrary elements and hence doesn't depend on our initial choice of basis.
+
+\subsection{Induced maps}
+Suppose we have a linear map between finite dimensional vector spaces
+\[
+\phi : E \to F
+\]
+then we get a multi linear map in the natural way
+\[
+\phi^p : E^p \to F^p
+\]
+By composing with the surjective map $\mu_F$ we get an alternating map
+\[
+\mu_F \circ \phi^p : E^p \to \Lambda^p F
+\]
+Hence by the defining property of $\Lambda^P E$ we get a linear map
+\[
+\Lambda^p \phi : \Lambda^p E \to \Lambda^p F
+\]
+with the property that the outer diamond in the below diagram commutes.
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}
+		\; & \Lambda^p E \arrow[rd, dashed, "\Lambda^p \phi"] & \; \\
+		E^p \arrow[rr, "\mu_f \circ \phi^p"'] \arrow[rd, "\phi^p"'] \arrow[ru, "\mu_E"] & \; & \Lambda^p F \\
+		\; & F^p \arrow[ru, "\mu_F"'] & \;
+	\end{tikzcd}
+\end{figure}
+
+Essentially, if $e_1, \dots , e_m$ is a basis for $E$, then we can describe $\Lambda^p\phi$ by
+\[
+	(\Lambda^p\phi)( e_{i_1}\wedge \dots \wedge e_{i_p}) = (\phi e_{i_1}) \wedge \dots \wedge (\phi e_{i_p}).
+\]
+
+\subsection{$\skull$ The dreaded p-form $\skull$}
+
+\begin{defin}
+Let $M$ be an $m$-manifold.
+Given $x\in M$ we can form the $p$-th exterior power of the cotangent space
+\[
+	\Lambda^p (T_x^\ast M)
+\]
+We can assemble these together into a vector bundle $\Lambda^p(T^\ast M)$.
+Subsequently, a \mdf{$p$-form} on $M$ is define to be a section of the bundle $\Lambda^p(T^\ast M)$	
+\end{defin}
+
+\noindent\textbf{What the fuck does this mean???}
+
+A more natural way to think about $p$-forms is to take local coordinates.
+Let $\phi: U \to \R^m$ be a chart yielding local coordinates $x_1, \dots , x_m$.
+We have locally defined $1$-forms $dx_1, \dots , dx_m$ which form a basis for the cotangent space
+\[
+	dx_i\left(\pd{}{x_j}\right)=\delta_{ij}
+\]
+Then given $I\in\mathcal{I}(m, p)$ we write $\mv{d}x_I\defeq d{x_{i_1}} \wedge \dots \wedge d{x_{i_p}}$.
+Thus $\left\{ \mv{d}x_I \rmv I \in\mathcal{I}(m, p)\right\}$ forms a basis for $\Lambda^P(T^\ast M)$.
+It follows that any $p$-form $\omega$ on $U$ can be uniquely written in the form
+\[
+	\omega = \sum_{I\in\mathcal{I}(m,p)}\lambda_I\mv{d}x_I
+\]
+where each $\lambda_I:U \to \R$ is a locally-defined smooth function.
+\begin{note}
+	This is all we really need from the bundle structure of $\Lambda^p(T^\ast M)$.
+\end{note}
+
+In particular, if $p=m$ then an $m$-form locally looks like
+\[
+	\lambda \; (dx_1 \wedge \dots \wedge dx_m)
+\]
+for some smooth function $\lambda: U \to \R$.
+
+\subsection{Pull-backs}
+Suppose we have a smooth function between manifolds
+\[
+f:M \to N
+\]
+Given a $p$-form $\omega$ on $N$ we can define a \mdf{pull-back $p$-form $f^\ast\omega$} on $M$ as follows. 
+Given $x\in M$ we have the derivative map $d_xf$ and hence a dual map
+\[
+	(d_x f)^\ast : T^\ast_{f(x)}N \to T^\ast_x M , \quad \quad \eta \mapsto \eta \circ d_xf \quad \text{where }\eta:T_{f(x)}N \to \R\text{ is linear}
+\]
+This in turn gives rise to a linear map
+\[
+	\Lp(d_x\phi)^\ast : \Lambda^pT_{fx}^\ast N \to \Lp T_x^\ast M
+\]
+Then our pull-back is defined by
+\[
+	(f^\ast\omega)(x) \defeq (\Lp(d_x\phi)^\ast)\left[\omega(f(x))\right]
+\]
+One takes on blind faith that this is smooth and hence a $p$-form.
+In particular, we can pull back $p$-forms to any manifold embedded within a larger manifold (such as $\R^n$).
+
+\end{document}
