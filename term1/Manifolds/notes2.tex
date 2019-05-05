@@ -33,6 +33,8 @@
 \newcommand{\norm}[1]{||#1||}
 %\renewcommand{\dots}{...}
 \newcommand{\msrspc}{\ensuremath{(X,\mathcal{B},\mu)}}
+\DeclareMathOperator{\supp}{\textrm{supp}}
+\DeclareMathOperator{\vol}{\textrm{vol}}
 \newcommand{\homrel}{\stackrel{\partial}{\simeq}}
 \newcommand{\homrelset}[1]{\stackrel{#1}{\simeq}}
 \newcommand\restr[2]{{% we make the whole thing an ordinary symbol
@@ -262,5 +264,120 @@ Then our pull-back is defined by
 \]
 One takes on blind faith that this is smooth and hence a $p$-form.
 In particular, we can pull back $p$-forms to any manifold embedded within a larger manifold (such as $\R^n$).
+This is a load of gobbledygook so let's go step by step.
+\begin{enumerate}
+	\item $x\in M$
+	\item $f(x)\in N$
+	\item $\omega$ is a $p$-form on $N$ so we get some linear maps $\eta_i:T_{fx}N\to\R$, then
+		\[
+			\omega(f(x))=\eta_1 \wedge \dots \wedge \eta_p
+		\]
+	\item Then we take the induced $p$'th exterior power map which just does $(d_x\phi)^\ast$ on each of the $\eta_i$
+	\item Hence we can write
+		\[
+			(f^\ast\omega)(x) = (\eta_1 \circ d_xf) \wedge \dots \wedge (\eta_p \circ d_xf)
+		\]
+\end{enumerate}
+
+\begin{eg}
+	\begin{enumerate}
+		\item Consider $S^1$; the unit circle in $\R^2$.
+			Let $\theta$ by the angle coordinate so that $x=\cos\theta$ and $y=\sin\theta$.
+			Then the pull back of $dx$, $dy$ is obtained by differentiating these formulae:
+			\[
+				-\sin\theta d\theta \quad\text{and}\quad cos\theta d\theta
+			\]
+			From this we can pull back an arbitrary 1-form by linear extension.
+		\item Consider $S^2$; the unit 2-sphere in $\R^3$.
+			Consider spherical polar coordinates $\theta, \phi$ away from the poles.
+			\begin{align*}
+				x &= \sin\theta\cos\phi \\
+				y &= \sin\theta\sin\phi \\
+				z &= \cos\theta
+			\end{align*}
+			Then the pull backs of $dx$, $dy$ and $dz$ repressively are
+			\begin{align*}
+				&\cos\theta\cos\phi d\theta - \sin\theta\sin\phi d\phi\\
+				&\cos\theta\sin\phi d\theta + \sin\theta\cos\phi d\phi \\
+				& -\sin\theta d\theta
+			\end{align*}
+			One can see this by writing out the Jacobian and then composing on the left with $dx$ which is $(0 , 0, 1)$ and remembering that $d\theta=\binom{1}{0}$ and $d\phi=\binom{0}{1}$.
+
+			So then the pull back of $dx \wedge dy = (\cos\theta\sin\theta)(d\theta \wedge d\phi)$.
+			We can see this by writing out the full expression, using multi linearity and alternating-ness of the wedge product and then trigonometric identities.
+	\end{enumerate}
+\end{eg}
+
+\subsection{Integration of m-forms}
+Take an atlas $\left\{ \phi_\alpha: U_\alpha \to V_\alpha\right\}_{\alpha\in\mathcal{A}}$.
+Given $\alpha, \beta\in\mathcal{A}$, then on the overlap $U_\alpha \cap U_\beta$ we get
+\[
+	d{x_1}^\alpha \wedge \dots \wedge d{x_m}^\alpha = \Delta_{\alpha\beta}(x) d{x_1}^\beta \wedge \dots \wedge d{x_m}^\beta
+\]
+where $\Delta_{\alpha\beta}$ is the determinant of the Jacobian of the transition function $\phi_\alpha \circ \phi_\beta^{-1}$.
+Note if our atlas is oriented then $\Delta_{\alpha\beta}(x) > 0$.
+Hence we have the following result.
+
+\begin{theorem}
+An $m$-manifold is orientable if and only if it admits a nowhere vanishing $m$-form.
+\end{theorem}
+
+\begin{proof}
+Worth looking over.
+\end{proof}
+
+\begin{defin}
+Let $M$ be an oriented manifold.
+Given an $m$-form $\omega$ on $M$ we define
+\[
+\mdf{\supp(\omega)}\defeq\overline{\left\{ x\in M \rmv \omega(x) \neq 0\right\}}
+\]
+We say that a cover $\left\{ U_\alpha\right\}$ of a Hausdorff space $X$ is \mdf{locally finite} if
+\[
+	\forall x \in X \quad \exists O\subseteq X\text{ open, s.t. }x\in O \; \text{ and } \; \left|\left\{ \alpha \rmv O\cap U_\alpha\neq\emptyset\right\}\right|< \infty
+\]
+that is around every point there is an open set which meets at most finitely many members of the cover.
+\end{defin}
+
+For now, suppose that $\supp(\omega)$ is compact.
+Let $\left\{ \phi_\alpha: U_\alpha \to V_\alpha\right\}_{\alpha\in\mathcal{A}}$ be a locally finite, oriented atlas.
+Suppose that $\eta$ is an n-form such that $\supp(\eta)\subseteq U_\alpha$ for some $\alpha\in\mathcal{A}$.
+Then write in local coordinates $\eta = \lambda_\alpha(dx_1^\alpha \wedge \dots \wedge dx_m^\alpha)$ where $\lambda_\alpha:U_\alpha\to\R$ is smooth and compactly supported.
+Then we set
+\[
+	I_\alpha(\eta)\defeq \int_{V_\alpha} \lambda_\alpha \circ \phi_\alpha^{-1}(x) \; dx
+\]
+
+\begin{defin}
+	A \mdf{partition of unity subordinate to} $\left\{ U_\alpha\right\}$ is a collection of smooth functions $\left\{ \rho_\alpha: M \to [0, 1]\right\}$ such that
+	\begin{enumerate}
+		\item $\supp(\rho_\alpha)\subseteq U_\alpha$ for all $\alpha$,
+		\item $\sum_{\alpha}\rho_\alpha(x)=1$ for all $x\in M$.
+	\end{enumerate}
+\end{defin}
+
+So choose a partition of unity $\left\{ \rho_\alpha\right\}$ subordinate to $\left\{ U_\alpha\right\}$ and set
+\[
+	\mdf{\int_M \omega} \defeq \sum_{\alpha\in\mathcal{A}} I_\alpha(\rho_\alpha \omega)
+\]
+\begin{note}
+	This is a finite sum because only finitely many $U_\alpha$ meet the support of $\omega$.
+\end{note}
+
+\begin{lemma}
+This integral is well-defined.
+That is, its independent of choice of atlas and partition.
+\end{lemma}
+
+Using this we can define the volume of a compact, orientable Riemannian manifold.
+Choose any orientation and let $\omega$ be the volume form (that is any $m$-form, I think).
+Then the volume is
+\[
+	\vol(M)\defeq\int_M \omega
+\]
+In fact, if $f:M \to \R$ is any smooth function then we can integrate $f$ with respect to volume.
+That is, integrate the $m$-form $f\omega$.
+The result $\int_m f\omega$ is often denoted informally as $\int_M f \; dV$.
+We shouldn't use this notation because exterior derivatives will confuse things.
 
 \end{document}
