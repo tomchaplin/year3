@@ -16,16 +16,17 @@
 \usepackage[framemethod=TikZ]{mdframed}
 \usepackage{microtype}
 \usepackage{tikz-cd}
+\usepackage{silence}
+\WarningFilter{mdframed}{You got a bad break}
 %}}}
-%{{{ Custom commands
-% p-forms
+%{{{ Custom commands p-forms
 \DeclareFontFamily{U}{skulls}{}
 \DeclareFontShape{U}{skulls}{m}{n}{ <-> skull }{}
 \newcommand{\skull}{\text{\usefont{U}{skulls}{m}{n}\symbol{'101}}}
 
 % Nice maths commands
 \newcommand{\defeq}{:=}
-\newcommand{\eqdef}{+:}
+\newcommand{\eqdef}{=:}
 \newcommand{\abs}[1]{|#1|}
 \newcommand{\norm}[1]{||#1||}
 \DeclareMathOperator{\im}{\mathrm{im}}
@@ -67,14 +68,14 @@
 %{{{ Enviornments
 % Definitions environment
 \newenvironment{defin}
-	{\begin{mdframed}[backgroundcolor=white, roundcorner=5pt, linewidth=1pt, linecolor=Green]
+	{\begin{mdframed}[backgroundcolor=white, roundcorner=5pt, linewidth=1pt, linecolor=RoyalBlue]
 		\setlength{\parindent}{0pt}}
 	{\end{mdframed}}
-	\newcommand{\mdf}[1]{{\color{Green} #1}}
+	\newcommand{\mdf}[1]{{\color{RoyalBlue} #1}}
 
 % Important notes environment
 \newenvironment{note}
-	{\begin{mdframed}[backgroundcolor=white, linecolor=red, roundcorner=5pt, linewidth=1pt]\bfseries{Note:}\normalfont
+	{\begin{mdframed}[backgroundcolor=white, linecolor=RubineRed, roundcorner=5pt, linewidth=1pt]\bfseries{Note:}\normalfont
 	\setlength{\parindent}{0pt}}
 	{\end{mdframed}}
 
@@ -101,7 +102,129 @@
 \maketitle
 
 \section{Orientations}
+Let $V$ be a vector space of dimension $m> 0$.
+Let $I(V)$ be the set of linear isomorphism $V\to \R^m$.
+Given $\rho, \sigma \in I(V)$ we get a linear automorphism
+\[
+	(\sigma \circ \rho^{-1}) : \R^m \to \R^m
+\]
+Note that that that the determinant of $(\sigma \circ \rho^{-1})$ is non-zero.
+We can define an equivalence relation $I(V)$ by
+\[
+	\sigma \sim \rho \iff \det(\sigma\circ \rho^{-1}) > 0
+\]
+We write $\mdf{Or(V)}\defeq I(V)/\sim$.
+Thus $\abs{Or(V)}=2$.
+In the special case $\dim (V) = 0$ we set $Or(V)\defeq \left\{ -1, +1\right\}$.
+An \mdf{orientation} on $V$ is an element of $Or(V)$.
+When equipped with an orientation, a vector space obtains the adjective \mdf{oriented}.
+
+If we let $V$ be an oriented vector space of positive dimension.
+A basis $v_1, \dots , v_m$ of $V$ determines an element of $I(V)$ by sending the basis to a standard basis of $\R^m$.
+We then say $\left\{ v_i\right\}$ is \mdf{positively oriented} if this map lies in the class of the orientation.
+
+If $V$ and $W$ are oriented vector spaces of the same dimension, then we say a linear isomorphism $L: V \to W$ is \mdf{orientation preserving} if it sends some positively oriented basis of $V$ to some positively oriented basis for $W$.
+Otherwise we say $L$ is \mdf{orientation reversing}.
+
+$\R^m$ is said to have the \mdf{standard orientation} if its orientation class contains the identity.
+If $L$ is an automorphism of $\R^m$ with the standard orientation then $L$ is orientation preserving if and only if $\det(L) >0$.
+
+\begin{note}
+If $V$ and $W$ are vector spaces and $E= V \oplus W$ then orientations on $V$ and $W$ determine an orientation on $E$.
+Likewise, orientation on any two of $\left\{ E, V, W\right\}$ determine an orientation on the remaining space.
+\end{note}
+
+\begin{defin}
+Let $M$ be an $m$-manifold where $m>0$.
+An \mdf{orientation} on $M$ is an assignment of an orientation to each tangent space $T_xM$ such that there is an atlas of charts $\left\{ \phi_\alpha : U_\alpha \to \R^m\right\}$ such that
+\[
+	\forall \alpha \quad \forall x\in U_\alpha \quad d_x\phi_\alpha:T_xM \to \R^m\text{ is orientation preserving.}
+\]
+When equipped with such an assignment, $M$ is called an \mdf{oriented manifold}.
+We say $M$ is \mdf{orientable} if it admits an orientation.
+\end{defin}
+
+\begin{note}
+We can obtain an `opposite' orientation on $M$ by post-composing every chart with a transposition.
+\end{note}
+
+Not every manifold is orientable however every manifold is locally orientable.
+It is also easily seen that orientability is invariant under diffeomorphism.
+
+\begin{eg}
+	\begin{enumerate}
+		\item $S^n \subseteq \R^{n+1}$ is orientable.
+			Take the atlas given by stereographic projection.
+			Then the transition function reverses orientation so we just post-compose one of the charts with any orientation-reversing diffeomorphism of $\R^n$.
+		\item The directed product of any two orientable manifolds is orientable.
+			For example, the Torus or cylinder.
+		\item The M\"obius band is not orientable.
+			In particular, it is not diffeomorphic to the cylinder.
+	\end{enumerate}
+\end{eg}
+
+\begin{lemma}
+A connected orientable manifold has exactly two orientations.
+\end{lemma}
+
+\subsection{Criterion for Orientability}
+Suppose that $M\subseteq \R^n$ is a smooth manifold.
+Given $x\in M$, 
+\[
+\R^n\cong T_x\R^n = T_xM \times T_xM^\perp
+\]
+Since $\R^n$ comes with the standard orientation, an orientation on $T_xM$ determines one on $T_xM^\perp$ (and vice versa).
+
+Consider the case where $n=m+1$.
+Then $T_xM^\perp\cong \R$.
+So an orientation on $T_xM$, which gives an orientation on $T_xM^\perp$, gives us a unique $\kappa(x)\in T_xM^\perp$ with 
+\begin{enumerate}
+	\item $\norm{\kappa(x)}=1$
+	\item $\left\{ \kappa(x)\right\}$ forms a positively oriented basis for $T_xM^\perp$.
+\end{enumerate}
+
+We can think of $\kappa(x)$ as the `outward' unit normal vector.
+If $M$ is oriented then $\kappa(x)$ is defined everywhere.
+Also $[x\mapsto \kappa(x)]$ is smooth and so $\kappa(x)$ is a normal field.
+
+Conversely, if $\kappa$ is a global nowhere-vanishing normal field on $M$, then $\kappa$ gives rise to an orientation on $T_xM$ for all $x\in M$.
+From this we can construct an orientable atlas through great pain.
+
+\begin{theorem}
+If $M\subseteq\R^{m+1}$ is an $m$-manifold, then the following are equivalent:
+\begin{enumerate}[label=(\alph*)]
+	\item $M$ is orientable.
+	\item $M$ admits a nowhere-vanishing normal field.
+	\item $M$ admits a unit normal field.
+\end{enumerate}
+\end{theorem}
+
+\begin{defin}
+Suppose that $M$ and $N$ or oriented manifolds and $f:M\to N$ is a diffeomorphism.
+We say that $f$ \mdf{preserves orientation} if $d_xf:T_xM \to T_{fx}N$ respects the given orientation for all $x\in M$.
+It \mdf{reverse orientation} if $d_xf$ reverses orientation for all $x\in M$.
+\end{defin}
+
 \section{Abstract Manifolds}
+
+\begin{defin}
+An \mdf{open cover} of a space $X$ is a collection $\mathcal{U}$ of open subsets of $X$ that union to the whole space.
+
+A \mdf{refinement} of $\mathcal{U}$ is an open cover $\mathcal{V}$ of $X$ such that $\forall V\in \mathcal{V}$ there is a $U\mathcal{U}$ such that $V\subseteq U$.
+
+We say that a cover $\left\{ U_\alpha\right\}$ of a Hausdorff space $X$ is \mdf{locally finite} if
+\[
+	\forall x \in X \quad \exists O\subseteq X\text{ open, s.t. }x\in O \; \text{ and } \; \left|\left\{ \alpha \rmv O\cap U_\alpha\neq\emptyset\right\}\right|< \infty
+\]
+that is around every point there is an open set which meets at most finitely many members of the cover.
+
+We say $X$ is \mdf{paracompact} if every open cover has a locally finite refinement.
+\end{defin}
+
+\begin{lemma}
+Any (abstract) manifold is paracompact.
+\end{lemma}
+
 \section{Vector Bundles}
 In defining a vector bundle over a manifold we associate a vector space to each point in the manifold and then arrange these together in a smooth way.
 Examples of this will include the tangent and normal bundles as defined in times gone past.
@@ -130,7 +253,7 @@ Finally, a family $E$ over $M$ is called \mdf{trivial} if it is isomorphic to $M
 	A \mdf{vector bundle} over $M$ is a family of vector spaces $p:E\to M$ such that $\forall x\in M$ there is some open $U\subseteq M$ with $x\in U$ such that $\restr{E}{U}$ is trivial.
 \end{defin}
 
-Putting this another way, $E$ is a vector bundle over $M$ if we can find an atlas $\left\{\phi_alpha : U_\alpha \to V_\alpha \right\}$ for $M$ such that for each $\alpha$ we get a diffeomorphism
+Putting this another way, $E$ is a vector bundle over $M$ if we can find an atlas $\left\{\phi_\alpha : U_\alpha \to V_\alpha \right\}$ for $M$ such that for each $\alpha$ we get a diffeomorphism
 \[
 	\psi_\alpha: \restr{E}{U_\alpha}\to V_\alpha\times\R^q\subseteq\R^{m+q}
 \]
@@ -160,7 +283,7 @@ Note than then the maps $\left\{\psi_\alpha\right\}$ form an atlas for $E$ which
 			\psi_{p^{-1}(x)}:T_x M \to \left\{\phi(x)\right\}\times\R^m \quad \psi(v)=(\phi(x), d_x\phi(v))
 		\]
 		which is a linear isomorphism.
-	\item When can (and perhaps should) check that the atlas given for the normal bundle consists of maps which restrict to linear isomorphisms on each fibre.
+	\item One can (and perhaps should) check that the atlas given for the normal bundle consists of maps which restrict to linear isomorphisms on each fibre.
 
 	\item The spaces $B_n$ together with the projection to the circle yields a vector bundles.
 		In particular, the M\"obius band is a bundle over the circle.
@@ -240,20 +363,237 @@ Exercise.
 
 \subsection{Vector Fields}
 
+Let $X$ be a vector field on $M$ (that is a section of $TM$).
+Suppose that $f\in C^\infty(M)$.
+We can define a function $Xf:M\to \R$ as
+\[
+	(Xf)(x)\defeq X\cdot [f]
+\]
+where $[f]\in\mathcal{G}_x(M)$.
+
+\noindent\textbf{Claim: }Xf as defined above is a smooth function
+
+Let $x_i$ be local coordinates of a neighbourhood $U\subseteq M$ of $x\in M$.
+Then we write $X=\sum_{i}\lambda_i \pd{}{x_i}$ where $\lambda_i: U \to \R$ are smooth functions.
+So we have $Xf=\sum_{i}\lambda_i \pd{f}{x_i}$ which is smooth.
+
+One can also see that $[f \mapsto Xf]$ is a linear map $C^\infty(M)\to C^\infty (M)$.
+Directly from our definition of $T_xM$ we have that
+\[
+	X(fg) = fXg + gXf
+\]
+for all $f,g \in C^\infty(M)$.
+
+\begin{prop}
+\label{pr:LtoX}
+Suppose $L:C^\infty(M)\to C^\infty(M)$ is a linear map satisfying
+\[
+	L(fg) = fL(g) + gL(f)
+\]
+then there is a unique vector field $X$ on $M$ such that $L(f)=Xf$ for all $f\in C^\infty(M)$.
+\end{prop}
+
+\begin{proof}
+Probably worth going through this proof.
+\end{proof}
+
+\begin{defin}
+	Suppose $X, Y$ are vector fields on $M$.	
+	One can check that
+	\[
+		[f \mapsto X(Yf) - Y(Xf)]
+	\]
+	satisfies the conditions of Proposition \ref{pr:LtoX}.
+	It follows that there is a unique vector field, denoted $\mdf{[X, Y]}$, on $M$ such that
+	\[
+		[X, Y]f = X(Yf) - Y(Xf)
+	\]
+	for all $f\in C^\infty(M)$.
+	This vector field is called the \mdf{Lie bracket}.
+	Manifolds is full of lies. $\qed$ 
+\end{defin}
+
 \subsection{Whitney Sums}
+Suppose we have two vector bundles
+$p:E \to M$ and $p':E'\to M$.
+We'd like to sum these vector bundles.
+Each fibre is a vector space so we can take their sums and stitch the fibres back together
+\[
+	\hat{E} \defeq \bigsqcup_{x\in M}(E_x \oplus E_x')\quad\quad \hat{p}:\hat{E}\to M
+\]
+where $\hat{p}$ is the obvious map.
+We need to give this a manifold structure.
+
+Let $\left\{ \phi_\alpha: U_\alpha \to V_\alpha\right\}_{\alpha\in\mathcal{A}}$ be an atlas for $M$ which gives rise to locally trivialising atlases\[
+	\left\{ \psi_\alpha : p^{-1}U_\alpha \to V_\alpha \times \R^q\right\}_\alpha \quad \text{and} \quad \left\{ \psi_\alpha':p'^{-1}U_\alpha \to V_\alpha \times \R^r\right\}_\alpha
+\]
+for $E$ and $E'$ respectively.
+The first coordinate of these charts is always $\phi_\alpha(x)$.
+If we want to stitch two charts $\psi_\alpha$ and $\psi_\alpha'$ together, we only need one copy of this first coordinate.
+
+Given $v\in E_x \oplus E_x'$ write $v=u+u'$ for $u\in E_x$ and $u'\in E_x'$.
+Let $w\in \R^q$ and $w'\in\R^r$ be the second coordinates of $\psi_\alpha(u)$ and $\psi_\alpha'(u')$ respectively.
+Note we can be sure this is the same $\alpha$ because it only depends on $x$.
+We then form a chart for the Whitney sum as follows
+\[
+	\theta_\alpha:(\hat{p})^{-1}U_\alpha \to V_\alpha \times \R^q \times \R^r \quad \quad \theta_\alpha(v)=(\phi_\alpha(x), w, w')
+\]
+\noindent\textbf{Topology: }
+
+We deem a set $O\subseteq\hat{E}$ to be open if $\theta_\alpha(O)$ is open in $V_\alpha\times\R^{q+r}$ for every chart $\alpha$.
+
+\begin{note}
+	One can check this does indeed give us a topology for $\hat{E}$, endows it with the structure of a vector bundle, and the resulting structure is independent of all the atlases we chose.
+\end{note}
+
+\begin{defin}
+	The resulting vector bundle $\hat{E}$ is called the \mdf{Whitney sum} of the vector bundles $E$ and $E'$.	
+	We often denote this $E\oplus E'$.
+\end{defin}
+
+\subsubsection{Alternative approach}
+Up to isomorphism, we can construct the Whitney sum in an alternative fashion.
+This time we start with the full direct product $E\times E'$ and consider the submanifold
+\[
+	F \defeq \left\{ (v, w) \in E\times E' \rmv pv = p'w\right\}
+\]
+There is a map $\widetilde{p}:F\to M$ where $(v,w)\mapsto pv=p'w$.
+Under this map $\widetilde{p}^{-1}(x) = E_x \times E_x'$
+Since this is just a direct product of vector spaces, there is a natural identification $E_x\oplus E_x' \to E_x \times E_x'$.
+Combining these identifications across the Whitney sum we get a bijection $E\oplus E'\to F \subseteq E\times E'$.
+This can be shown to be an embedding of manifolds and that these constructions are isomorphic as vector bundles.
+
+\begin{note}
+While $E_x\times E_x'$ and $E_x \oplus E_x'$ are essentially the same, $E\times E'$ and $E\oplus E'$ are vastly different!
+\end{note}
+
+It might be worth be looking at how we stitch together dual spaces.
 
 \subsection{Cotangent Bundle}
+\begin{defin}
+We will often be interested in the dual to the tangent bundle $(TM)^\ast$ which is more usually denoted $T^\ast M$.
+Its fibres are of the form $(T_xM)^\ast$ but more commonly written $T_x^\ast M$.
+An element of $T_x^\ast M$ is called a \mdf{covector} at $x$.
+A section of $T^\ast M$ is called a \mdf{covector field}, but more frequently referred to as a \mdf{1-form}.
+\end{defin}
 
-\subsection{1-forms}
+Suppose that we have a smooth function $f\in C^\infty(M)$.
+Then $f$ determines an element of $T_x^\ast M$ given by the linear map $[v \mapsto v \cdot f]$.
+This element is denoted $\mdf{df(x)}\in T_x^\ast M$.
+So the map $[f\mapsto df(x)]:M\to T^\ast M$ is a section of $T^\ast M$, i.e. a 1-form.
+Note that we get the product rule
+\[
+	d(fg) = f(dg) + g(df)
+\]
 
+To better understand $T_x^\ast M$ we find a basis.
+Take a chart $\phi:U \to V$ on the underlying manifold such that $x\in U$.
+We get 1-forms $dx_1, \dots , dx_m$ defined by
+\[
+	dx_i \left(\pd{}{x_j}\right)=\delta_{ij}
+\]
+These $dx_i$ form a basis for $T_x^\ast M$.
+This is, in fact, the dual basis to $\pd{}{x_1}, \dots, \pd{}{x_m}$ for $T_xM$.
+Note that, if $f$ is a smooth function then we have
+\[
+	df = \sum_{i}\pd{f}{x_i}dx_i
+\]
+Suppose $\left\{ \phi_\alpha: U_\alpha \to V_\alpha\right\}_\alpha$ is a chart for $M$.
+Then for each $\alpha$ we get 1-forms $dx_1^\alpha, \dots, dx_m^\alpha$.
+On the overlap $U_\alpha \cap U_\beta$, these 1-forms transform according to the rule
+\[
+	dx_i^\alpha = \sum_{j=1}^m \pd{x_i^\alpha}{x_j^\beta}dx_j^\beta
+\]
+Note that $\left( \pd{x_i^\alpha}{x_j^\beta}\right)_{i, j}$ is the Jacobian of the transition function $\phi_\alpha \circ \phi_\beta^{-1}$.
+
+\noindent\textbf{Integration: }
+
+1-forms can be used to integrate along curves.
+Suppose that $\gamma:[a, b] \to M$ is a smooth curve and $\omega$ is a 1-form on $M$.
+Then we get a smooth function $[t \mapsto \omega(\gamma(t))(\gamma'(t))]:[a, b] \to \R$.
+Then we write
+\[
+	\mdf{\int_\gamma \omega}\defeq\int_a^b \omega(\gamma(t))(\gamma'(t))\; dt
+\]
+
+\subsection{Pull-backs}
+Suppose we have a smooth function of manifolds $f:M \to N$.
+Given a 1-form $\omega$ on $N$ we can define a 1-form $\eta$ on $M$ as follows:
+Given $x\in M$, write $\eta(x)(v)\defeq\omega(f(x))(f_\ast(v))$ where $f_\ast(v)\defeq d_xf (v)$.
+Thus $\eta(x)\in T_x^\ast M$.
+
+This gives us a map $\eta: M \to T^\ast M$ which is smooth and hence a section to $T^\ast M$.
+In other words, $\eta$ is a 1-form on $T^\ast M$ which is called the \mdf{pull-back} of $\omega$.
 
 \section{Smooth Function Extension}
 
+\begin{lemma}
+There is a smooth function $\theta_0: \R^n \to [0, 1]$ such that
+\begin{enumerate}
+	\item $\theta_0(x) = 1$ whenever $\norm{x} \leq 1$.
+	\item $\theta_0(x) = 0$ whenever $\norm{x} \geq 2$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+This is done in a series of steps:
+\begin{enumerate}
+	\item Define $\theta_1: \R \to \R$ by
+		\[
+			\theta_1(t) \defeq
+			\begin{cases}
+				e^{-1/t} & \text{for }t\geq 0 \\
+				0 		& \text{for } t< 0
+			\end{cases}
+		\]
+		which is smooth.
+
+	\item Set $\theta_2(t) \defeq \frac{\theta_1(t)}{\theta_1(t) + \theta_1(1-t)}$.
+		So $\restr{\theta_2}{(1, \infty)} \equiv 1$ and $\restr{\theta_2}{(-\infty, 0]}\equiv 0$.
+	\item Define $\theta_0(x) \defeq \theta_2(2- \norm{x})$.
+\end{enumerate}
+\end{proof}
+
+\begin{lemma}
+Let $M$ be an $m$-manifold and $W\subseteq M$ open such that $x\in W$.
+Then there is a smooth function $\theta: M\to [0, 1]$ such that $\restr{\theta}{M\setminus W}\equiv 0$ and $\restr{\theta}{U}\equiv 1$ for some open neighbourhood $U$ of $x$.
+\end{lemma}
+
+\begin{proof}
+Let $\phi:U \to V$ with $x\in U$.
+After pre-composing with a translation we can assume $0\in\phi (W\cap U)$.
+After post-composing with a dilation we can assume $\mathbb{B}_2(0)\subseteq \phi(W\cap U)$.
+Now set 
+\[
+\theta(x) \defeq 
+\begin{cases}
+	\theta_0(\phi(x)) & \text{for }x\in U \\
+	0 				  & \text{otherwise}
+\end{cases}
+\]
+\end{proof}
+
+\begin{cor}
+Suppose $f:W \to \R$ is a smooth function on some open $W\subseteq M$ with $x\in W$.
+Then there is a smooth function $g:M \to \R$ which agree with $f$ on some neighbourhood of $x$ in $W$.
+\end{cor}
+\begin{proof}
+\[
+	g(x)\defeq 
+\begin{cases}
+	f(x)\cdot\theta(x) & \text{for }x\in W \\
+	0 & \text{otherwise}
+\end{cases}
+\]
+\end{proof}
+
+
+
 \section{Differential Forms}
 \begin{defin}
-Given vector spaces $E, F$ and $p\in \N$ we denoted
+Given vector spaces $E, F$ and $p\in \N$ we denote
 \[
-	A(E^p, F)\defeq p-\text{linear alternating maps }E^p\to F
+	\mdf{A(E^p, F)}\defeq \left\{p-\text{linear alternating maps }E^p\to F\right\}
 \]
 where by alternating we mean that swapping any two coordinates negates the output.
 Equivalently, if two coordinates are the same then the output is $0$.
@@ -262,6 +602,10 @@ Equivalently, if two coordinates are the same then the output is $0$.
 \begin{lemma}
 Given $E$ and $p$ there is a vector space $V$ together with a surjective map $\mu\in A(E^p, V)$ with the property that if $\theta\in A(E^p, F)$ then there is a linear map $\hat{\theta}:V\to F$ such that $\theta = \hat{\theta}\circ\mu$
 \end{lemma}
+
+\begin{proof}
+Go through this!
+\end{proof}
 
 \begin{figure}[H]
 	\centering
@@ -493,6 +837,10 @@ Then we set
 	\end{enumerate}
 \end{defin}
 
+\begin{theorem}
+Any locally finite open cover of $M$ has a subordinate partition of unity.
+\end{theorem}
+
 So choose a partition of unity $\left\{ \rho_\alpha\right\}$ subordinate to $\left\{ U_\alpha\right\}$ and set
 \[
 	\mdf{\int_M \omega} \defeq \sum_{\alpha\in\mathcal{A}} I_\alpha(\rho_\alpha \omega)
@@ -506,7 +854,8 @@ This integral is well-defined.
 That is, its independent of choice of atlas and partition.
 \end{lemma}
 
-Using this we can define the volume of a compact, orientable Riemannian manifold.
+\section{Riemannian Manifolds}
+Using the integral defined in the previous section we can define the volume of a compact, orientable Riemannian manifold.
 Choose any orientation and let $\omega$ be the volume form (that is any $m$-form, I think).
 Then the volume is
 \[
@@ -514,8 +863,45 @@ Then the volume is
 \]
 In fact, if $f:M \to \R$ is any smooth function then we can integrate $f$ with respect to volume.
 That is, integrate the $m$-form $f\omega$.
-The result $\int_m f\omega$ is often denoted informally as $\int_M f \; dV$.
+The result $\int_M f\omega$ is often denoted informally as $\int_M f \; dV$.
 We shouldn't use this notation because exterior derivatives will confuse things.
 
-\end{document}
+\begin{defin}
+A \mdf{Riemannian metric} on $M$ is a smooth map $f: TM \oplus TM \to \R$ such that
+\[
+	\forall x \in M \quad \restr{f}{T_xM\oplus T_xM}\text{ is an inner product on }T_xM
+\]
+\end{defin}
+Note that $f$ is not a metric in the usual sense.
+Given $v, w\in T_xM$ we usually denote $f(v, w)\eqdef \langle v, w\rangle$.
+If $v\in T_x M$ we define $\norm{v}\defeq \sqrt{\langle v, v\rangle}$.
+In particular, a Riemannian metric gives us a way to measure norms of tangent vectors in a nice smooth way.
+
+\begin{theorem}
+Every manifold admits a Riemannian metric.
+\end{theorem}
+
+\begin{proof}
+Let $\left\{ \phi_\alpha\right\}$ be an atlas for $M$ which gives rise to a trivialising atlas $\left\{ \psi_\alpha\right\}$ for $TM$.
+Then, by the paracompactness of $M$, we can assume the cover $\left\{ U_\alpha\right\}$ is locally finite.
+Let $\rho_\alpha$ be a partition of unity subordinate to the $U_\alpha$.
+Given $\alpha$, and $v, w\in T_xM$ with $x\in U_\alpha$, we set
+\[
+	\langle v, w\rangle_\alpha \defeq (\psi_\alpha v)\cdot (\psi_\alpha w)
+\]
+Now we can set
+\[
+	\langle v, w\rangle\defeq\sum_{\alpha}\rho_\alpha(x) \langle v, w\rangle_\alpha
+\]
+This is smooth and its restriction to each tangent space is an inner product.
+\end{proof}
+
+\begin{defin}
+	Given $\gamma:[a, b]\to M$ a smooth curve we define its \mdf{Riemannian length} as
+	\[
+		\int_a^b \norm{\gamma'(t)}\; dt
+	\]
+	where $\gamma'(t) \in T_{\gamma(t)}M$ is the tangent as previously defined.
+\end{defin}
+
 \end{document}
