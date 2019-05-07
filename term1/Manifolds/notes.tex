@@ -19,7 +19,8 @@
 \usepackage{silence}
 \WarningFilter{mdframed}{You got a bad break}
 %}}}
-%{{{ Custom commands p-forms
+%{{{ Custom commands 
+% p-forms
 \DeclareFontFamily{U}{skulls}{}
 \DeclareFontShape{U}{skulls}{m}{n}{ <-> skull }{}
 \newcommand{\skull}{\text{\usefont{U}{skulls}{m}{n}\symbol{'101}}}
@@ -100,6 +101,8 @@
 
 \begin{document}
 \maketitle
+\tableofcontents
+\newpage
 
 \section{Orientations}
 Let $V$ be a vector space of dimension $m> 0$.
@@ -208,6 +211,29 @@ It \mdf{reverse orientation} if $d_xf$ reverses orientation for all $x\in M$.
 \section{Abstract Manifolds}
 
 \begin{defin}
+	\begin{itemize}
+	\item A \mdf{topological $m$-manifold} $M$ is a non-empty, second countable, Hausdorff topological space such that every point has an open neighbourhood which is homeomorphic to some open set of $\R^m$.
+	\item A \mdf{topological chart} for $M$ is a homeomorphism $\phi: U \to V$.
+	\item A \mdf{topological atlas} for $M$ is a collection of charts whose domains cover $M$.
+	\item A topological atlas is \mdf{smooth} if the transition functions are smooth.
+	\item A \mdf{smooth structure} on a topological manifold is an equivalence class of smooth atlases where two atlases are equivalent if their union is also a smooth atlas.
+	\item A \mdf{smooth manifold} is a topological manifold equipped with a smooth structure.
+	\end{itemize}
+
+	Let $M$ and $N$ be smooth manifolds.
+	Then a map $f : M \to N$ is called \mdf{smooooooth} if 
+	\[
+\psi_\beta \circ g \circ \phi_\alpha^{-1}:\phi_\alpha(U_\alpha\cap f^{-1}U_\beta)\to \R^m
+	\]
+	is smooth for all combinations of charts $\alpha, \beta$.
+\end{defin}
+
+\begin{prop}
+Two atlases are equivalent if and only if they determine the same set of smooth functions $M\to \R$.
+\end{prop}
+
+\subsection{Equivalent Definitions}
+\begin{defin}
 An \mdf{open cover} of a space $X$ is a collection $\mathcal{U}$ of open subsets of $X$ that union to the whole space.
 
 A \mdf{refinement} of $\mathcal{U}$ is an open cover $\mathcal{V}$ of $X$ such that $\forall V\in \mathcal{V}$ there is a $U\mathcal{U}$ such that $V\subseteq U$.
@@ -224,6 +250,10 @@ We say $X$ is \mdf{paracompact} if every open cover has a locally finite refinem
 \begin{lemma}
 Any (abstract) manifold is paracompact.
 \end{lemma}
+
+\subsection{Tangent Spaces}
+
+
 
 \section{Vector Bundles}
 In defining a vector bundle over a manifold we associate a vector space to each point in the manifold and then arrange these together in a smooth way.
@@ -904,6 +934,51 @@ This is smooth and its restriction to each tangent space is an inner product.
 	where $\gamma'(t) \in T_{\gamma(t)}M$ is the tangent as previously defined.
 \end{defin}
 
+\section{Manifolds with Boundary}
+Define the following sets
+\[
+	H^m\defeq \left\{ (x_1, \dots , x_m) \in \R^m \rmv x_m \geq 0\right\} \quad \quad \partial H^m \defeq \R^{m-1} \times \left\{ 0\right\}
+\]
+A \mdf{manifold with boundary} is essentially a manifold but where the charts go into some open set of $H^m$ in place of $\R^m$.
+
+\begin{lemma}
+Suppose that $x\in U_\alpha \cap U_\beta$, then
+\[
+	\phi_\alpha(x)\in \partial H^m \iff \phi_\beta(x)\in\partial H^m
+\]
+\end{lemma}
+
+This boils down to proving the following 
+
+\begin{lemma}
+Let $\theta: U \to V$ be a diffeomorphism between open subsets of $H^m$.
+Then 
+\[
+\theta(U\cap \partial H^m) = V\cap \partial H^m
+\]
+\end{lemma}
+
+\begin{proof}
+Exercise, using the Inverse Function Theorem.
+\end{proof}
+
+\begin{defin}
+	Suppose $M$ is a manifold with boundary, then the \mdf{boundary of $M$}, $\mdf{\partial M}$, is
+	\[
+		\partial M \defeq \left\{ x\in M \rmv \phi_\alpha(x) \in H^m \text{ for some } \alpha\right\}
+	\]
+	The \mdf{interior of $M$} is $M\setminus\partial M$.
+\end{defin}
+
+\begin{prop}
+The interior of $M$ is canonically an $m$-manifold and the boundary an $( m-1 )$-manifold
+\end{prop}
+
+\begin{note}
+If $M$ is oriented then we can get an orientation on $\partial M$ simply by restricting the charts in an oriented atlas to $\partial M$.
+We adopt the convection, that the orientation induced on $\partial M$ is given by a such restriction in the case where $m$ is even and the opposite orientation when $m$ is odd.
+\end{note}
+
 \section{The Exterior Derivative}
 Let $M$ be an $m$-manifold.
 We write
@@ -998,5 +1073,45 @@ Note that we have only shown these properties hold locally.
 However, we only needed the first 3 properties for uniqueness.
 So if the forth property holds then these properties must hold globally.
 
+More rigorously, we want to define $d:\Omega^p(W)\to \Omega^{p+1}(W)$ for arbitrary open sets $W\subseteq M$.
+If $x\in W$, choose any chart $\phi: U \to V$ such that $x\in U\subseteq W$.
+Given any $\omega\in\Omega^p(U)$, the above gives $d(\restr{\omega}{U})\in \Omega^{p+1}(U)$ and we set $d\omega(x) = d(\restr{\omega}{U})(x)$.
+To see that this is well-defined consider some other chart $\phi':U' \to V'$ with $x\in U'$.
+Since we only needed 1-3 to prove uniqueness, the two constructions must agree on $U \cap U'$.
+
+\begin{defin}
+	Given $\omega\in\Omega^p(M)$ we call $d\omega\in\Omega^{p+1}(M)$ the \mdf{exterior derivative of $\omega$}.	
+\end{defin}
+
+\subsection{Stokes' Theorem}
+We can define $p$-forms on a manifold with boundary in much the same way.
+Having done this, one can construct a natural linear map $\iota : \Omega^p(M) \to \Omega^p(\partial M)$ as follows.
+
+Given local coordinates write $\omega=\sum_{I\in\mathcal{I}(m, p)}\lambda_I\mv{d}x_I$.
+Then we define
+\[
+	\iota(\omega) \defeq \sum_{I\in\mathcal{I}(m-1, p)} \lambda_I \mv{d}x_I
+\]
+where we have identified $\mathcal{I}(m-1, p)\subseteq \mathcal{I}(m, p)$.
+That is, we just throw away any terms that include $dx_m$.
+Since $\iota\omega(x)$ does not depend on the choice of chart containing $x$ we see that $\iota\omega$is defined on all of $\partial M$.
+In fact $\iota\omega$ is often denoted by $\omega$ and is think of as the restriction of $\omega$ to $\partial M$.
+
+\begin{theorem}[Stokes' Theorem]
+Let $M$ be a compact oriented $m$-manifold with boundary.
+Let $\omega$ be an $(m-1)$-form on $M$.
+Then
+\[
+	\int_M d\omega = \int_{\partial M}\omega
+\]
+\end{theorem}
+
+\begin{proof}
+Maybe look at this ???
+\end{proof}
+
+\begin{cor}
+If $\partial M = \emptyset$ then $\int_M d\omega =0$.
+\end{cor}
 
 \end{document}
