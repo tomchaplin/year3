@@ -904,4 +904,99 @@ This is smooth and its restriction to each tangent space is an inner product.
 	where $\gamma'(t) \in T_{\gamma(t)}M$ is the tangent as previously defined.
 \end{defin}
 
+\section{The Exterior Derivative}
+Let $M$ be an $m$-manifold.
+We write
+\[
+	\Omega^p(M)\defeq\left\{ p\text{-forms}\right\}
+\]
+which we view as a real vector space.
+We identity $\Omega^0(M)\defeq C^\infty(M)$.
+
+\noindent\textbf{Claim: }We can consistently define a family of linear functions $d:\Omega^p(M)\to \Omega^{p+1}(M)$ satisfying:
+
+\begin{enumerate}
+	\item If $f\in\Omega^0(M)$ then $df$ has its original meaning as a 1-form.
+	\item If $f\in\Omega^0(M)$ and $\omega\in\Omega^p(M)$ then
+		\[
+			d(f\omega) = df \wedge \omega + f \; d\omega
+		\]
+	\item If $\omega\in\Omega^p(M)$ then $dd\omega =0$.
+	\item If $U\subseteq M$ is open then $d(\restr{\omega}{U})=\restr{( d\omega )}{U}$.
+\end{enumerate}
+
+\begin{note}
+The last point tells us that $d$ is a local operation.
+So if $x\in M$ then $d\omega(x)$ only depends on $\omega$ on an arbitrarily small neighbourhood of $x$.
+\end{note}
+
+\noindent\textbf{Claim: }If such system of maps exists then it is unique.
+
+Firstly we show that if $f_1, \dots , f_n\in\Omega^0(M)$ then
+\[
+	d(df_1 \wedge \dots \wedge df_n) = 0
+\]
+
+\begin{proof}
+If there is just one $f_1$ then the result is obvious.
+Inductively, set $f\defeq f_1$ and $\omega\defeq df_2 \wedge \dots \wedge df_n$.
+By number 2, we can write
+\[
+	df_1 \wedge \dots \wedge df_n = d(f\omega) - f \; d\omega
+\]
+Our inductive hypothesis tells us that $d\omega = 0$.
+Hence we see
+\[
+	d(df_1 \wedge \dots \wedge df_n) = dd(fw) = 0
+\]
+by number 3.
+\end{proof}
+
+By number 4, it is enough to check uniqueness for forms defined on the domain of some chart $\phi: U \to V$.
+As usual we write, $x_1, \dots , x_m$ for local coordinates.
+We give $dx_i$ the usual meaning by property 1.
+Then any $\omega\in\Omega^p(U)$ has the form
+\[
+	\omega = \sum_{I\in\mathcal{I}(m, p)}\lambda_I \mv{d}x_i
+\]
+for some $\lambda_I\in \Omega^0(U)$.
+What we showed earlier was precisely $d(\mv{d}x_I)=0$ for any $I\in\mathcal{I}(m, p)$.
+
+Now we apply property 2 and linearity we get
+\[
+	d\omega = \sum_{I\in\mathcal{I}(m, p)}d\lambda_I \wedge \mv{d}x_I
+\]
+We have no choice in how we defined $d\omega$ and hence it is unique.
+
+\begin{note}
+Given $I=\left\{ i_1, \dots, i_p\right\}$ with $i_1 < i_2 < \dots < i_p$ we write $\mv{d}x_I\defeq dx_{i_1} \wedge \dots dx_{i_p}$.
+\end{note}
+
+It remains to prove that this definition satisfies the properties we wanted.
+
+\begin{enumerate}
+	\item If $\omega = \lambda\in\Omega^0(U)$ then we clearly get $d\omega = d\lambda$.
+	\item Note that, 
+		\[
+ d((f\lambda_I)\mv{d}x_I)=d(f\lambda_I) \wedge \mv{d}x_I = (\lambda_I\; df) \wedge \mv{d}x_I + f(d\lambda_I) \wedge \mv{d}x_I
+		\]
+		Summing over $I\in\mathcal{I}(m, p)$ we see
+		\begin{align*}
+			d(f\omega) &= \sum_{I\in\mathcal{I}(m, p)}(\lambda_I df) \wedge \mv{d}x_I + \sum_{I\in\mathcal{I}(m, p)}f(d\lambda_I)\wedge \mv{d}x_I\\
+					   & = \sum_{I\in\mathcal{I}(m, p)}df \wedge (\lambda_I\mv{d}x_I) + f\sum_{I\in\mathcal{I}(m, p)}(d\lambda_I)\wedge \mv{d}x_I\\ 
+					   & = df \wedge \omega + f (d\omega)
+		\end{align*}
+	\item We first note that $d\lambda_I=\sum_{i=1}^m \pd{\lambda_I}{x_i}dx_i$.
+		Hencethusly,
+		\begin{align*}
+			dd(\lambda_I\mv{d}x_I)&=d\left( \sum_{j}\pd{\lambda_I}{x_j}dx_j \wedge \mv{d}x_I\right) =  \sum_{i, j}\pd{^2 \lambda_I}{x_i\partial x_j}dx_i \wedge dx_j \wedge \mv{d}x_I \\
+								  &=\sum_{i < j}\left( \pd{^2\lambda_I}{x_i\partial x_j}- \pd{^2\lambda_I}{x_j \partial x_i} \right)dx_i \wedge dx_j \wedge \mv{d}x_I = 0
+		\end{align*}
+\end{enumerate}
+
+Note that we have only shown these properties hold locally.
+However, we only needed the first 3 properties for uniqueness.
+So if the forth property holds then these properties must hold globally.
+
+
 \end{document}
