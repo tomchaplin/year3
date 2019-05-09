@@ -104,6 +104,188 @@
 \tableofcontents
 \newpage
 
+\section{The Inverse Function Theorem}
+
+\begin{theorem}[for $\R^n$]
+Let $f:\R^n \to \R^n$ and $x\in \R^n$, then if $d_xf:\R^n \to \R^n$ has rank $n$ (i.e. $d_xf$ is invertible) then there are open subsets $U, V \subseteq \R^n$ such that $x\in U$ and
+\[
+	\restr{f}{U}: U \to V \text{ is a diffeomorphism}
+\]
+\end{theorem}
+
+\begin{theorem}[for manifolds]
+Assume that $M$ and $N$ are $n$-manifolds and $f:M \to N$ is a smooth map.
+Suppose that $x\in M$ and $d_xf:T_xM \to T_{fx}N$ is invertible.
+Then there are open sets $U_1\subseteq M$, $U_2\subseteq N$ with $x\in U_1$ such that
+\[
+	\restr{f}{U_1}:U_1 \to U_2 \text{ is a diffeomorphism}
+\]
+\label{th:iftmani}
+\end{theorem}
+
+\begin{proof}
+Firstly, take $x\in M$ and write $y\defeq f(x)$.
+Then we can take charts $\phi_1: U_1 \to V_1$ and $\phi_2: U_2 \to V_2$ where $x\in U_1$ and $y\in U_2$.
+After restricting $U_1$ to $U_1\cap f^{-1}U_2$ we may assume that $f(U_1) \subseteq U_2$.
+Write $a\defeq \phi_1(x)$.
+We then construct the map
+\[
+	\psi \defeq \phi_2 \circ f \circ \phi_1^{-1}: V_1 \to V_2
+\]
+By the chain rule we have
+\[
+	d_a\psi = d_y\phi_2 \circ d_x f \circ (d_x\phi_1)^{-1}
+\]
+We have already seen that the derivatives of charts are isomorphism so we just have to show that $d_a\psi$ and $d_x f$ are similar and thus have the same rank.
+To see this, note that $d_a\psi$ is invertible so we can apply the old AFT.
+
+This gives us open sets $V_1' \subseteq V_1$ and $V_2' \subseteq V_2$ with $a\in V_1'$ so that
+\[
+	\restr{\psi}{V_1'}:V_1' \to V_2' \text{ is a diffeomorphism}
+\]
+Let $U_1'\defeq \phi_1^{-1}(V_1')$ and $U_2'\defeq \phi_2^{-1}(V_2')$ so then $\restr{f}{U_1'}:U_1'\to U_2'$ is a diffeomorphism.
+\end{proof}
+
+\begin{lemma}
+\label{le:f2id}
+Under the hypothesis of Theorem \ref{th:iftmani} there are charts $\phi_1: U_1 \to V$ and $\phi_2: U_2 \to V$ with $v\subseteq \R^n$ such that $x\in U$, $f(x)\in U_2$ and $\phi_1 = \phi_2 \circ f$
+\end{lemma}
+
+\begin{proof}
+Note that $\psi\circ \phi_1 : U_1 \to V_2$ is a chart and $\psi \circ \phi_1 = \phi_2 \circ f$.
+So $\psi \circ \phi_1$ and $\phi_2$ do the job.
+\end{proof}
+
+\subsection{Immersions and Submersions}
+
+Note that Lemma \ref{le:f2id} says that if you choose the correct coordinates then $f$ is the identity.
+However, we can also use this for maps between manifolds of the same dimension.
+To generalise we introduce the following:
+
+\begin{defin}
+Suppose $m \leq n$ then
+\begin{itemize}
+	\item the \mdf{standard immersion} $\iota:\R^m \to \R^n$ is given by
+		\[
+			\iota(x_1, \dots , x_m) = (x_1, \dots, x_m, 0, \dots, ))
+		\]
+	\item the \mdf{standard submersion} $\sigma:\R^n \to \R^m$ is given by
+		\[
+			\sigma(x_1, \dots , x_n) = (x_1, \dots , x_m)
+		\]
+\end{itemize}
+\end{defin}
+
+Check your handwritten notes for the following:
+
+\begin{lemma}
+Let $L:V\to W$ be a linear map of maximal rank.
+Then there are invertible linear maps $P:V\to \R^m$ and $Q:W\to \R^n$ such that $Q \circ L \circ P^{-1}$ is  the standard immersion or submersion.
+\end{lemma}
+
+\begin{theorem}[General IFT for maps on $\R^n$]
+Suppose $U\subseteq \R^m$ is open and $f:U\to \R^n$ is a smooth map.
+Suppose $c\in u$ and $d_c f$ has maximal rank.
+Then there are open sets $U_1, V_1 \subseteq \R^m$ and $U_2, V_2 \subseteq \R^n$ with $c\in U_1\subseteq U$ and $f(U_1)\subseteq U_2$.
+Then there are diffeomorphism $\theta_1: U_1 \to V_1$ and $\theta_2:U_2\to V_2$ such that $\theta_a(c)=0$ and
+\[
+	\theta_2 \circ f \circ \theta_1^{-1} : V_1 \to V_2
+\]
+is the restriction of the standard immersion/submersion of $\R^m$ into $\R^n$.
+\end{theorem}
+
+\begin{theorem}[Genreal IFT for maps betwen manifolds]
+Suppose that $M$ and $N$ are manifolds and $f:M \to N$ is smooth.
+Suppose $c\in M$ and $d_c f$ has maximal rank.
+Then there are charts $\phi_1: U_1 \to V_1$ and $\phi_2:U_2 \to V_2$ around $c$ and $f(c)$ respectively such that $\phi_1(c)=0$ and
+\[
+	\phi_2 \circ f \circ \phi_1^{-1}: V_1 \to V_2
+\]
+is the restriction of the standard submersion/immersion.
+\label{th:iftmanig}
+\end{theorem}
+
+\begin{defin}
+We say a map $f:M\to N$ is a
+\begin{itemize}
+	\item \mdf{immersion} if $d_xf$ is injective for every $x\in M$.
+	\item \mdf{submersion} if $d_xf$ is surjective for every $x\in M$.
+	\item \mdf{embedding} if it is smooth and $f:M \to f(M)$ is a diffeomorphism.
+		In this cases $f(M)$ is a \mdf{submanifold} of $M$.
+\end{itemize}
+A map $f:X \to Y$ between topological spaces is \mdf{proper} if
+\[
+	\forall K\subseteq Y\text{ compact} \quad f^{-1}(K) \text{ is compact}
+\]
+The image of a proper embedding a \mdf{proper submanifold}
+
+Let $f:M \to N$ be a smooth map between manifolds.
+We say that $x\in M$ is a \mdf{regular point} if $d_x f$ is surjective and a \mdf{critical point} otherwise.
+A point $y\in N$ is a \mdf{regular value} if every point in $f^{-1}(y)$ is a regular points.
+Otherwise $y$ is a \mdf{critical value}.
+\end{defin}
+
+\begin{lemma}
+A proper, injective immersion is an embedding.
+\end{lemma}
+
+\begin{theorem}[Level Set Theorem]
+If $f:M \to N$ is smooth and $y\in f(M)\subseteq N$ is a regular value then $f^{-1}(y)$ is a proper submanifold of dimension $(m-n)=\dim(M)-\dim(N)$.
+In this case
+\[
+	T_x(f^{-1}(y)) = \ker d_xf
+\]
+\end{theorem}
+
+\begin{proof}
+Given $x\in f^{-1}(y)$ we need to find it a chart.
+Choose charts as in Theorem \ref{th:iftmanig}.
+Define $U\defeq f^{-1}(y) \cap U_1$.
+This is set of points in $U_1$ whose first $n$ coordinates are $0$.
+Let $\pi:\R^m \to \R^{m-n}$ be defined by $\pi_1(x_1, \dots, x_m) = (0, \dots, x_{n+1}, \dots , x_m)$.
+Then set $\phi\defeq \pi\circ\phi_1:U\to\R^{m-n}$ which is our chart.
+
+A vector in the tangent space is given by $\gamma'(0)$ for some $\gamma:I \to f^{-1}(y)$ with $\gamma(0)=x$.
+Now $f\circ \gamma$ is constant so
+\[
+	d_xf(\gamma'(0)) = (f\circ \gamma)'(0) = 0 \implies \gamma'(0) \in \ker d_xf
+\]
+Then both spaces have dimension $(m-n)$ so they must be the same.
+\end{proof}
+
+\section{Tangent and Normal Bundles}
+
+\begin{defin}
+	The \mdf{tangent bundle} to an $m$-manifold $M\subseteq\R^n$ is
+	\[
+		\mdf{TM}\defeq \left\{ (x, v)\in M\times \R^n \rmv v \in T_xM\right\}
+	\]
+	We write $p:TM \to M$ for the projection sending $p(x, v)=x$.
+	Note that $p^{-1}(x)=T_xM$.
+
+	A \mdf{section} of $TM$ is a smooth map $s:M \to TM$ such that $p\circ s = id_M$.
+
+	A \mdf{frame field} on $M$ is a family of $m$ sections $v_1, \dots , v_m $ such that $\left\{ v_1(x), \dots , v_m(x)\right\}$ forms a basis for $T_xM$ at each $x\in M$.
+	Such a field is \mdf{orthonormal} if $\left\{ v_1(x) , \dots, v_m(x)\right\}$ forms an orthonormal basis for each $x\in M$ with respect to the dot product induced by embedding $T_xM$ in $\R^n$
+
+	The \mdf{normal bundle} to $M$  is
+	\[
+		\nu(M , \R^n) \defeq \left\{ (x, v) \in M\times \R^n \rmv v \in (T_xM)^\perp\right\}
+	\]
+	We use the same projection map as with $TM$.
+\end{defin}
+
+Note that we can always find a local frame field by pulling back the standard basis from $\R^m$ using $(d_x\phi)^{-1}$.
+Also, using the Gram-Schmidt process, if we have a global frame field then we can always find an orthonormal one.
+
+\begin{prop}
+$TM$ is a $2m$-manifold and $p$ is a submersion.
+\end{prop}
+
+\begin{prop}
+$\nu(M, \R^n)$ is an $n$-manifold and $p$ is a submersion.
+\end{prop}
+
 \section{Orientations}
 Let $V$ be a vector space of dimension $m> 0$.
 Let $I(V)$ be the set of linear isomorphism $V\to \R^m$.
@@ -253,7 +435,99 @@ Any (abstract) manifold is paracompact.
 
 \subsection{Tangent Spaces}
 
+\begin{defin}
+	Given $M$ a smooth $m$-manifold and $x\in M$, the \mdf{tangent space} to $M$ at $x$ is
+	\[
+		\mdf{T_xM}\defeq\left\{ v: \mathcal{G}_x(M) \to \R \text{ linear} \rmv v\text{ satisfies (L)}\right\}
+	\]
+	where $(L)$ is the Leibniz Rule:
+	\[
+		v\cdot(fg) = f(x) \; v \cdot g + g(x) \;v \cdot f \quad \forall f, g\in \mathcal{G}_x(M)
+	\]
+\end{defin}
 
+\begin{lemma}[Hadamard's Lemma]
+Given $a\in \R^m$ then every $f\in C^\infty_a (\R^m)$ has the form
+\[
+	f(x) = f(a) + \sum_{i=1}^{m}(x_i- a_i)g_i(x)
+\]
+for some locally defined functions $g_i\in C^\infty_a(\R^m)$.
+\end{lemma}
+
+We would like to show that this coincides with our previous definition.
+To do this, we aim to find a basis of $T_a\R^m$.
+Note, in Hadamard's Lemma, we necessarily have $g_i(a) = \pd{f}{x_i}(a)$.
+Now, for each $i$, we have an element $d_i\in T_a\R^m$ defined by $d_i \cdot f = \pd{f}{x_i}(a)$ for all $f\in C^\infty_a\R^m$.
+This gives us a linear map $\R^m \to T_a\R^m$ sending the standard basis to $\left\{ d_i\right\}$.
+
+\begin{lemma}
+$\left\{ d_1, \dots , d_m\right\}$ form a basis for $T_a\R^m$.
+\end{lemma}
+
+\begin{proof}
+We can see that the $d_i$ are linearly independent as follows.
+Let $\pi_i: \R^m \to \R$ be projection to the $i^{th}$ coordinate.
+Then $d_i \cdot \pi_j = \delta_{ij}$.
+
+To see that they span, choose some $v\in T_a\R^m$.
+Then we can write $\lambda_i \defeq v \cdot \pi_i$ for each $i$.
+First we consider constant functions on any open set $U\subseteq \R^m$.
+We have that $v\cdot 1 = v\cdot (1\times 1) = 1(v\cdot 1) + 1(v \cdot 1) = 2(v\cdot 1)$ and hence $v\cdot 1$ = 0.
+So by linearity, $v$ kills any constant function.
+
+Now suppose that $f\in C_a^\infty \R^m$, then by Hadamard's Lemma we can write
+\[
+	f(x) = f(a) + \sum_{i=1}^m (\pi_i(x) - \pi_i(a)) g_i(x)
+\]
+so by the Leibniz rule we get
+\[
+	v \cdot f = 0 + \sum_{i=1}^m\left( (\pi_i(a) - \pi_i(a)) \; v\cdot g_i + g_i(a) \; v\cdot \pi_i\right) = \sum_{i=1}^m \lambda_i g_i(a) = \sum_{i=1}^m \lambda_i \pd{f}{x_i}(a) = \sum_{i=1}^m \lambda_i (d_i \cdot f)
+\]
+Thus $v=\sum_{i}\lambda_i d_i$.
+\end{proof}
+
+To apply this to smooth manifolds we need a derivative map.
+If $M$ and $N$ are smooth manifolds, $x\in M$ and $\theta: M \to N$ is a diffeomorphism then we can construct a linear map.
+\[
+	\mdf{d_x\theta}:T_xM \to T_{\theta x}N \quad \quad \mdf{(d_x\theta)(v)}\cdot f \defeq v \cdot (f\circ \theta)
+\]
+for all $f\in\mathcal{G}_{\theta x}(N)$.
+One needs to check that $(d_x\theta)(v)$ satisfies the Leibniz rule and so does indeed lie in $T_{\theta x}N$
+
+\begin{proof}
+\begin{align*}
+	(d_x\theta)(v) \cdot (fg) &= v \cdot \left[ fg \circ \theta\right] \\
+							  &= v\cdot \left[ (f \circ \theta) (g\circ \theta)\right] \\
+							  & = f(\theta(x)) \; v\cdot (g\circ \theta) + g(\theta(x)) \; v \cdot (f\circ \theta)\\
+							  & = f(\theta(x)) \; (d_x\theta)(v) \cdot g + g(\theta(x)) \; (d_x\theta)(v) \cdot f
+\end{align*}
+\end{proof}
+
+Now since $\theta$ is a diffeomorphism, $d_x\theta$ is a linear isomorphism.
+Then by choosing some chart $\phi : U \to \R^m$ we get a linear isomorphism $d_x\phi: T_xU \to T_a\R^m$ where $a=\phi x$.
+But $T_xU$ is naturally identified with $T_xM$ and we have seen that $T_a\R^m\cong \R^m$.
+
+\begin{theorem}
+If $M$ is a smooth manifold and $x\in M$ then
+\begin{enumerate}
+	\item $\dim (T_xM)=m$.
+	\item If $v\in T_xM$ then there is a smooth curve $\gamma:I \to M$ such that $\gamma(0) = x$ and $\hat{\gamma}'(0)=v$ where
+		\[
+			\hat{\gamma}'(0) \cdot f \defeq (f\circ \gamma)'(0).
+		\]
+	\item If $M$ is a smooth submanifold of $\R^m$ then there is a natural identification between this definition of $T_xM$ and our previous one such that if $\gamma: I \to M$ is a smooth curve with $\gamma(0)=x$ then $\gamma'(0)$ gets identified with $\hat{\gamma}'(0)$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\begin{enumerate}
+	\item Obvious by the above linear isomorphism $d_x\phi$.
+	\item Let $\phi: U \to V$ be a chart with $x\in U$ such that $d_x\phi:T_xM \to \R^m$ is a linear isomorphism.
+		Let $\delta: I \to V$ be a curve with $\hat{\delta}'(0) = d_x\phi(v)$.
+		Then set $\gamma \defeq \phi^{-1} \circ \delta$.
+	\item The only thing to prove is that $\hat{\gamma}'(0)$ does not change if we switch from a curve $\gamma$ to some other curve $\sigma$ such that $\sigma'(0) = \gamma'(0)$ (and vice versa).
+\end{enumerate}
+\end{proof}
 
 \section{Vector Bundles}
 In defining a vector bundle over a manifold we associate a vector space to each point in the manifold and then arrange these together in a smooth way.
