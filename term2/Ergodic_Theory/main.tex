@@ -44,6 +44,8 @@
 % Spaces
 \newcommand{\ktor}{\mathbb{T}^k}
 \newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
 \newcommand{\C}{\mathbb{C}}
 \newcommand{\Z}{\mathbb{Z}}
 
@@ -53,6 +55,8 @@
 \newcommand{\infog}[2]{\ensuremath{I\gvn{#1}{#2}}}
 \newcommand{\entrg}[2]{\ensuremath{H\gvn{#1}{#2}}}
 \newcommand{\probg}[2]{\ensuremath{\mathbb{P}\gvn{#1}{#2}}}
+\newcommand{\dm}{\;d\mu}
+
 %}}}
 %{{{ Environments
 % Definitions environment
@@ -580,6 +584,197 @@ Hence $\mu$ cannot be extremal.
 
 For the opposite direction we need the Radon-Nikodym Theorem.
 
+\begin{defin}
+	Given measures $\mu, \nu$ on a measure space $(X, \mathcal{B})$	we say that $\nu$ is \mdf{absolutely continuous} with respect to $\nu$ if
+	\[
+		B\in\mathcal{B}, \quad \mu(B) = 0 \implies \nu(B) = 0
+	\]
+\end{defin}
+
+\begin{theorem}[Radon-Nikodym Theorem]
+Given a measurable space and measures $\mu, \nu$.
+Suppose $\mu$ is $\sigma$-finite and $\nu << \mu$.
+Then there is a unique $h:X\to [0, +\infty]$ such that
+\[
+	\forall B\in \mathcal{B} \quad \nu(B) = \int_B h \; d\mu
+\]
+Then we write $h=\frac{d\nu}{d\mu}$.
+\end{theorem}
+
+\begin{prop}
+Given $\mu, \nu\in M(X, T)$ and $\nu << \mu$ write $h=\frac{d\nu}{d\mu}$.
+Then $h$ is a $T$-invariant function, i.e. $h \circ T = h$.
+\end{prop}
+
+\begin{theorem}
+$\mu \in M(X, T)$ is ergodic $\implies$ $\mu$ is extremal.
+\end{theorem}
+
+\begin{proof}
+Suppose that $\mu = (1-t)\mu_0 + t\mu_1$ for some $\mu_0, \mu_1\in M(X, T)$ and $0 < t < 1$.
+We aim to show that in fact $\mu=\mu_0 = \mu_1$.
+Notice that for any $B\in\mathcal{B}$ we have that $\mu(B) \geq (1-t)\mu_0$ and hence $\mu_0 << \mu$.
+The Radon-Nikodym Theorem gives us a unique $h$ such that
+\[
+	\mu_0(B) = \int_b h \; d\mu
+\]
+Notice that $\mu_0$ is a probability measure and hence $\int_X h \; d\mu = 1$.
+Also we have seen that $h\circ T = h$ and so by ergodicity we must have that $h$ is constant.
+But since $\int_X h \; d\mu=1$ we must have that $h\equiv 1 $ almost everywhere and hence $\mu_0 = \mu$.
+\end{proof}
+
+\begin{theorem}
+Suppose $T: X \to X$ is a continuous map on a compact metric space.
+Then there is a $\mu\in M(X, T)$ which is extremal and hence ergodic.
+\end{theorem}
+
+\subsection{Abundance and Uniqueness of Ergodic Measures}
+\begin{eg}
+	Suppose that $T:X \to X$ is continuous and $x_0\in X$ is a fixed point then $\delta_{x_0}\in M(X, T)$ is an ergodic, $T$-invariant measure.
+
+	Suppose that $x_0$ is a periodic points so that $T^qx_0 = x_0$ then define
+	\[
+		\mu \defeq \frac{1}{q}\sum_{j=0}^{k-1}\delta_{T^jx_0}
+	\]
+	Then this is also $T$-invariant and ergodic.
+	So the doubling map on $S^1$ has a countable infinity of ergodic, invariant probability measures arising in this way.
+\end{eg}
+
+So the doubling map has infinitely many ergodic invariant probability measures.
+It also has one ergodic absolutely continuous invariant probability measure (a.c.i.p.) which is absolutely continuous wrt $Leb$, namely the Lebesgue measure itself.
+Are there any others?
+
+\begin{prop}
+Given $T:X\ to X$ a measure preserving transformation and $\mu, \nu \in M(X, T)$
+\[
+\nu << \mu \implies \nu = \mu
+\]
+\end{prop}
+
+\begin{proof}
+Choose some arbitrary $B\in \mathcal{B}$, we aim to show that $\nu(B)=\mu(B)$.
+By the ergodic theorem, there is a set $E_\mu$ such that $\mu(E_\mu)=1$ and
+\[
+	\forall x \in E_\mu \quad \frac{1}{n}\sum_{j}\chi_b(T^jx)\to \mu(B)
+\]
+And likewise there is some set $E_\nu$ with $\nu(E_\nu) = 1$ and
+\[
+	\forall x \in E_\nu \quad \frac{1}{n}\sum_{j}\chi_b(T^jx)\to \nu(B)
+\]
+If we can find a point in $E_\mu \cap E_\nu$ then by the uniqueness of limits we are done.
+
+Let $h=\frac{d\nu}{d\mu}$.
+Then note
+\[
+	\nu(E_\nu) = \int_{E_\nu}h\; d\mu = \int_X h \; d\mu = 1
+\]
+because $E_\mu$ has full measure under $\mu$ and also $\nu(X)=1$.
+So we see that $\nu(E_\mu)=\mu(E_\nu)=1$ and hence their intersection has full measure and so is non-empty.
+\end{proof}
+
+\begin{cor}
+	The doubling map has a unique acip (with respect to $Leb$), namely the Lebesgue measure itself.
+\end{cor}
+
+\begin{defin}
+	We say a measurable $T:X\to X$ is \mdf{uniquely ergodic} if $\abs{M(X, T)}=1$.
+\end{defin}
+
+\begin{note}
+	If a transformation $T$ is uniquely ergodic then the unique $T$-invariant measure is certainly extremal in $M(X, T)$ and hence must be ergodic, justifying the name.
+\end{note}
+
+\begin{prop}
+Irrational rotation $T:\mathbb{T}\to \mathbb{T}, \; x\mapsto x_\alpha$, for $\alpha\in\R\setminus\Q$ are uniquely ergodic.
+\end{prop}
+
+\begin{proof}
+We're in a compact metric space and so we can use the Riesz representation theorem.
+We take some arbitrary $\mu\in M(X, T)$ and aim to show that $\int f\;d\mu = \int f \;dLeb$ for all $f\in C(X)$.
+We proceed by a density argument using the space of trigonometric polynomials.
+
+Consider $e^{2\pi i n x}$
+\[
+	\int e^{2\pi i n x} \; d\mu = \int e^{e\pi i n (Tx)} \; d\mu = e^{2\pi i n \alpha}\int e^{2\pi i n x} \; d\mu
+\]
+Notice $\alpha\not\in \Q$ and hence so long as $n\neq 0$ then we have $e^{2\pi i n \alpha}\neq 1$.
+Therefore $\int e^{2\pi i n x} = 0$.
+
+Now choose some arbitrary trig polynomial $P(x) = \sum_{\abs{n}\leq q}c_n e^{e\pi i n x}$
+Then we have just shown that $\int P \dm = c_0 = \int P \; dLeb$.
+For arbitrary $f\in C(X)$ we proceed by the usual density argument.
+\end{proof}
+
+\begin{theorem}
+Given a continuous map $T:X\to X$ on a compact metric space, the following are equivalent:
+\begin{enumerate}[label=(\alph*)]
+	\item For every $f\in C(X)$ there is some $c=c(f)\in \R$ such that
+		\[
+			\frac{1}{n}\sum_{j}f\circ T^j \to c\quad\text{uniformly on }X
+		\]
+	\item For every $f\in C(X)$ there is some $c=c(f)\in \R$ such that
+		\[
+			\frac{1}{n}\sum_{j}f\circ T^j \to c\quad\text{pointwise on }X
+		\]
+	\item There is some $\mu\in M(X, T)$ such that
+		\[
+			\frac{1}{n}\sum_{j}f\circ T^j \to \int f\dm \quad\text{pointwise}\quad\forall f\in C(X)
+		\]
+	\item $T$ is uniquely ergodic.
+\end{enumerate}
+\end{theorem}
+
+\section{Shifts}
+Most of this is verbatim from Dynamical Systems.
+There is something on the cylinder generating the Borel $\sigma$-algebra which is probably worth reading.
+
+\subsection{Bernoulli Measures}
+Take $\Sigma^+ \defeq \left\{ 1, \dots, k\right\}^\N$ and let $\sigma$ denote the natural shift map.
+Fix some $p=(p_1, \dots, p_k)\in \R^q$ such that each $p_i\geq 0$ and $\sum p_i=1$.
+Now we define the measure of cylinders by the formula 
+\[
+	\mu[y_0, \dots, y_m] \defeq p_{y_0}p_{y_1}\dots p_{y_m}
+\]
+We claim that this extends to a measure on the Borel $\sigma$-algebra.
+This will come to be known as a \mdf{Bernoulli measure}.
+
+\begin{prop}
+$\mu$ extends uniquely to a probability measure on $\Sigma^+$.
+\end{prop}
+
+\begin{proof}
+Define $\mathcal{A}\defeq\left\{ \text{finite unions of cylinder sets}\right\}$.
+This is an algebra and it generates the Borel $\sigma$-algebra.
+Given $A\in\mathcal{A}$ we can write $A$ uniquely as a finite disjoint union of cylinders $C_i$
+\[
+	A = \bigcup_{i=1}^p C_i \quad \implies \quad \mu(A) = \sum_{i=1}^p \mu(C_i)
+\]
+We would like to use Hahn-Kolmogorov Theorem and hence we need to show that given $A_1, A_2, \dots \in \mathcal{A}$ which are disjoint such that $\cup_i A_i\in\mathcal{A}$ then $\mu(\cup_i A_i) = \sum_{i}\mu(A_i)$
+But in fact any such union must be finite and hence the condition trivial holds.
+So we get a unique probability measure on all of $\Sigma^+$, it is certainly a probability measure because
+\[
+	\mu(\Sigma^+) = \mu(\bigcup_{i=1}^k \left[ i\right] = \sum_{i=1}^k \mu\left[ i\right] =\sum_{i=1}^k p_i = 1
+\]
+\end{proof}
+
+\begin{prop}
+$\mu$ is $\sigma$-invariant.
+\end{prop}
+
+\begin{proof}
+Note by the uniqueness on $H-K$ it suffices to prove $\mu(\sigma^{-1}A) = \mu(A)$ for each $A\in\mathcal{A}$.
+\end{proof}
+
+\begin{prop}
+If $A\in\mathcal{A}$ then there is an $n\geq 0$ such that $\mu(A\cap \sigma^{-n}A)=\mu(A)^2$.
+\end{prop}
+
+\begin{theorem}
+Bernoulli measures are ergodic.
+\end{theorem}
+
+
+
 \section{Entropy}
 The motivation for a definition of entropy is as a vehicle to distinguish between dynamical systems. First we need to know how tell when two systems are identical.
 \begin{defin}
@@ -640,6 +835,8 @@ We have the following desirable properties:
 	\item Integrating this gives $\entrg{T^{-1}\alpha}{T^{-1}\mathcal{C}}=\entrg{\alpha}{\mathcal{C}}$.
 	\item $\alpha\leq\beta\implies\infog{\alpha}{\beta}=0$.
 \end{itemize}
+
+
 \begin{prop}
 	$$\entrg{\alpha}{\mathcal{C}}=-\int_X \sum_{A\in\alpha}\mu\gvn{A}{\mathcal{C}}\log(\mu\gvn{A}{\mathcal{C}})d\mu$$	
 \end{prop}
@@ -672,4 +869,5 @@ This has the convenient property that $H_{n+m}(\alpha)\leq H_n(\alpha)+H_m(\alph
 We can then define the \mdf{entropy of T} by taking the supremum:
 $$\mdf{h(T)}\defeq\sup_{\alpha\in\mathcal{P}}h(T,\alpha)$$
 Having done all this work, this had better be a measure-theoretic isomorphism invariant.
+
 \end{document}
