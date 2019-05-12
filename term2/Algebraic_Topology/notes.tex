@@ -21,7 +21,7 @@
 %{{{ Custom commands
 % Nice maths commands
 \newcommand{\defeq}{:=}
-\newcommand{\eqdef}{+:}
+\newcommand{\eqdef}{=:}
 \newcommand{\abs}[1]{|#1|}
 \newcommand{\norm}[1]{||#1||}
 \DeclareMathOperator{\im}{\mathrm{im}}
@@ -390,7 +390,7 @@ Given a pair $(X, A)$ we can define the \mdf{relative chain group}
 \[
 	C_n(X, A)\defeq\frac{C_n(X)}{C_n(A)}
 \]
-i.e. we consider two continous maps into $X$ to be the same if the agree on $X\setminus A$.
+i.e. we consider two continuous maps into $X$ to be the same if the agree on $X\setminus A$.
 
 Now our maps $\partial_n$ pass to the quotient by
 \[
@@ -401,7 +401,185 @@ We still get $\overline{\partial}_n\circ\overline{\partial}_{n+1}=0$ and hence w
 \[
 	H_n(X, A)\defeq\frac{\ker\overline{\partial}_n}{\im\overline{\partial}_{n+1}}
 \]
-<++>
+Notice that given a pair of spaces $(X, A)$, we get a short exact sequence of chain complexes
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}
+		0 \arrow[r] & C_n(A) \arrow[r, "i_\#"] & C_n(X) \arrow[r, "j_\#"] & C_n(X, A) \arrow[r] & 0
+	\end{tikzcd}
+\end{figure}
+
+\begin{theorem}
+Given any short exact sequence of chain complexes
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}
+		0 \arrow[r] & A_\bullet \arrow[r, "i"] & B_\bullet \arrow[r, "j"] & C_\bullet \arrow[r] & 0
+	\end{tikzcd}
+\end{figure}
+we get a long exact sequence of homology:
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}
+		0 \arrow[r] & H_n(A_\bullet)\arrow[r, "i_\ast"] & H_n(B_\bullet) \arrow[r, "q_\ast"] & H_n(C_\bullet) \arrow[lld, "\partial", bend right=5] \\
+		\; &H_{n-1}(A_\bullet)\arrow[r, "i_\ast"] & H_{n-1}(B_\bullet) \arrow[r, "q_\ast"] & H_{n-1}(C_\bullet) \arrow[lld, "\dots", bend right=5]\\
+		\; & H_0(A_\bullet)\arrow[r, "i_\ast"] & H_0(B_\bullet) \arrow[r, "q_\ast"] & H_0(C_\bullet) \arrow[r] & 0
+	\end{tikzcd}
+\end{figure}
+where the \mdf{connecting homomorphism} is defined by diagram chasing.
+\end{theorem}
+
+\begin{proof}
+We construct the connecting homomorphism $\delta: H_n(C_\bullet)\to H_{n-1}(A_\bullet)$ as per the following diagram.
+Remember that
+\begin{itemize}
+	\item Columns are exact sequences.
+	\item Rows are complexes.
+\end{itemize}
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}[sep = large]
+		\; & 0 \arrow[d] & 0\arrow[d] & 0\arrow[d] & \; \\
+		\; \arrow[r] & A_{n+1} \arrow[r] \arrow[d] & A_n \arrow[r] \arrow[d] & A_{n-1} \arrow[r] \arrow[d] &\; \\
+		\; \arrow[r] & B_{n+1} \arrow[r] \arrow[d] & B_n \arrow[r] \arrow[d] & B_{n-1} \arrow[r] \arrow[d] &\; \\
+		\; \arrow[r] & C_{n+1} \arrow[r] \arrow[d] & C_n \arrow[r] \arrow[d] & C_{n-1} \arrow[r] \arrow[d] &\; \\
+		\; & 0 & 0 & 0 & \; 
+	\end{tikzcd}
+\end{figure}
+
+We need to prove this is well defined, that is:
+\begin{enumerate}
+	\item Independent of our choice of representative $c_n \in \left[ c_n\right]$
+	\item Independent of our choice of $b_n$ such that $j(b_n)=c_n$.
+\end{enumerate}
+
+Then we need to prove exactness at each point in the sequence.
+\end{proof}
+
+This gives us a long exact sequence of relative homology but unfortunately we cannot yet use it to prove anything about $\widetilde{H_n}\left(\frac{X}{A}\right)$ because the sequence only includes terms like $\widetilde{H_n}(X, A)$.
+We would like to show that for a good pair
+\[
+	\widetilde{H}_n\left(\frac{X}{A}\right)\cong \widetilde{H}_n(X, A)
+\]
+First homotopy invariance of homology and a relationship between $\pi_1$ and $H_1$.
+
+\section{Homotopy Invariance of Homology}
+\begin{theorem}
+Homotopy maps $f, g:X \to Y$ induce the same homomorphism of homology, i.e. $f_\ast = g_\ast$.
+\end{theorem}
+\begin{proof}
+This is the proof where we construct the prism operator.
+It is very long and complicated but the main ideas should be remembered.
+\end{proof}
+
+\begin{cor}
+	If $h:X \to Y$ is a homotopy equivalence then $h_\ast: H_n(X) \to H_n(Y)$ is an isomorphism for every $n\in\N$.
+\end{cor}
+\begin{proof}
+This is now a simple application of functoriality.
+\end{proof}
+
+\begin{note}
+In particular, a contractible space has the same homology as a point.
+\end{note}
+
+\begin{defin}
+Suppose $p,  q$ are morphisms of chain complexes $A_\bullet\to B_\bullet$.	
+
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}[sep = large]
+		\dots \arrow[r] & A_{n+1} \arrow[dl, dashed, "P"', red] \arrow[d, bend left, "p"] \arrow[d, bend right, "q"'] \arrow[r]
+						& A_n\arrow[dl, dashed, "P"', red] \arrow[d, bend left, "p"] \arrow[d, bend right, "q"'] \arrow[r]
+						& A_{n-1}\arrow[dl, dashed, "P"', red] \arrow[d, bend left, "p"] \arrow[d, bend right, "q"']\arrow[r]
+						& \dots \arrow[dl, dashed, "P"', red] \\
+		\dots \arrow[r] & B_{n+1} \arrow[r] & B_n \arrow[r] & B_{n-1} \arrow[r] & \dots
+	\end{tikzcd}
+\end{figure}
+We say they are \mdf{chain homotopic} if there is a $P:A_n \to B_{n+1}$ for each $n$ such that
+\[
+p - q = \partial P + P \partial
+\]
+\end{defin}
+
+\section{Relation between $\pi_1$ and $H_1$}
+For this section assume that $X$ is path connected and $x_0\in X$
+Consider the map which realises a loop in $X$ based at $x_0$ as a cycle in $Z_1(X)$.
+We claim that his passes to the quotient to define
+\[
+	h: \pi_1(X, x_0) \to Z_1(X)
+\]
+Moreover, we claim
+\begin{enumerate}[label=(\roman*)]
+	\item $h$ is a homomorphism.
+	\item $h$ is surjective.
+	\item $\ker h= \left[ \pi_1(X, x_0), \pi_1(X, x_0)\right]$ is the commutator subgroup.
+\end{enumerate}
+Hence by the first isomorphism theorem $H_1(X)$ can be seen as the \mdf{abelianisation} of $\pi_1(X, x_0)$
+\[
+	H_1(X) \cong \frac{\pi_1(X, x_0)}{\left[ \pi_1(X, x_0), \pi_1(X, x_0)\right]} \eqdef \pi_1(X, x_0)_{ab}
+\]
+
+\begin{proof}
+Again this is very long but an understanding of the main argument would be useful.
+Consult Hatcher for more details.
+\end{proof}
+
+\section{Homology: Civil War}
+\begin{theorem}
+The inclusion of $\Delta_\bullet(X) \to C_\bullet(X)$ induces an isomorphism
+\[
+	H_n^\Delta(X) \to H_n(X)
+\]
+when $X$ is a $\Delta$-complex.
+\end{theorem}
+
+This is quite a long road so we start with the following very important technical result.
+The idea is that if we remove chains deep inside $A$ then we do not effect the relative homology because they have already been quotiented out.
+
+\begin{theorem}[Excision]
+Given spaces $Z\subseteq A\subseteq X$ such that $\overline{Z}\subseteq\interior{A}$.
+Then the inclusion $(X \setminus Z, A\setminus Z) \to (X, A)$ induces an isomorphism of relative homology
+\[
+	H_n(X \setminus Z, A \setminus Z) \to H_n(X, A)\quad \forall n
+\]
+
+\textbf{Version 2: } If $A, B \subseteq X$ such that $\interior{A} \cup \interior{B} \subseteq X$ then the inclusion $(B, A \cap B) \to (X, A)$ induces an isomorphism $H_n(B, A\cap B) \to H_n(X,A)$ for every $n$.
+\end{theorem}
+
+We prove venison 2.
+Notice that $\left\{ A, B\right\}$ forms a cover of $X$.
+
+Suppose we have a cover $\mathcal{U}=\left\{ U_\alpha\right\}_\alpha$ then we can define
+\[
+	C_n^\mathcal{U}(X) \defeq\left\{ n\text{-chains in }X\text{ where each simplex lies in some }\alpha\right\}
+\]
+and we clearly get an inclusion $i: C_\bullet^\mathcal{U}(X) \to C_\bullet(X)$.
+
+\begin{prop}
+As defined above $i$ is a chain homotopy equivalent.
+That is there is some $S:C_\bullet(X) \to C_\bullet(X)^\mathcal{U}$ such that
+\begin{itemize}
+	\item $i \circ S: C_\bullet(X) \to C_\bullet(X)$ is chain homotopic to the identity.
+	\item $S \circ i: C_\bullet^\mathcal{U}(X) \to C_\bullet^\mathcal{U}(X)$ is chain homotopic to the identity.
+\end{itemize}
+\end{prop}
+
+\begin{proof}
+This was done by barycentric subdivision.
+By iterated barycentric subdivision, given any singular $n$-simplex $\sigma:\Delta^n\to X$ we subdivide $\Delta^n$ to define a chain $S(\sigma)$ which lies in $C_n^\mathcal{U}(X)$.
+This works because $\partial(subdivision) = subsdivison(\partial)$.
+\end{proof}
+
+Out first application of excision gives us a relationship between relative homology and homology of quotient spaces.
+
+\begin{prop}
+For a \textbf{good pair} $(X, A)$, the quotient map $q: (X, A) \to \left( \frac{X}{A}, \frac{A}{A}\right)$ induces an isomorphism
+\[
+H_n(X, A) \to H_n\left( \frac{X}{A}, \frac{A}{A}\right) \cong \widetilde{H}_n\left(\frac{X}{A}\right)
+\]
+\end{prop}
 
 \section{Useful Results}
 \begin{lemma}
