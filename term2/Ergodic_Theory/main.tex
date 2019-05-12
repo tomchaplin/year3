@@ -112,19 +112,42 @@ $$\forall B\in\mathcal{B},\; T^{-1}B=B \implies \mu(B)=0\;\text{or}\;1$$
 
 \end{defin}
 
+The following theorem will be very useful.
+
+\begin{theorem}[Han-Kolmogorov]
+Let $\mathcal{A}$ be an algebra on a space $X$.
+Suppose we have a function $\mu_0:\mathcal{A}\to [0, \infty]$ which satisfies
+\begin{enumerate}[label=(\roman*)]
+	\item \textbf{Finite additivity: }Given $A_1, \dots, A_n\in\mathcal{A}$ disjoint
+		\[
+			\mu_0\left( \bigcup_{i=1}^n A_i\right)=\sum_{i=1}^{n}\mu_0(A_i)
+		\]
+	\item \textbf{Sigma additivity: }Given $A_1, A_2, \dots \in \mathcal{A}$ disjoint such that $\bigcup_i A_i\in\mathcal{A}$
+		\[
+			\mu_0\left( \bigcup_{i=1}^\infty A_i \right) = \sum_{i=1}^{\infty}\mu_0(A_i)
+		\]
+\end{enumerate}
+Then $\mu_0$ extends to a measure on $\sigma(\mathcal{A})$.
+Moreover, if $\mu_0$ is $\sigma$-finite then this extension is unique.
+\end{theorem}
+
 \section{Facts on Fourier Series}
 Suppose $f\in L_1(\ktor)$ then we can define the \mdf{Fourier coefficients} by
 $$\hat{f}(n)=\int_{\ktor}f(x)e^{-2\pi in\cdot x}dx\quad\forall n\in\Z^k$$
-\begin{theorem}[Fej\'er's Theorem]
-The average of the partial Fourier sums converges uniformly to $f$, i.e.
-$$\frac{1}{N}\sum_{k=0}^{N-1}S_kf\to f\quad\text{uniformly}$$
-\end{theorem}
+We define the \mdf{partial Fourier sums} by
+\[
+	\mdf{S_Nf(x)}\defeq\sum_{\abs{n}\leq N}\hat{f}(n)e^{2\pi i (n\cdot x)}
+\]
+
 \begin{theorem}[Riemann-Lebesgue Lemma]
 	For all $f\in L_1(\ktor)$, $$\lim_{\abs{n}\to\infty}\hat{f}(n)=0$$
 \end{theorem}
 \begin{theorem}[Reisz-Fisher Theorem]
-Define $S_Nf(x)=\sum_{\abs{n}\leq N}\hat{f}(n)e^{2\pi i (n\cdot x)}$
-then $S_nf\to f$ in $L^2$ for all $f\in L^2(\ktor)$.
+$S_nf\to f$ in $L^2$ for all $f\in L^2(\ktor)$.
+\end{theorem}
+\begin{theorem}[Fej\'er's Theorem]
+The average of the partial Fourier sums converges uniformly to $f$, i.e.
+$$\frac{1}{N}\sum_{k=0}^{N-1}S_kf\to f\quad\text{uniformly}$$
 \end{theorem}
 \begin{cor}
 If $f\in L^2(\ktor)$ and $\hat{f}(n)=0\;\forall n\in\Z^k\setminus\{0\}$, then $f$ is constant.
@@ -198,13 +221,18 @@ Given a measure preserving transformation $T:X\to X$ and some $1\leq p\leq\infty
 \end{enumerate}
 \end{theorem}
 \begin{note}
-To check that $T$ is ergodic it suffices to show that all invariant $L^2$ functions have zero Fourier coefficients away from zero.
+	As a corollary to the Reisz-Fisher theorem, given any $f\in L^2$, if we have that $\hat{f}(n)=0$ for all $n\neq 0$ then $f$ must be constant.
+Therefore to check that $T$ is ergodic it suffices to show that all invariant $L^2$ functions have zero Fourier coefficients away from zero.
 \end{note}
 To this end we present the following formula for computing the Fourier coefficients of invariant $L^2$ functions.
 \begin{theorem}
 Given $f\in L^2$ which is invariant
 $$\hat{f}(n)=\lim_{N\to\infty}\int (S_Nf)(Tx)e^{-2\pi i n\cdot x}dx$$
 \end{theorem}
+
+\begin{eg}
+	\textbf{The doubling map is ergodic with respect to the Lebesgue Measure.}
+\end{eg}
 
 \section{Theorems using Measure Preserving}
 \begin{theorem}[Poincar\'e Recurrence Theorem]
