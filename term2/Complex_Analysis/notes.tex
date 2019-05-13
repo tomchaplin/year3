@@ -516,7 +516,7 @@ m(f,R,z_0)\defeq\max_{z\in\partial\mathcal{B}_R(z_0)}\abs{f(z)}
 \]
 Then by Taylor's theorem we see that
 \[
-	\abs{f^(n)(z_0)}\leq\frac{n!}{R^n}m(f, R, z_0) \leq \frac{n!}{R^n}M
+	\abs{f^{(n)}(z_0)}\leq\frac{n!}{R^n}m(f, R, z_0) \leq \frac{n!}{R^n}M
 \]
 and in particular $\abs{f'(z_0)}\leq\frac{M}{R}\to 0$ as $R\to\infty$.
 Hence $f'(z_0)=0$.
@@ -677,22 +677,22 @@ Suppose $f:\Delta\to\Delta$ is holomorphic such that $f(0)=0$ then
 \end{defin}
 
 \begin{prop}
-Let $\mathcal{Z}_f$ and $\mathcal{P}_f$ be the set of zeros and poles respectively of $f:D\to\C$ meromorphic.
+Let $\mathcal{Z}_f$ and $\mathcal{P}_f$ be the set of zeros and poles respectively of $f:D\to\C$ meromorphic, $f\neq 0$.
 Then neither set has an accumulation point in $D$.
 \end{prop}
 
 \begin{proof}
 Certainly any pole of $f$ is an isolated singularity and hence cannot be an accumulation point of $\mathcal{P}_f$.
-Any other $z\in D$ where $f$ is holomorphic cannot be an accumulation point either.
+Any other $z\in D$ where $f$ is holomorphic cannot be an accumulation point of poles either.
 
 Suppose now that $\mathcal{Z}_f$ has an accumulation point at $z_0\in D$ then $z_0$ cannot be a pole otherwise we'd be able to write
 \[
 	f(z)=\frac{g(z)}{(z-z_0)^m}\quad\text{with }m\in\N, g(z_0)\neq 0
 \]
-and hence $f(z)\neq 0$ for all $0\leq\abs{z-z_0}\epsilon$ which means that $z_0$ is not an accumulation point.
+and hence for some $\epsilon>0$ we have that $f(z)\neq 0$ for all $0\leq\abs{z-z_0}<\epsilon$ which means that $z_0$ is not an accumulation point.
 
-So any accumulation pole must be a complex differentiable point.
-We are left to show that $D\setminus\mathcal{P}_f$ see open and connected because then the identity theorem tells us $\mathcal{Z}_f$ cannot have an accumulation point in $D\setminus\mathcal{P}_f$.
+So any accumulation point must be a complex differentiable point.
+We are left to show that $D\setminus\mathcal{P}_f$ see open and connected because then the identity theorem tells us that $f\equiv 0$ because $\left\{ f=0\right\}$ has an accumulation point in $D \setminus \mathcal{P}_f$.
 \end{proof}
 
 \begin{lemma}
@@ -784,6 +784,13 @@ So we can define a function
 and it may be extended to a function which is holomorphic on $\mathcal{B}_\epsilon(z_0)$ because the bottom is always bigger than $\delta$ hence $g$ is bounded.
 So we can write $f(z)=\frac{1}{g(z)}+w$ which clearly doesn't have an essential singularity $\contr$.
 \end{proof}
+
+\begin{note}
+	Suppose $z_0$ is an essential singularity for $f$, then certainly $\lim_{z\to z_0}f(z)$ cannot have any finite value $c\in \C$.
+	Suppose $\lim_{z\to z_0} f(z) = \infty$ then there would be some $\epsilon$ ball around $z_0$ such that $\abs{z-z_0}< \epsilon \implies \abs{f(z)} > 1$.
+	Hence the image of this ball could not be dense.
+	This shows that essential singularities exhibit no limiting behaviour.
+\end{note}
 
 \section{Residual Theory}
 
@@ -929,6 +936,26 @@ where
 \]
 \end{theorem}
 
+\begin{proof}
+The proof uses the residual theorem to calculate the integral on the left hand side.
+The isolated singularities of $\frac{f'}{f}$ are the poles and zeros of $f$.
+We need to understand the residue of $\frac{f'}{f}$ (the \mdf{logarithmic derivative}) at these points.
+
+To this end, let $z_0$ be a zero or a pole of $f$.
+Then for some $n\in \Z$ and function $g$ which is holomorphic in neighbourhood of $z_0$ with $g(z_0)\neq 0$ we can write
+\[
+	f(z)=(z-z_0)^ng(z)
+\]
+Then we can calculate the logarithmic derivative as follows
+\[
+	\frac{f'(z)}{f(z)}=\frac{1}{f(z)}\left( n(z-z_0)^{n-1}g(z) + (z-z_0)^n g'(z) \right) = \frac{n}{z-z_0} + \frac{g'(z)}{g(z)}
+\]
+Since $g(z_0)\neq 0$ we see that $\frac{f'}{f}$ has a simple pole at $z_0$ and hence $\res\left(\frac{f'}{f}, z_0\right)=n$.
+
+So when we integrate $\frac{f'}{f}$ we sum $\ord(f, z_0)$ for all zeros and poles of $f$ with a factor of $2\pi i$ out front.
+This counts zeros positively and poles negatively, each with multiplicity respecting the order.
+\end{proof}
+
 \section{Rouches Theorem}
 
 \begin{theorem}[Rouches Theorem]
@@ -951,7 +978,7 @@ and hence $h(U)\subseteq \mathcal{B}_1(1) \subseteq \C\setminus\left\{z\in\C \rm
 \[
 	(\log(h))'=\frac{h'}{h}=\frac{f'}{f}-\frac{g'}{g}
 \]
-then since $h$ is holomorpic on $U$ we can integrate its derivative over $\gamma$ and get
+then since $h$ is holomorphic on $U$ we can integrate its derivative over $\gamma$ and get
 \[
 	0=\frac{1}{2\pi i}\int_\gamma\frac{f'(\xi)}{f(\xi)}\;d\xi - \frac{1}{2\pi i}\int_\gamma\frac{g'(\xi)}{g(\xi)}\;d\xi
 \]
@@ -966,6 +993,20 @@ Given $h,w\in\mathcal{H}(D)$, such that we can write $h=f+g$ and $w=f$, suppose 
 \]
 then $f+g$ and $f$ have the same number of zeros in $\Int(\gamma)$.
 \end{note}
+
+\begin{proof}
+Define the meromorphic function
+\[
+	F(z)\defeq \frac{f(z) + g(z)}{f(z)} = 1 + \frac{g(z)}{f(z)}
+\]
+Note that we want to show that $Z_A(F) = P_A(F)$.
+By the argument principle we have that $Z_A(F) - P_A(F)$ is the winding number of $F\circ \gamma$ about $0$ since
+\[
+	\int_\gamma \frac{F'(z)}{F(z)}dz = \int_{F\circ \gamma} \frac{1}{z}dz
+\]
+But by assumption we have that for all $z$ in the image of $\gamma$ $\abs{F(z)-1 } < 1$.
+So the image of $\gamma$ under $F$ is contained 
+\end{proof}
 
 \section{Functional Convergence}
 \begin{defin}
