@@ -845,7 +845,7 @@ We can use this to define a new measure by first defining on cylinder sets
 \[
 	\mu(\left[ y_0, \dots, y_m \right]) \defeq q_{y_0}P_{y_0 y_1}\dots P_{y_{m-1}y_m}
 \]
-By the Hahn-Kolmogorov Theorem this extends to a unique measure on $\Sigma_A^+$ and note
+By the Hahn-Kilogram Theorem this extends to a unique measure on $\Sigma_A^+$ and note
 \[
 	\mu(\Sigma_A^+)=\mu\left( \bigcup_{i=1}^k [j] \right)=\sum_{j=1}^k \mu( \left[ j\right]) = \sum_{j=1}^k q_j =1
 \]
@@ -862,9 +862,114 @@ Markov measures are invariant under the shift map.
 									  &= \sum_{j=1}^k\mu[j, y_0, y_1, \dots, y_m] \\
 									  &= \sum_{j=1}^k q_jP_{j y_0} P_{y_0 y_1} \dots P_{y_{m-1} y_m} \\
 									  &= \underbrace{\left( \sum_{j=1}^k q_j P_{j y_0}\right)}_{=qy_0}P_{y_0 y_1} \dots P_{y_{m-1} y_m}
-									  &= \mu[y_0, \dots, y_m]
+									  = \mu[y_0, \dots, y_m]
 \end{align*}
 \end{proof}
+
+\begin{note}
+Markov measure are in fact ergodic but we are not going to prove it.
+\end{note}
+
+We can recover Bernoulli measures as a special case of Markov measures.
+Given our initial distribution $q=(q_1, \dots, q_k)$ we form the matrix $P$ by
+\[
+P\defeq
+\begin{pmatrix}
+	q_1 & \dots & q_k \\
+	\vdots & \ddots & \vdots \\
+	q_1 & \dots & q_k
+\end{pmatrix}
+\]
+and then we can easily see that $qP=q$ and the corresponding Markov measure coincides with the corresponding Bernoulli measure.
+
+Given any aperiodic matrix $A$ with maximum eigenvalue $\lambda>0$ we know that there are unique vectors $u, v$ such that
+\begin{align*}
+	Av = \lambda v &\sum_{i}v_i=1 & v_i > 0 \\
+	uA^T = \lambda u & \sum_{i}u_i =1 & u_i >0
+\end{align*}
+Then we define a new matrix $P$ by $P_{ij}\defeq\frac{A_{ij} v_i}{\lambda v_i}$.
+We also define a distribution $q_i\defeq\frac{u_i v_i}{c}$ where $c\defeq \sum_{i}u_i v_i$.
+Then we can see that $P$ is compatible with $A$ and is now row-stochastic.
+Moreover, $qP=q$ and $\sum_{i}q_i = 1$ and $q_i>0$ for all $i$.
+The corresponding Markov measure $\mu$ is then called the \mdf{Parry measure}.
+
+\section{Mixing}
+\begin{theorem}
+Suppose $T:X \to X$ is a measure preserving transformation on $(X,\mathcal{B}, \mu)$.
+The following are equivalent:
+\begin{enumerate}[label=(\alph*)]
+	\item $T$ is ergodic.
+	\item For all $A,B\in\mathcal{B}$ we have
+		\[
+			\frac{1}{n}\sum_{j=0}^{n-1}\mu(T^{-j}A\cap B) \to \mu(A)\mu(B)
+		\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\textit{(b)}$\implies$\textit{(a)}.
+Choose $B\in\mathcal{B}$ such that $T^{-1}B=B$.
+Then in the formula take $A=B$ so that $T^{-j}A\cap B=B$.
+Then we can see that $\mu(B)=\mu(B)^2$ and hence $\mu(B)\in\left\{ 0, 1\right\}$.
+
+\textit{(a)}$\implies$\textit{(b)}.
+We apply the ergodic theorem for $f=\indic{A}$.
+We get that
+\[
+	\frac{1}{n}\sum_{0}^{n-1}\indic{A}\circ T^j \to \mu(A) \quad a.e.
+\]
+Let's multiply this expression by $\indic{B}$.
+\[
+	\frac{1}{n}\sum_{j=0}^{n-1}\indic{T^{-j}A\cap B} = \frac{1}{n}\sum_{j=0}^{n-1}(\indic{A}\circ T^j)\indic{B} \to \mu(A)\indic{B}\quad a.e.
+\]
+Then we integrated both sides and use the dominated convergence theorem since the left hand side is bounded by $1$ which has finite integral.
+Hence
+\[
+	\frac{1}{n}\sum_{j=0}^{n-1}\mu(T^{-j}A\cap B) = \int \frac{1}{n}\sum_{j=0}^{n-1}\indic{T^{-j}A\cap B} \to \int \mu(A) \indic{B} = \mu(A) \mu(B)
+\]
+\end{proof}
+
+\begin{defin}
+	We say that $T$ is \mdf{weak mixing} if
+	\[
+		\frac{1}{n}\sum_{j=0}^{n-1}\abs{\mu(T^{-j}A\cap B) - \mu(A)\mu(B)} \to 0
+	\]
+	and say that $T$ is \mdf{(strong) mixing} if
+	\[
+		\mu(T^{-n}A\cap B)) \to \mu(A)\mu(B)
+	\]
+	each for all $A, B\in\mathcal{B}$.
+
+	A subset $J\subseteq \N$ is of \mdf{density $d$} if
+	\[
+		\frac{\abs{J\cap \left\{ 0, 1, \dots , n-1\right\}}}{n}\to d\quad \text{as} \; n\to\infty
+	\]
+	We say $J$ has
+	\begin{itemize}
+		\item \mdf{full density} if $d=1$,
+		\item \mdf{zero density} if $d=0$, and
+		\item \mdf{positive density} if $d>0$.
+	\end{itemize}
+\end{defin}
+
+Notes on density:
+\begin{itemize}
+	\item If $d$ exists then certainly $d\in \left[ 0, 1\right]$.
+	\item If $J$ has density $d$ then $\N \setminus J$ has density $1-d$.
+	\item If $T$ is ergodic and $B\in\mathcal{B}$ is a Borel set then
+		\[
+			J\defeq\left\{ n \geq 0 \rmv T^n x \in B\right\}\text{ has density }\mu(B) \text{ for a.e. }x
+		\]
+\end{itemize}
+
+\begin{proof}
+\[
+	\frac{\abs{J\cap \left\{ 0, 1, \dots, n-1\right\}}}{n}= \frac{1}{n}\sum_{j=0}^{n-1}\indic{B}(T^j x) \to \mu(B)
+\]
+by the ergodic theorem.
+\end{proof}
+
+
 
 \section{Entropy}
 The motivation for a definition of entropy is as a vehicle to distinguish between dynamical systems. First we need to know how tell when two systems are identical.
