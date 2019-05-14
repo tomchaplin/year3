@@ -824,6 +824,48 @@ For an aperiodic matrix $B$
 We call such $\lambda$ the \mdf{maximal eigenvalue}.
 \end{theorem}
 
+Consider a subshift of finite type associated to an aperiodic matrix $A\in\left\{ 0, 1\right\}^{k\times k}$.
+Choose some $k\times k$ matrix $P$ with non-negative entries such that
+\begin{itemize}
+	\item $P$ is a \mdf{row-stochastic} if for all $i$, $\sum_{j=1}^k p_{ij} =1$.
+	\item $P$ is \mdf{compatible with $A$}, i.e. $p_{ij} >0 \iff A_{ij}=1$.
+\end{itemize}
+
+Note that we get the following desirable properties:
+\begin{itemize}
+	\item $A$ aperiodic $\implies$ $P$ aperiodic since the same choice of $n$ will work.
+	\item $(1, 1, \dots, 1)^T$ is an eigenvector with eigenvalue $1$.
+	\item By the Perron-Frobenius Theorem, $1$ must be the maximum eigenvalue.
+		Therefore, there must be a unique left eigenvector $q$ such that
+		\[
+			qP = d \quad \sum_{i}q_i = 1\quad q_i >0
+		\]
+\end{itemize}
+We can use this to define a new measure by first defining on cylinder sets
+\[
+	\mu(\left[ y_0, \dots, y_m \right]) \defeq q_{y_0}P_{y_0 y_1}\dots P_{y_{m-1}y_m}
+\]
+By the Hanh-Kolmogorov Theorem this extends to a unique measure on $\Sigma_A^+$ and note
+\[
+	\mu(\Sigma_A^+)=\mu\left( \bigcup_{i=1}^k [j] \right)=\sum_{j=1}^k \mu( \left[ j\right]) = \sum_{j=1}^k q_j =1
+\]
+So $\mu$ is a probability measure and $\mu$ is the unique such extension.
+We call $\mu$ the \mdf{Markov measure corresponding to $P$}.
+
+\begin{prop}
+Markov measures are invariant under the shift map.
+\end{prop}
+
+\begin{proof}
+\begin{align*}
+	\mu(\sigma^{-1}[y_0, \dots, y_m]) &= \mu\left( \cup_{i=1}^k [j, y_0, \dots, y_m]\right) \\
+									  &= \sum_{j=1}^k\mu[j, y_0, y_1, \dots, y_m] \\
+									  &= \sum_{j=1}^k q_jP{j y_0} P{y_0 y_1} \dots P_{y_{m-1} y_m} \\
+									  &= \underbrace{\left( \sum_{j=1}^k q_j P_{j y_0}\right)}_{=qy_0}P_{y_0 y_1} \dots P_{y_{m-1} y_m}
+									  &= \mu[y_0, \dots, y_m]
+\end{align*}
+\end{proof}
+
 \section{Entropy}
 The motivation for a definition of entropy is as a vehicle to distinguish between dynamical systems. First we need to know how tell when two systems are identical.
 \begin{defin}
