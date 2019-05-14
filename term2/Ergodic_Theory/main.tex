@@ -969,7 +969,38 @@ Notes on density:
 by the ergodic theorem.
 \end{proof}
 
+\begin{lemma}
+Let $a_n\in\R$ be a bounded sequence.
+The following are equivalent:
+\begin{enumerate}
+	\item $\lim_{n\to\infty}\frac{1}{n}\sum_{j=0}^{n-1}\abs{a_j} = 0$
+	\item There is a subset $J\subseteq\N$ of full density such that $\lim_{n\to\infty, \; n\in J}a_n =0$.
+\end{enumerate}
+\end{lemma}
 
+\begin{proof}
+The proof of this is unreasonably long.
+\end{proof}
+
+\begin{cor}
+	T is weak-mixing if and only if for all $A,B \in \mathcal{B}$ there is some $J\subseteq\N$ of full density such that
+	\[
+		\lim_{n\to\infty, \; n\in J}\mu(A\cap T^{-n}B) = \mu(A)\mu(B)
+	\]
+\end{cor}
+
+\begin{proof}
+Take $a_n = \mu(A \cap T^{-n}B) - \mu(A)\mu(B)$ in the above lemma.
+\end{proof}
+
+\begin{theorem}
+$T$ is weak mixing $\implies$ $T\times T$ is ergodic (in fact weak mixing).
+Note $T\times T$ is taking place under the product measure on the product $\sigma$-algebra.
+\end{theorem}
+
+\begin{cor}
+Rotations of the circle are not weak mixing.
+\end{cor}
 
 \section{Entropy}
 The motivation for a definition of entropy is as a vehicle to distinguish between dynamical systems. First we need to know how tell when two systems are identical.
