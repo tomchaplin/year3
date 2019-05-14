@@ -860,7 +860,7 @@ Markov measures are invariant under the shift map.
 \begin{align*}
 	\mu(\sigma^{-1}[y_0, \dots, y_m]) &= \mu\left( \cup_{i=1}^k [j, y_0, \dots, y_m]\right) \\
 									  &= \sum_{j=1}^k\mu[j, y_0, y_1, \dots, y_m] \\
-									  &= \sum_{j=1}^k q_jP{j y_0} P{y_0 y_1} \dots P_{y_{m-1} y_m} \\
+									  &= \sum_{j=1}^k q_jP_{j y_0} P_{y_0 y_1} \dots P_{y_{m-1} y_m} \\
 									  &= \underbrace{\left( \sum_{j=1}^k q_j P_{j y_0}\right)}_{=qy_0}P_{y_0 y_1} \dots P_{y_{m-1} y_m}
 									  &= \mu[y_0, \dots, y_m]
 \end{align*}
