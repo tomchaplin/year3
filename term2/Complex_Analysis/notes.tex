@@ -87,13 +87,29 @@
 
 \begin{document}
 \maketitle
+\tableofcontents
+\newpage
 
 \section{Complex Algebra}
+\[
+	\cos(z)\defeq \frac{e^{iz}+e^{-iz}}{2} \quad
+	\sin(z)\defeq \frac{e^{iz}-e^{-iz}}{2i} \quad
+	\cosh(z)\defeq \frac{e^{z}+e^{-z}}{2} \quad
+	\sinh(z)\defeq \frac{e^{z}-e^{-z}}{2}
+\]
+
+\begin{note}
+	\[
+		\cosh(z) = \cos(iz) \quad
+		\sinh(z) = -i\sinh(iz)
+	\]
+\end{note}
+
 \begin{defin}
 	\begin{itemize}
 		\item The \mdf{principal value of the argument} is the unique $\theta\in (-\pi, \pi]$.	
 			This is a continuous function on $\C$ without any half-line (including $0$). 
-		\item $\xi + i \eta$ is the \mdf{logarithm} of $re^{i\theta}$ id
+		\item $\xi + i \eta$ is the \mdf{logarithm} of $re^{i\theta}$ if
 			\[
 				\xi = \log(r) \quad\quad \eta = \theta + 2\pi n \;\; n\in \Z
 			\]
@@ -393,7 +409,7 @@ $f:D\to \C$ holomorphic and $\gamma\in\mathcal{C}^1([a, b])$ such that $\Gamma\s
 \end{align*}
 \end{lemma}
 
-\subsection{My First Sony Cauchy's Theorem}
+\subsection{My First Cauchy's Theorem}
 \begin{theorem}[Goursat's Theorem]
 Take $D\subseteq \C$ open and $f:D\to\C$ holomorphic.
 Take a rectangle $Q\subseteq D$ such that $Q\cup \partial Q = \overline{Q}\subseteq D$.
@@ -474,16 +490,40 @@ Not too difficult, worth going over (Lecture 11)
 
 \subsection{Applications}
 
+\subsubsection{Taylor's Theorem}
+
 \begin{theorem}[Taylor's Theorem]
 Given $D\subseteq C$ open and polygonally connected and $f:D\to C$ holomorphic.
 Assume $\exists R>0$ and $z_0\in D$ such that $\overline{\mathcal{B}_R(z_0)}\subseteq D$ then for all $z\in\mathcal{B}_R(z_0)$ we have
 \[
-	f(z)=\sum_{k=0}^{\infty}a_k(z-z_0)^k\quad\text{with}\quad a_k=\frac{1}{2\pi i}\int_{\partial \mathcal{B}_r(z_0)} \frac{f(\xi)}{(\xi - z_0)^{k+1}}d\xi
+	f(z)=\sum_{k=0}^{\infty}a_k(z-z_0)^k\quad\text{with}\quad a_k=\frac{1}{2\pi i}\int_{\partial \mathcal{B}_R(z_0)} \frac{f(\xi)}{(\xi - z_0)^{k+1}}d\xi
 \]
 \end{theorem}
 
+\begin{proof}
+We want to use the Cauchy's Integral formula so we need to rewrite the integrand.
+Note
+\[
+	\frac{1}{\xi - z}= \frac{1}{\xi - z_0}\frac{\xi - z_0}{\xi - z}=\frac{1}{\xi - z_0}\frac{1}{\left( \frac{\xi - z}{\xi-z_0}\right)} = 
+	\frac{1}{\xi - z_0}\frac{1}{\left( 1-\frac{z-z_0}{\xi -z_0}\right)}
+\]
+Now by assumption we have that $\abs{z- z_0} < \abs{\xi - z_0} = R$.
+So we can write this as a geometric series
+\[
+	\frac{1}{\xi - z} = \frac{1}{\xi - z_0}\sum_{k=0}^{\infty}\left( \frac{z-z_0}{\xi - z_0}\right)^k
+\]
+which we can plug back into Cauchy's Integral formula to see
+\[
+	f(z) = \frac{1}{2\pi i}\int_{\partial_R(z_0)} \frac{f(\xi)}{\xi - z_0}\sum_{k=0}^{\infty}\left( \frac{z-z_0}{\xi - z_0}\right)^k\;d\xi
+\]
+But the sum converges uniformly in the integration variable $\xi$ so we can switch the sum and the integral
+\[
+	f(z) = \sum_{k=0}^\infty\left(\frac{1}{2\pi i}\int_{\partial_R(z_0)} \frac{f(\xi)}{(\xi - z_0)^{k+1}}\; d\xi \; \right)(z-z_0)^k
+\]
+\end{proof}
+
 \begin{cor}
-	Every homolomorphic function on $D$ is in fact $C^\infty(D)$.
+	Every holomorphic function on $D$ is in fact $C^\infty(D)$.
 \end{cor}
 
 \begin{cor}
@@ -503,6 +543,49 @@ $D\subseteq \C$ is open and polygonally collected and $f:D\to\C$ then the follow
 	\]
 	where $R$ is the radius of convergence.
 \end{cor}
+
+\begin{note}
+Here are some standard power series expansions:
+\begin{align*}
+	\cos(z) \defeq \sum_{n=0}^\infty (-1)^n \frac{z^{2n}}{(2n)!} \quad\quad &\sin(z) \defeq \sum_{n=0}^{\infty}(-1)^n \frac{z^{2n+1}}{(2n+1)!} \\
+	\cosh(z) \defeq \sum_{n=0}^{\infty} \frac{z^{2n}}{(2n)!}   \quad\quad &\sinh(z) \defeq \sum_{n=0}^{\infty}\frac{z^{2n+1}}{(2n+1)!} \\
+	\mathrm{exp}(z) \defeq \sum_{n=0}^{\infty}\frac{z^n}{n!} \quad\quad & \;
+\end{align*}
+These all have infinite radius of convergence.
+\end{note}
+
+We often need to calculate the radius of convergence for given power series.
+Here are some tools for doing so, they are more less the same as real analysis.
+\begin{enumerate}[label=(\roman*)]
+	\item \textbf{d'Alembert's Ratio Test}
+
+		Assume that a sequence $(a_n)$ is such that
+		\[
+			l\defeq\lim_{n\to\infty}\abs{\frac{a_{n+1}}{a_n}}
+		\]
+		exists.
+
+		\textbf{Case 1: }If $l < 1$ then $\sum_{n}\abs{a_n}$ convergences.
+
+		\textbf{Case 2: }If $l > 1$ then $\sum_{n}\abs{a_n}$ diverges.
+
+		\textbf{Case 3: }If $l = 1$ then we have no information.
+
+	\item \textbf{Cauchy's $n$'th root test}
+
+		Assume that a sequence $(a_n)$ is such that
+		\[
+			l\defeq \lim_{n\to\infty}\sqrt[n]{\abs{a_n}}
+		\]
+		exists.
+		The cases and their consequences are the same as before.
+		The radius of convergence is then seen to be $R$ where
+		\[
+		\frac{1}{R}=\limsup_{n\to\infty}\sqrt[n]{\abs{a_n}}
+		\]
+\end{enumerate}
+
+\subsubsection{Other Applications}
 
 \begin{theorem}[Liouville's Theorem]
 Any entire, bounded function is constant.
@@ -1064,6 +1147,21 @@ Rouche's theorem tells us that $f$ has exactly $m_i$ zeros in $\mathcal{B}_\delt
 
 In words $\epsilon$ was the `minimum' value of $f$ on the boundary of these balls.
 Then thanks to locally uniform convergence we were able to ensure that the difference between $f_n$ and $f$ was always less than this minimum value and thus we could use Rouche's theorem.
+
+We say a sequence $(f_n)$ is \mdf{locally bounded} if for every compact set $K\subseteq D$ there is a constant $C > 0$ such that for all $n\geq 1$ and $z\in K$ we have $\abs{f_n(z)} \leq C$.
+
+\begin{lemma}
+If we have a sequence of holomorphic functions $(f_n)$ on a region $D$ that is locally bounded and that converges pointwise on a dense subset of $D$, then the whole sequence converges locally uniformly to a holomorphic function.
+\end{lemma}
+
+\begin{theorem}[Montel's Theorem]
+Every locally bounded sequence of holomorphic functions on an open and connected set has a locally uniform convergent subsequence.
+\end{theorem}
+
+\begin{proof}
+Take a countable dense subset and then do lion hunting to get a subsequence that converges on this dense set.
+Then apply the Lemma.
+\end{proof}
 
 \section{Special Functions}
 
