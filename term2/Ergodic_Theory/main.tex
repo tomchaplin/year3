@@ -14,7 +14,7 @@
 \usepackage[dvipsnames]{xcolor}
 \usepackage[framemethod=TikZ]{mdframed}
 \usepackage{microtype}
-\usepackage{mathabx}
+\usepackage{graphicx}
 \usepackage{tikz-cd}
 \usepackage{float}
 \usepackage{silence}
@@ -38,7 +38,6 @@
   }}
 \newcommand{\relmiddle}[1]{\mathrel{}\middle#1\mathrel{}}
 \newcommand{\rmv}{\relmiddle|}
-\newcommand{\toitself}{\righttoleftarrow}
 \newcommand{\stcmp}{^{\mathsf{c}}}
 \newcommand{\mv}[1]{\textbf{#1}}
 
@@ -57,6 +56,23 @@
 \newcommand{\entrg}[2]{\ensuremath{H\gvn{#1}{#2}}}
 \newcommand{\probg}[2]{\ensuremath{\mathbb{P}\gvn{#1}{#2}}}
 \newcommand{\dm}{\;d\mu}
+\newcommand{\toitself}{\mathbin{\scalebox{.85}{%
+    \lefteqn{\scalebox{.5}{$\blacktriangleleft$}}\raisebox{.34ex}{$\supset$}}}}
+
+% Comutative diagrams
+% From https://tex.stackexchange.com/questions/409286/strike-out-arrow-in-commutative-diagram-using-tikzcd
+\usetikzlibrary{decorations.markings}
+\tikzset{
+  negate/.style={
+    decoration={
+      markings,
+      mark= at position 0.5 with {
+        \node[transform shape] (tempnode) {$/$};
+      },
+    },
+    postaction={decorate},
+  },
+}
 
 %}}}
 %{{{ Environments
@@ -226,9 +242,23 @@ Therefore to check that $T$ is ergodic it suffices to show that all invariant $L
 \end{note}
 To this end we present the following formula for computing the Fourier coefficients of invariant $L^2$ functions.
 \begin{theorem}
+\label{th:coeffcompute}
 Given $f\in L^2$ which is invariant
 $$\hat{f}(n)=\lim_{N\to\infty}\int (S_Nf)(Tx)e^{-2\pi i n\cdot x}dx$$
 \end{theorem}
+
+\begin{eg}
+	\textbf{Recipe for ergodicity:}
+
+	We're going to show that the any invariant function must be constant by showing that all Fourier coefficients (away from $n=0$) are $0$.
+
+	\begin{enumerate}
+		\item Compute the partial sum $S_Nf(Tx)$.
+		\item Use Theorem \ref{th:coeffcompute} to obtain a relationship between Fourier coefficients.
+		\item Use this relationship to equate absolute values of a sequences of Fourier coefficients.
+		\item Use the Riemann-Lebesgue Lemma to conclude that all coefficients away from $n=0$ are vanishing.
+	\end{enumerate}
+\end{eg}
 
 \begin{eg}
 	\textbf{The doubling map is ergodic with respect to the Lebesgue Measure.}
@@ -237,8 +267,25 @@ $$\hat{f}(n)=\lim_{N\to\infty}\int (S_Nf)(Tx)e^{-2\pi i n\cdot x}dx$$
 \section{Theorems using Measure Preserving}
 \begin{theorem}[Poincar\'e Recurrence Theorem]
 	Given a probability space \msrspc and $T:X\to X$ measure preserving. Then
-	$$\mu\{x\in B : T^nx\in B \; \text{infinitely often}\,\}=\mu(B)\quad \forall B\in\mathcal{B}$$
+	$$E\defeq\mu\{x\in B : T^nx\in B \; \text{infinitely often}\,\}=\mu(B)\quad \forall B\in\mathcal{B}$$
 \end{theorem}
+
+\begin{proof}
+\begin{enumerate}
+	\item Define $F$ to be the set of points in $B$ who never return.
+		\[
+			F\defeq \left\{ x\in B \rmv T^nx\not\in B \quad \forall n\geq 1\right\}
+		\]
+		Then note the $T^{-n}F$ are all disjoint and of the same measure so we must have $\mu(F) = 0$.
+	\item Notice
+		\[
+			x\not \in E \iff \exists k \geq 1 \quad s.t. \quad T^kx \in F
+		\]
+		and hence $B\setminus E = \cup_k T^{-k}F$ and so $\mu(B \setminus E) = 0$.
+		We can conclude $\mu(E) = \mu(B)$.
+\end{enumerate}
+\end{proof}
+
 \section{Theorems using Ergodicity}
 \begin{theorem}[Pointwise Ergoic Theorem - Birkhoff 1931]
 	Given a measure space \msrspc and a measure preserving transformation $T:X \to X$ and $f\in L^1(X)$. Then $\exists f^*\in L^1(X)$ invariant such that
@@ -810,6 +857,32 @@ This is definitely worth proving.
 There are uncountably many distinct ergodic, invariant probability measures on $\Sigma^+$.
 \end{cor}
 
+We have the standard semi-conjugacy $\pi: \Sigma_k^+ \to [0, 1)$ from the full one-sided shift on $k$ symbols to $[0, 1)$ given by
+\[
+	\pi(x_0, x_1, x_2, \dots ) \defeq \sum_{k=0}^{\infty}\frac{x_j}{k^{j+1}}
+\]
+We can use this to push Bernoulli measures on $\Sigma_k^+$ forward into measures for $[0, 1)$ by
+\[
+	\pi_\ast \mu(A) \defeq \mu(\pi^{-1}A)
+\]
+One can easily show that these will be invariant and ergodic measures for $[0, 1)$ with the map $Tx = kx \mod 1$.
+But do different Bernoulli measures push forward to different measures on $[0, 1)$?
+
+\begin{proof}
+Yes!
+Take two Bernoulli measures associated to starting distributions $\mv{p}$ and $\mv{q}$ such that for some specific $j$ we know $p_j \neq q_j$.
+Then in the associated Bernoulli measures we notice
+\[
+\mu_p(\left[ j\right]) = p_j \neq q_j = \mu_q(\left[ j\right])
+\]
+
+Take $B\defeq \left[ \frac{j}{k}, \frac{j+1}{k} \right)$.
+Then $\pi^{-1}(B) = \left[ j\right]$ and hence
+\[
+	\pi_\ast \mu_p(B) = p_j \neq q_j = \pi_\ast \mu_q(B)
+\]
+\end{proof}
+
 \subsection{Markov Measures}
 We will need the Perron-Frobenius Theorem.
 
@@ -1001,6 +1074,30 @@ Note $T\times T$ is taking place under the product measure on the product $\sigm
 \begin{cor}
 Rotations of the circle are not weak mixing.
 \end{cor}
+
+\begin{proof}
+It suffices to check that $T\times T$ is not ergodic and hence we will try and find a non-constant invariant function for $T\times T$.
+Let's take
+\[
+	f(x,y)\defeq e^{2\pi i x} e^{-2\pi i y}
+\]
+then $f:\mathbb{T}\times\mathbb{T}\to \C$ is measurable in $L^\infty$ and is not constant.
+Now notice
+\[
+	f(x+ \alpha, y + \alpha) = e^{2\pi i x} e^{-2\pi i y} e^{2 \pi i \alpha} e^{-2\pi i \alpha} = f(x, y)
+\]
+and hence $f\circ (T\times T) = f$.
+\end{proof}
+
+We now know
+\begin{figure}[H]
+	\centering
+	\begin{tikzcd}[outer sep = 3pt]
+		\text{Mixing} \arrow[r, Rightarrow, bend left] &
+		\text{Weak mixing} \arrow[r, Rightarrow, bend left] \arrow[l, "\text{Hard to prove}", Rightarrow, bend left, negate, red]&
+		\text{Ergodic} \arrow[l, "\text{irrational rotation}", Rightarrow, bend left, negate, red ]
+	\end{tikzcd}
+\end{figure}
 
 \section{Entropy}
 The motivation for a definition of entropy is as a vehicle to distinguish between dynamical systems. First we need to know how tell when two systems are identical.
