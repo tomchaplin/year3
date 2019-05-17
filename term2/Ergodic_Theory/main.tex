@@ -12,6 +12,7 @@
 \usepackage[thicklines]{cancel}
 \renewcommand{\CancelColor}{\color{red}}
 \usepackage[dvipsnames]{xcolor}
+\usepackage{witharrows}
 \usepackage[framemethod=TikZ]{mdframed}
 \usepackage{microtype}
 \usepackage{graphicx}
@@ -19,6 +20,7 @@
 \usepackage{float}
 \usepackage{silence}
 \WarningFilter{mdframed}{You got a bad break}
+
 \setlength{\parindent}{0pt}
 %}}}
 %{{{ Custom commands
@@ -50,6 +52,9 @@
 \newcommand{\Z}{\mathbb{Z}}
 
 % Ergodic Theory
+\DeclareMathOperator{\Cov}{\mathrm{Cov}}
+\DeclareMathOperator{\lip}{\mathrm{lip}}
+\DeclareMathOperator{\diam}{\mathrm{diam}}
 \newcommand{\gvn}[2]{\ensuremath{\left(#1\;|\;#2\right)}}
 \newcommand{\expg}[2]{\ensuremath{\mathbb{E}\gvn{#1}{#2}}}
 \newcommand{\infog}[2]{\ensuremath{I\gvn{#1}{#2}}}
@@ -101,12 +106,14 @@
 %}}}
 %{{{ Document metadata
 \title{Ergodic Theory Notes}
-\author{}
+\author{Thomas Chaplin}
 \date{}
 %}}}
 
 \begin{document}
 \maketitle
+\tableofcontents
+\newpage
 
 \section{Basic Definitions}
 
@@ -172,7 +179,7 @@ If $f\in L^2(\ktor)$ and $\hat{f}(n)=0\;\forall n\in\Z^k\setminus\{0\}$, then $f
 Given $f\in L^2$ which is $T$-invariant
 $$\hat{f}(n)=\lim_{N\to\infty}\int (S_N f)(Tx)e^{-2\pi i n\cdot x}$$
 \end{theorem}
-\section{Criteria for measure preserving}
+\section{Criteria for Measure Preserving}
 \begin{theorem}
 Given $T:X\to X$ on a probability space $(X,\mu)$, the following are equivalent:
 \begin{enumerate}
@@ -1099,7 +1106,289 @@ We now know
 	\end{tikzcd}
 \end{figure}
 
+\begin{prop}
+The shift map $\sigma: \Sigma_+ \to \Sigma_+$ with a Bernoulli measure is mixing.
+\end{prop}
+
+\begin{proof}
+When we proved ergodicity we say that for sufficiently large $n$
+\[
+	\mu(A\cap \sigma^{-n}A) = \mu(A)^2
+\]
+It is an exercise to show that the same argument gives $\forall A, A'\in\mathcal{A}$
+\[
+	\mu(A\cap \sigma^{-n}A') = \mu(A) \mu(A') \quad \forall n \text{ sufficiently large}
+\]
+Then given arbitrary $B, B'\in\mathcal{B}$ we can find $A, A' \in \mathcal{A}$ such that $\mu(A \symd B) < \epsilon)$ and $\mu(A' \symd B') < \epsilon$.
+Then we can see
+\[
+	\abs{\mu(B\cap \sigma^{-n}B' - \mu(B)\mu(B')} \leq \abs{\mu(A \cap \sigma^{-n}A') - \mu(A) \mu(A')} + 4\epsilon \to 0
+\]
+\end{proof}
+
+\subsection{Correlation Function / Covariance}
+We would like to say something about the rate of mixing and to this end we define the following:
+\begin{defin}
+	The \mdf{correlation function / covariance} is
+	\[
+		\Cov(f, g\circ T^n)\defeq \int_X (f)(g\circ T^n) \dm - \int_X f\dm \int_X g\circ T^n \dm
+	\]
+	We will also need the following for a function $f:\Sigma^+ \to \R$
+	\[
+		\lip(f)\defeq\sup_{x, y \in \Sigma^+, \; x\neq y} \frac{\abs{f(x)-f(y)}}{d(x, y)}
+	\]
+\end{defin}
+
+Given $T:X \to X$ a measure preserving transformation then
+\[
+\begin{WithArrows}
+	Cov(f, g\circ T^n) & = \int+X f \cdot g \circ T^n \dm - \int_X f \dm \int_X g\circ T^n \dm	\\
+					   & = \int_X \left( f - \int_X f \dm\right)g\circ T^n \dm \Arrow{Koopman operator} \\
+					   & = \int_X \left( f - \int_X f \dm\right)U^ng \dm \Arrow{$L\defeq U^\ast$}\\
+					   & = \int_X L^n  \left(f - \int_X f \dm\right) g \dm
+\end{WithArrows}
+\]
+
+Now notice the following about $L$
+\begin{enumerate}
+	\item \[
+			\int L 1 \overline{g} = \int 1 \left( \overline{g}\circ T\right) = \int \overline{g}\circ T = \int \overline{g} = \int 1\overline{g}
+		\]
+		since $T$ is measure preserving.
+		Hence $L1 = 1$.
+	\item \[
+			\int Lf = \int Lf \; 1 = \int (f)(1 \circ T) = \int f\; 1 = \int f
+		\]
+		and hence
+		\[
+L^n\int f \dm = \int f \dm = \int L^n f \dm
+		\]
+\end{enumerate}
+Therefore we can conclude that
+\[
+	\Cov (f, g \circ T^n) = \int_X\left( L^n f - \int L^n f \right)f \dm
+\]
+
+So by applying the Cauchy-Schwarz inequality we can see
+\begin{prop}
+For all $f, g\in L^2$, and $T$ a measure preserving transformation
+\[
+	\abs{\Cov(g, g \circ T^n)} \leq \norm{L^n f - \int L^n f}_2 \norm{g}_2
+\]
+\end{prop}
+
+\begin{prop}
+\[
+	\norm{f - \int f}_\infty \leq \lip(f) \diam(X)
+\]
+for $f: X \to \R$ Lipschitz on a metric space $(X, d)$ where
+\[
+	\diam(X) \defeq \sup_{x, y \in X} d(x, y)
+\]
+\end{prop}
+
+\begin{proof}
+Choose some $x\in X$.
+Suppose $f(x) > \int f$.
+Then there must be some $y$ such that $f(y) \leq \int f$.
+Hence $f(x) - f(y) \geq f(x) - \int f > 0$.
+Similarly if $f(x) < \int f$.
+So we have
+\begin{align*}
+	\abs{f(x) - \int f} & \leq \sup_{y\in X} \abs{f(x) - f(y)} \\
+						& \leq \sup_{y\in X} \lip(f) d(x, y) \\
+						& \leq \lip(f) \diam(X)
+\end{align*}
+\end{proof}
+
+Now take some Bernoulli measure $\mu$ associated to a distribution $(p_1, \dots , p_k)$.
+One can show, using a similar method as for the doubling map that
+\begin{prop}
+For any $f\in L^2(X)$ we have
+\[
+	(Lf)(x)= \sum_{j=1}^{k}p_j f(jx)
+\]
+where $jx = (j, x_0, x_1, \dots )$.
+\end{prop}
+
+\begin{lemma}
+Given $f:\Sigma^+ \to \R$ Lipschitz we have
+\[
+	\lip(L^n f) \leq \frac{1}{2^n}\lip(f)
+\]
+\end{lemma}
+
+\begin{proof}
+Note because of our choice of metric we have that $d(jx, jy) = \frac{1}{n}d(x, y)$ for any $x, y\in\Sigma^+$.
+\begin{align*}
+	\abs{(Lf)(x)-(Lf)(y)} & \leq \sum_{j=1}^{k}p_j \abs{f(jx) - f(jy)} \leq \sum_{j=1}^{k} p_j \lip(f) d(jx, jy) \\
+						  & = \sum_{j=1}^{k} p_j \lip(f) \frac{1}{2}d(x, y) = \frac{1}{2}\lip(f) d(x, y) \sum_{j=1}^{k}p_j = \frac{\lip(f)}{2}d(x,y)
+\end{align*}
+Then the result follows by induction.
+\end{proof}
+
+Then we get our big theorem on mixing
+
+\begin{theorem}
+On $\Sigma^+$ with a Bernoulli measure, we have exponential mixing rates.
+That is given $f:\Sigma^+ \to \R$ Lipschitz, $g\in L^2(\Sigma^+)$ and $n\geq 1$ we have
+\[
+	\abs{\Cov(f, g \circ \sigma^n)} \leq \left( \frac{1}{2}\right)^n \lip(f) \norm{g}_2
+\]
+\end{theorem}
+
+\begin{proof}
+\begin{align*}
+	\abs{\Cov(f, g \circ \sigma^n)} &\leq \norm{L^nf - \int_{\Sigma^+}L^nf \dm}_\infty \norm{g}_2 \leq \lip(L^nf)\underbrace{\diam(\Sigma^+)}_{=1}\norm{g}_2 \\
+									&= \lip(L^n f) \norm{g}_2 \leq \left( \frac{1}{2}\right)^n\lip(f) \norm{g}_2
+\end{align*}
+\end{proof}
+
+It was an exercise to show the same thing for $g\in L^1(\Sigma^+)$, using the 1-norm on $g$.
+It was also an exercise to estimate mixing rates for the doubling map when $f$ is Lipschitz or H\"older continuous.
+
 \section{Entropy}
+
+\subsection{Conditional Expectation}
+Suppose we have a probability space $(X, \mathcal{B}, \mu)$ and a sub $\sigma$-algebra $\mathcal{A} \subseteq \mathcal{B}$.
+Our aim is to define a conditional expectation operator
+\[
+	\mathbb{E}(\bullet | \mathcal{A}) : L^1(X, \mathcal{B}, \mu) \to L^1(X, \mathcal{A}, \mu)
+\]
+with the property that $\mathbb{E}(\bullet | \mathcal{A})^2=\mathbb{E}(\bullet | \mathcal{A})$
+We would also like that
+\[
+	\int_A \mathbb{E}(f | \mathcal{A}) \dm = \int_A f \dm \quad \forall A \in \mathcal{A}
+\]
+
+\begin{enumerate}
+	\item First take $f\in L^1(X, \mathcal{B}, \mu)$ such that $f\geq 0$ and define
+		\[
+			\nu(A0 \defeq \int_A f \dm \quad \forall A\in\mathcal{A}
+		\]
+		This gives us a measure on $\mathcal{A}$.
+		Notice that $\restr{\mu}{\mathcal{A}}$ is also a measure on $\mathcal{A}$ and in fact we claim that $\nu << \restr{\mu}{\mathcal{A}}$.
+		So by the Radon-Nikodym theorem there is a unique $h_f \geq 0$ such that $h_f$ is $\mathcal{A}$-measurable and
+		\[
+			\nu(A) = \int_A h_f \dm \quad \forall A\in\mathcal{A}
+		\]
+		We then define $\mdf{\mathbb{E}(f | \mathcal{A})} \defeq h_f$ which has the property that it is $\mathcal{A}$-measurable and has the same integral as $f$.
+		This can be seen as the ``best approximation to $f$ that is $\mathcal{A}$-measurable".
+	\item For arbitrary $f\in L^1(X, \mathcal{B}, \mu)$ we write $f= f^+ - f^-$ and then define
+		\[
+			\mdf{\mathbb{E}(f | \mathcal{A})} \defeq \mathbb{E}(f^+ | \mathcal{A}) - \mathbb{E}(f^- | \mathcal{A})
+		\]
+\end{enumerate}
+
+\begin{prop}
+\label{prop:condexpec}
+The conditional expectation operator is uniquely defined by the properties
+\begin{enumerate}[label=(\roman*)]
+	\item $\mathbb{E}(f | \mathcal{A})$ is $\mathcal{A}$ measurable.
+	\item $\int_A \mathbb{E}(f | \mathcal{A})\dm = \int_A f \dm$ for all $f\in \mathcal{A}$.
+\end{enumerate}
+\end{prop}
+
+\begin{lemma}
+The conditional expectation operator is linear.
+\end{lemma}
+
+Note that if $f$ is already $\mathcal{A}$ measurable then $\mathbb{E}(f | \mathcal{A})$ because $f$ already satisfies $\textit{(i)}$ and $\textit{(ii)}$.
+Also if $\mathcal{A}= \left\{ X, \emptyset\right\}$ then 
+\[
+	\mathbb{E}(f | \left\{ X, \emptyset\right\} ) = \int_X f \dm
+\]
+
+\begin{prop}
+Given probability spaces $(X, \mathcal{B}_X, \mu_X)$ and $(Y, \mathcal{B}_Y, \mu_Y)$ and a measure preserving transformation $T:X \to Y$, let $\mathcal{A}\subseteq \mathcal{B}_Y$ be a sub $\sigma$-algebra.
+Then for all $f\in L^1(Y, \mathcal{B}_Y, \mu_Y)$ we have
+\[
+	\expg{f }{ \mathcal{A}} \circ T = \expg{f \circ T}{T^{-1}\mathcal{A}}
+\]
+\end{prop}
+
+\begin{proof}
+It suffices to check that the left hand side is $T^{-1}\mathcal{A}$-measurable and that
+\[
+	\int_{T^{-1}A} \expg{f}{\mathcal{A}}\circ T = \int_{T^{-1}A} f \circ T \quad \quad \forall A \in \mathcal{A}
+\]
+\begin{enumerate}[label=(\roman*)]
+	\item Note that $\expg{f}{\mathcal{A}}$ is already $\mathcal{A}$-measurable and hence the left hand side is $T^{-1}\mathcal{A}$-measurable.
+	\item 
+		\[
+			\begin{WithArrows}
+				\int_{T^{-1}A} \expg{f}{\mathcal{A}} \circ T \; d\mu_X & = \int_X (\indic{A} \expg{f}{\mathcal{A}}) \circ T \; d\mu_X \Arrow{T m.p.t.} \\
+																	   & = \int_Y \indic{A} \expg{f}{\mathcal{A}} \; d\mu_Y \\
+																	   & = \int_A \expg{f}{\mathcal{A}} \; d\mu_Y \Arrow{$A\in\mathcal{A}$} \\
+																	   & = \int_A f \; d\mu_Y \Arrow{same tricks} \\
+																	   & = \int_X (\indic{A} f ) \circ T \; d\mu_X \\
+																	   & = \int_{T^{-1}A} f\circ T \; d\mu_X
+			\end{WithArrows}
+		\]
+\end{enumerate}
+\end{proof}
+
+We can also prove the following by the same technique.
+
+\begin{prop}
+Given a measure space $(X, \mathcal{B}, \mu)$ and nested sub $\sigma$-algebras $\widetilde{\mathcal{A}}\subseteq\mathcal{A}\subseteq\mathcal{B}$
+\[
+	\expg{\expg{f}{\mathcal{A}}}{\widetilde{\mathcal{A}}} = \expg{f}{\widetilde{\mathcal{A}}} \quad \quad \forall f \in L^1(X, \mathcal{B}, \mu)
+\]
+\end{prop}
+
+Given a measure preserving transformation $T: X \to X$ we know that $U^\ast U = I$ but it is an exercise to show that
+\[
+	UU^\ast = \expg{\bullet}{T^{-1}\mathcal{B}}
+\]
+
+\subsection{An Ergodic Aside}
+Recall the ergodic theorem.
+Suppose we have a measure preserving transformation $T:X \to X$ on a measure space $(X, \mathcal{B}, \mu)$ which is not necessarily ergodic.
+IF $f\in L^1(X)$ then almost everywhere we have
+\[
+	\frac{1}{n}\sum_{j=0}^{n-1}f\circ T^j \to \widetilde{f}
+\]
+where $\widetilde{f}\in L^1(X)$ and $\int \widetilde{f}\dm = \int f \dm$ and $\widetilde{f}\circ T = \widetilde{f}$.
+
+When $f\in L^2(X)$ we found out that $\widetilde{f}=\pi f$ where $\pi$ is the orthogonal projection onto
+\[
+\ker(U - I) = \left\{ T\text{-invariant functions} \right\}
+\]
+
+We would like a formula for arbitrary $f\in L^1(X)$.
+To this end define the set
+\[
+	I \defeq \left\{ B\in \mathcal{B} \rmv T^{-1}B = B\right\}
+\]
+then we can see that $I\subseteq\mathcal{B}$ is a sub $\sigma$-algebra of $\mathcal{B}$.
+
+\begin{theorem}
+In the ergodic theorem $\widetilde{f}= \expg{f}{I}$ for all $f\in L^1(X)$.
+\end{theorem}
+
+\begin{proof}
+We do the same style of proof.
+\begin{enumerate}[label=(\roman*)]
+	\item We wish to show that $\widetilde{f}$ is $I$-measurable.
+		We know that it is $\mathcal{B}$-measurable so take $U\in\mathcal{B}(R)$ then
+		\[
+			\widetilde{f}^{-1}(U) = (\widetilde{f}\circ T)^{-1}(U) = T^{-1}(\widetilde{f}^{-1}U)
+		\]
+		and hence $\widetilde{f}^{-1}U\in I$.
+	\item Take any $A\in I$ then we have that
+		\[
+			\frac{1}{n}\sum_{j=0}^{n-1}(\indic{A} f ) \circ T^j = \indic{A} \cdot \frac{1}{n}\sum_{j=0}^{n-1}f \circ T^j \to \indic{A} \widetilde{f}\quad a.e.
+		\]
+		because $A\in I$ means we can move the indicator function outside.
+		So we can conclude
+		\[
+			\int_A f = \int_X \indic{A} f = \int_X \indic{A}\widetilde{f} = \int_A \widetilde{f}
+		\]
+\end{enumerate}
+\end{proof}
+
+\subsection{Defining Entropy}
 The motivation for a definition of entropy is as a vehicle to distinguish between dynamical systems. First we need to know how tell when two systems are identical.
 \begin{defin}
 	Two probability spaces with measure preserving transformations, $(X,\mathcal{B},\mu,T),(Y,\mathcal{C}, \nu, S)$ are \mdf{measure-theoretically isomorphic} if there exists a bijection $\pi:B\to C$ where $B\in\mathcal{B}$ and $C\in\mathcal{C}$ such that
@@ -1169,6 +1458,9 @@ We have the following desirable properties:
 	$$\infog{\alpha\vee\beta}{\gamma}=\infog{\alpha}{\gamma}+\infog{\beta}{\alpha\vee\gamma}$$
 	$$\entrg{\alpha\vee\beta}{\gamma}=\entrg{\alpha}{\gamma}+\entrg{\beta}{\alpha\vee\gamma}$$
 \end{lemma}
+\begin{proof}
+This should be revised!
+\end{proof}
 \begin{cor}
 	$$\beta\leq\gamma\implies\infog{\alpha\vee\beta}{\gamma}=\infog{\alpha}{\gamma}$$
 \end{cor}
@@ -1195,3 +1487,4 @@ $$\mdf{h(T)}\defeq\sup_{\alpha\in\mathcal{P}}h(T,\alpha)$$
 Having done all this work, this had better be a measure-theoretic isomorphism invariant.
 
 \end{document}
+
