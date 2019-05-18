@@ -1614,7 +1614,7 @@ Choose $\alpha\in\mathcal{P}_Y$ some countable partition over $Y$ then we get a 
 Then $\pi^{-1}\alpha\in\mathcal{P}_B$ which gives us a countable partition for $X$, $\pi^{-1}\alpha\in\mathcal{P}_X$.
 
 \[
-	H_\mu\left( \bigvee_{j=0}^{n-1} T^{-j}(\pi^{-1}\alpha)\right) = H\mu\left( \pi^{-1}\bigvee_{j=0}^{n-1} S^{-j}\alpha\right)
+	H_\mu\left( \bigvee_{j=0}^{n-1} T^{-j}(\pi^{-1}\alpha)\right) = H_\mu\left( \pi^{-1}\bigvee_{j=0}^{n-1} S^{-j}\alpha\right)
 	= H_\nu\left(\bigvee_{j=0}^{n-1} S^{-j}\alpha \right)
 \]
 with the last equality holding because $\pi$ is measure preserving.
@@ -1723,7 +1723,7 @@ then $h(T) = h(T, \alpha)$.
 
 	But then
 	\[
-		H(\alpha^n) = \sum_{j=1}^{2^n}-\frac{1}{2^n}\log\frac{1}{2^n}=\log(2^n) = n\log(2)
+		H(\alpha^n) = \sum_{j=1}^{2^n}-\frac{1}{2^n}\log\left(\frac{1}{2^n}\right)=\log(2^n) = n\log(2)
 	\]
 	and hence $h(T, \alpha) = \log(2)$.
 \end{eg}
@@ -1736,5 +1736,53 @@ The entropy of the shift map under the corresponding Markov measure is then
 	h(T) = -\sum_{i, j=1}^{k}q_i P_{ij}\log P_{ij}
 \]
 \end{theorem}
+
+\begin{proof}
+We're going to define a strong generator
+\[
+	\alpha\defeq\left\{ \left[ 1\right], \left[ 2\right], \dots, \left[ k\right]\right\}
+\]
+Then $\sigma^{-1}\alpha = \left\{ \left[ \ast, 1\right], \left[ \ast, 2\right], \dots, \left[ \ast, k\right]\right\}$.
+So therefore we see that
+\[
+	\alpha^n = \left\{ \left[ x_0, x_1, \dots, x_{n-1} \right] \subseteq \Sigma^+\right\}
+\]
+that is the set of all admissible cylinders of length $k$.
+Therefore
+\begin{align*}
+	H(\alpha^{n+1}) & = - \sum_{x_0=1}^{k}\dots\sum_{x_n=1}^{k}q_{x_0}P_{x_0x_1}\dots P_{x_{n-1}x_n}(\log q_{x_0} + \log P_{x_0x_1} + \dots + \log P_{x_{n-1}x_n})\\
+					& = - \sum_{x_0=1}^{k}\dots\sum_{x_n=1}^{k}q_{x_0}P_{x_0x_1}\dots P_{x_{n-1}x_n} \log q_{x_0} \\
+					& \quad \quad - \sum_{x_0=1}^{k}\dots\sum_{x_n=1}^{k}q_{x_0}P_{x_0x_1}\dots P_{x_{n-1}x_n} (\log P_{x_0x_1} + \dots + \log P_{x_{n-1}x_n})
+\end{align*}
+Now we're going to deal with each of these terms in turn.
+In the first term we can use the row-stochasticty to peel off each sum
+\[
+\begin{WithArrows}
+& \quad \sum_{x_0=1}^{k}\dots\sum_{x_n=1}^{k}q_{x_0}P_{x_0x_1}\dots P_{x_{n-1}x_n} \log q_{x_0} \Arrow{Sum last $P$ term}\\
+& =    \sum_{x_0=1}^{k}\dots\sum_{x_{n-1}=1}^{k}q_{x_0}P_{x_0x_1}\dots P_{x_{n-2}x_{n-1}} \log q_{x_0}\\
+& \vdots \\
+& = \sum_{x_0=1}^k q_{x_0} \log q_{x_0} = \sum_{i=1}^k q_i \log q_i
+\end{WithArrows}
+\]
+For the second term we split of each $\log$ terms up.
+We cancel sums from the right as far as possible using row-stochasticity and then cancel from the left using $\mv{q}P=\mv{q}$.
+For example
+\[
+	\begin{WithArrows}
+		& \quad \sum_{x_0=1}^{k}\dots\sum_{x_n=1}^{k}q_{x_0}P_{x_0x_1}\dots P_{x_{n-1}x_n} \log P_{x_1x_2} \Arrow{row-stochastic} \\
+		& = \sum_{x_0}\sum_{x_1}\sum_{x_2}q_{x_0}P_{x_0x_1}P_{x_1x_2}\log P_{x_1x_2} \Arrow{$\mv{q}P=\mv{q}$}\\
+		& = \sum_{x_1}\sum_{x_2}q_{x_1}P_{x_1x_2}\log P_{x_1x_2} \\
+		& = \sum_{i, j=1}^{k}q_i P_{ij}\log P_{ij}
+	\end{WithArrows}
+\]
+We can do the same thing for each other $\log$ term to see
+\[
+	H(\alpha^{n+1}) = - \sum_{i=1}^{k}q_i \log(q_i) - n \sum_{i, j =1}^{k}q_i P_{ij} \log(P_{ij})
+\]
+So when we divide by $n+1$ and take $n\to\infty$ we get
+\[
+	h(T) = h(T, \alpha) = \lim_{n\to\infty}\frac{H(\alpha^{n+1})}{n+1} = - \sum_{i, j=1}^{k}q_i P_{ij} \log P_{ij}
+\]
+\end{proof}
 
 \end{document}
