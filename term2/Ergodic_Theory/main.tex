@@ -55,7 +55,7 @@
 \DeclareMathOperator{\Cov}{\mathrm{Cov}}
 \DeclareMathOperator{\lip}{\mathrm{lip}}
 \DeclareMathOperator{\diam}{\mathrm{diam}}
-\newcommand{\gvn}[2]{\ensuremath{\left(#1\;|\;#2\right)}}
+\newcommand{\gvn}[2]{\ensuremath{\left(#1\rmv#2\right)}}
 \newcommand{\expg}[2]{\ensuremath{\mathbb{E}\gvn{#1}{#2}}}
 \newcommand{\infog}[2]{\ensuremath{I\gvn{#1}{#2}}}
 \newcommand{\entrg}[2]{\ensuremath{H\gvn{#1}{#2}}}
@@ -137,7 +137,7 @@ $$\forall B\in\mathcal{B},\; T^{-1}B=B \implies \mu(B)=0\;\text{or}\;1$$
 
 The following theorem will be very useful.
 
-\begin{theorem}[Han-Kolmogorov]
+\begin{theorem}[Hahn-Kolmogorov]
 Let $\mathcal{A}$ be an algebra on a space $X$.
 Suppose we have a function $\mu_0:\mathcal{A}\to [0, \infty]$ which satisfies
 \begin{enumerate}[label=(\roman*)]
@@ -165,7 +165,7 @@ We define the \mdf{partial Fourier sums} by
 \begin{theorem}[Riemann-Lebesgue Lemma]
 	For all $f\in L_1(\ktor)$, $$\lim_{\abs{n}\to\infty}\hat{f}(n)=0$$
 \end{theorem}
-\begin{theorem}[Reisz-Fisher Theorem]
+\begin{theorem}[Riesz-Fisher Theorem]
 $S_nf\to f$ in $L^2$ for all $f\in L^2(\ktor)$.
 \end{theorem}
 \begin{theorem}[Fej\'er's Theorem]
@@ -235,6 +235,14 @@ A function $f$ is \mdf{$T$-invariant} if $f \circ T = f$ a.e.
 A function $f$ is \mdf{constant} if $\exists c\in\R$ such that $f(x) = c$ almost everywhere.
 \end{defin}
 
+\begin{cor}
+The following are equivalent:
+\begin{enumerate}
+	\item $T$ is ergodic.
+	\item $B\in \mathcal{B}$ and $\mu(T^{-1}(B) \symd B) = 0$ $\implies$ $\mu(B) = 0 $ or $1$.
+\end{enumerate}
+\end{cor}
+
 \begin{theorem}
 Given a measure preserving transformation $T:X\to X$ and some $1\leq p\leq\infty$. TFAE:
 \begin{enumerate}
@@ -243,8 +251,19 @@ Given a measure preserving transformation $T:X\to X$ and some $1\leq p\leq\infty
 	\item For all $f\in L^p(X)$, $f$ invariant $\iff$ $f$ constant.
 \end{enumerate}
 \end{theorem}
+
+\begin{proof}
+The difficult one to show is \textit{(1)}$\implies$\textit{(2)}.
+Suppose that $f$ is measurable and $f\circ T = f$ almost everywhere but $f$ is not constant.
+So there is some $y\in \R$ such that $\mu\left\{ f > y\right\}>0$ and $\mu\left\{ f < y\right\}>0$.
+Then $T^{-1}\left\{ f > y \right\}\symd \left\{ f > y\right\} = \left\{ f \circ T > y\right\} \symd \left\{ f > y \right\} \subseteq \left\{ f\circ T \neq f\right\}$.
+Hence $\mu(T^{-1}\left\{ f > y\right\} \symd \left\{ f>y\right\}) \leq \mu(\left\{ f \circ T \neq f\right\}) = 0$.
+So by the corollary, $\mu(\left\{ f > y\right\}) = 0$ or $1$.
+Either case leads to a contradiction.
+\end{proof}
+
 \begin{note}
-	As a corollary to the Reisz-Fisher theorem, given any $f\in L^2$, if we have that $\hat{f}(n)=0$ for all $n\neq 0$ then $f$ must be constant.
+	As a corollary to the Riesz-Fisher theorem, given any $f\in L^2$, if we have that $\hat{f}(n)=0$ for all $n\neq 0$ then $f$ must be constant.
 Therefore to check that $T$ is ergodic it suffices to show that all invariant $L^2$ functions have zero Fourier coefficients away from zero.
 \end{note}
 To this end we present the following formula for computing the Fourier coefficients of invariant $L^2$ functions.
@@ -485,7 +504,7 @@ A linear functional is called \mdf{positive} if $f\geq 0\implies \int f d\mu \ge
 \begin{theorem}
 	Every $\mu\in M(X)$ defines a normalised, positive, bounded, linear functional in $C(X)^*$ defined by $\mu(f)=\int_X f d\mu$.
 \end{theorem}
-\begin{theorem}[Reisz Representation Theorem]
+\begin{theorem}[Riesz Representation Theorem]
 	Let $w\in C(X)*$ be a bounded linear functional. Suppose that $w$ is positive and normalised. Then $\exists !\mu\in M(X)$ such that $w(f)=\mu(f)$ for all $f\in C(X)$.
 \end{theorem}
 
@@ -512,7 +531,7 @@ $M(X)$ is closed.
 \begin{proof}
 Suppose we have some sequence $(\mu_n)\subseteq M(X)$ such that $\mu_n\to w\in C(X)^\ast$.
 We aim to show that $w=\mu\in M(X)$
-We check that the Reisz Representation Theorem is satisfied
+We check that the Riesz Representation Theorem is satisfied
 \begin{itemize}
 	\item Certainly $w\in C(X)^\ast$.
 	\item Normalised : $w(1)=\lim_{n\to\infty}\mu_n(1) = \lim_{n\to\infty}1=1$.
@@ -558,7 +577,7 @@ $d$ is a metric.
 \begin{proof}
 The difficult thing to prove here is that $\lambda \neq \mu \implies d(\lambda, \mu ) > 0$.
 Suppose that we have measures $\lambda \neq \mu$.
-By the Reisz Representation Theorem, they must constitute different element of $C(X)^\ast$.
+By the Riesz Representation Theorem, they must constitute different element of $C(X)^\ast$.
 So there is an $f\in C(X)$ such that $\lambda(f)\neq \mu(f)$.
 Since the $f_i$ are dense there is some $i$ such that
 \[
@@ -619,6 +638,29 @@ This is proven first for simple functions and then slowly built up.
 $M(X, T)\neq \emptyset$.
 \end{theorem}
 
+\begin{proof}
+We know that $M(X) \neq \emptyset$ (i.e. use a Dirac measure), so we can choose $\sigma \in M(X)$.
+Then also note that $T_\ast^j \sigma\in M(X)$ for all $j \geq 1$
+Now define a sequence of measures by
+\[
+	\mu_n \defeq \frac{1}{n}\sum_{j=0}^{n-1}T_\ast^J \sigma
+\]
+Since $M(X)$ is convex we see that $\mu_n\in M(X)$ for every $n$.
+By weak $\ast$ compactness of $M(X)$ we get a convergent subsequence $\mu_{n_k}\to \mu\in M(X)$ weak $\ast$.
+
+Now we need to show that $T^\ast \mu=\mu$ which we do via the Riesz Representation Theorem.
+Choose arbitrary $f\in C(X)$.
+Notice 
+\[
+\abs{T_\ast \mu_n(f) - \mu_n(f)} = \abs{ \frac{1}{n}T_\ast^n\sigma(f) - \sigma(f)} = \frac{1}{n}\abs{\sigma(f \circ T^n) - \sigma(f)} \leq \frac{2}{n}\norm{f}_\infty
+\]
+But then
+\[
+\abs{\mu_{n_k}(f \circ T) - \mu_{n_k} (f) } = \abs{T_\ast \mu_{n_k} (f) - \mu_{n_k} (f)} \leq \frac{2}{n_k}\norm{f}_\infty
+\]
+Taking limits on both sides the left goes to $\abs{T_\ast\mu(f) - \mu(f)}$ and the right goes to $0$.
+\end{proof}
+
 \begin{prop}
 $M(X, T)$ is convex.
 \end{prop}
@@ -638,6 +680,8 @@ Take $f\in C(X)$ then notice
 \]
 By uniqueness of limits and since $f$ was arbitrary we have that $\mu = T_\ast \mu$ and hence $\mu\in M(X, T)$.
 \end{proof}
+
+
 
 \subsection{Existence of Ergodic Measures}
 \begin{defin}
@@ -806,6 +850,68 @@ Given a continuous map $T:X\to X$ on a compact metric space, the following are e
 	\item $T$ is uniquely ergodic.
 \end{enumerate}
 \end{theorem}
+
+\begin{proof}
+\textit{(a)}$\implies$\textit{(b)}.
+Trivial.
+
+\textit{(b)}$\implies$\textit{(c)}.
+We let $c(f)$ be as in \textit{(b)} and define $w: C(X) \to \R$ by $w(f) = c(f)$.
+Our aim is hence to show that $w$ is a positve, normalised, bounded linear functional and so must correspond to a measure.
+
+Note that $w$ is linear.
+$w$ is bounded because 
+\[
+	\lim_{n\to\infty}\norm{\frac{1}{n}\sum_{j=0}^{n-1}f\circ T^j}_\infty \leq \norm{f}_\infty
+\]
+by the triangle inequality.
+So certainly $w\in C(X)^\ast$.
+We also have positivity and normalised fairly trivially.
+So by the Riesz Representation theorem there is a $\mu\in M(X)$ such that $w(f) = \int f \dm$.
+We just need to show that $\mu$ is $T$-invariant.
+\[
+	\int f\circ T \dm = \lim_{n\to\infty}\left[\frac{1}{n}\sum_{j=0}^{n-1}(f \circ T) \circ T^j \right]=
+	\lim_{n\to\infty}\left[ \frac{1}{n}\sum_{j=0}^{n-1}(f \circ T^j) + \cancelto{0}{\frac{f\circ T^n}{n}} - \cancelto{0}{\frac{f}{n}}\quad\right]
+	= \int f \dm
+\]
+
+\textit{(c)}$\implies$\textit{(d)}.
+We want to show $M(X, T)=\left\{ \mu\right\}$.
+Suppose $\nu\in M(X, T)$ so our aim is to show $\nu(f) = \mu(f)$ for all $f\in C(X)$ and then apply the Riesz Representation Theorem.
+\[
+	\begin{WithArrows}
+		\nu(f) &= \int f \; d\nu = \frac{1}{n}\sum_{j=0}^{n-1}\int (f\circ T^j) \; d\nu \quad \text{ since }\nu\in M(X, T) \\
+			   &= \lim_{n\to\infty}\frac{1}{n}\sum_{j=0}^{n-1}\int (f\circ T^j) \; d\nu \Arrow{$(1)$} \\
+			   &= \int \left(\lim_{n\to\infty} \frac{1}{n}\sum_{j=0}^{n-1} f\circ T^j \right)\; d\nu \Arrow{by \textit{(c)}} \\
+			   &= \int (\int f \dm) \; d\nu \Arrow{const over prob measure} \\
+			   &= \int f \dm = \mu(f)
+	\end{WithArrows}
+\]
+Note in $(1)$ we switched the limit and the integral.
+This is justified because $\frac{1}{n}\sum_{j=0}^{n-1} (f\circ T^j)$ is bounded above by $\norm{f}_\infty$ and converges pointwise so we can use the DCT.
+
+\textit{(d)}$\implies$\textit{(a)}.
+Suppose that our unique ergodic measure is called $\mu$ and that \textit{(a)} does not hold.
+So in particular \textit{(a)} fails with $c(f) = \int_X f \dm$, i.e. there is some $f\in C(X)$ such that
+\[
+	\frac{1}{n}\sum_{j}f\circ T^j \not \to \int f \dm \quad\text{ uniformly}
+\]
+Then there are sequences $n_k\to \infty$ and $x_k\in X$ such that
+\[
+	\frac{1}{n_k}\sum_{j=0}^{n_k-1}f(T^jx_k) \not \to \int f \dm
+\]
+We aim to contradict the uniqueness of $\mu$ so we set 
+\[
+\nu_k \defeq \frac{1}{n_k}\sum_{j=0}^{n_k-1}\delta_{T^jx_k}
+\]
+Note that $\nu_k(f) = \frac{1}{n_k}\sum_{j=0}^{n_k-1}f(T^jx_k)$. 
+Then $\nu_k\in M(X)$ and $M(X)$ is weak $\ast$ compact so by passing to a subsequence we can assume that $\nu_k\to \nu$ weak $\ast$ for some $\nu\in M(X)$.
+By the same proof as the Krylov-Bogulyvhov Theorem $\nu\in M(X, T)$.
+It remains to show that $\nu\neq \mu$.
+\[
+	\nu(f) = \int_f \; d\nu = \lim_{k\to\infty}\int f \; d\nu_k = \lim_{k\to\infty}\frac{1}{n_k}\sum_{j=0}^{n_k-1}f(T^jx_k) \neq \int f \dm = \mu (f)
+\]
+\end{proof}
 
 \section{Shifts}
 Most of this is verbatim from Dynamical Systems.
@@ -1342,6 +1448,8 @@ Given a measure preserving transformation $T: X \to X$ we know that $U^\ast U = 
 	UU^\ast = \expg{\bullet}{T^{-1}\mathcal{B}}
 \]
 
+
+
 \subsection{An Ergodic Aside}
 Recall the ergodic theorem.
 Suppose we have a measure preserving transformation $T:X \to X$ on a measure space $(X, \mathcal{B}, \mu)$ which is not necessarily ergodic.
@@ -1453,13 +1561,21 @@ We have the following desirable properties:
 \begin{prop}
 	$$\entrg{\alpha}{\mathcal{C}}=-\int_X \sum_{A\in\alpha}\mu\gvn{A}{\mathcal{C}}\log(\mu\gvn{A}{\mathcal{C}})d\mu$$	
 \end{prop}
+
+\begin{proof}
+Use the definition and then write out $\infog{\alpha}{\mathcal{C}}$ explicit.
+Use the monotone convergence theorem to swap sum and limit.
+Change the integrand to the conditional expectation on $\mathcal{C}$ and then pull out the $\log(\mu\gvn{A}{\mathcal{C}})$ term.
+\end{proof}
+
 \begin{lemma}[Basic Identity]
 	Given $\alpha,\beta,\gamma$ partitions of $X$ then
 	$$\infog{\alpha\vee\beta}{\gamma}=\infog{\alpha}{\gamma}+\infog{\beta}{\alpha\vee\gamma}$$
 	$$\entrg{\alpha\vee\beta}{\gamma}=\entrg{\alpha}{\gamma}+\entrg{\beta}{\alpha\vee\gamma}$$
 \end{lemma}
 \begin{proof}
-This should be revised!
+This can be proved by showing equality on each partition element.
+That is, choose $A\in \alpha$, $B\in \beta$, $C\in\gamma$ and then show equality for $x\in A \cap B \cap C$.
 \end{proof}
 \begin{cor}
 	$$\beta\leq\gamma\implies\infog{\alpha\vee\beta}{\gamma}=\infog{\alpha}{\gamma}$$
@@ -1473,7 +1589,7 @@ This should be revised!
 \begin{cor}
 We have the two following properties as well:
 \begin{itemize}
-	\item $\entrg{\alpha}{\gamma}\leq H(\alpha)$ (because always $\gamma\leq\{X,\emptyset\}$)
+	\item $\entrg{\alpha}{\gamma}\leq H(\alpha)$ (because always $\gamma\geq\{X,\emptyset\}$)
 	\item $\entrg{\alpha\vee\beta}{\gamma}\leq\entrg{\alpha}{\gamma}+\entrg{\beta}{\gamma}$
 \end{itemize}
 \end{cor}
@@ -1486,5 +1602,139 @@ We can then define the \mdf{entropy of T} by taking the supremum:
 $$\mdf{h(T)}\defeq\sup_{\alpha\in\mathcal{P}}h(T,\alpha)$$
 Having done all this work, this had better be a measure-theoretic isomorphism invariant.
 
-\end{document}
+\begin{theorem}
+Given two measure preserving transformations $(X, \mathcal{B}, \mu, T)$ and $(Y, \mathcal{C}, \nu, S)$ that are measure-theoretically isomorphic
+\[
+	h(T) = h(S)
+\]
+\end{theorem}
 
+\begin{proof}
+Choose $\alpha\in\mathcal{P}_Y$ some countable partition over $Y$ then we get a partition over $C$.
+Then $\pi^{-1}\alpha\in\mathcal{P}_B$ which gives us a countable partition for $X$, $\pi^{-1}\alpha\in\mathcal{P}_X$.
+
+\[
+	H_\mu\left( \bigvee_{j=0}^{n-1} T^{-j}(\pi^{-1}\alpha)\right) = H\mu\left( \pi^{-1}\bigvee_{j=0}^{n-1} S^{-j}\alpha\right)
+	= H_\nu\left(\bigvee_{j=0}^{n-1} S^{-j}\alpha \right)
+\]
+with the last equality holding because $\pi$ is measure preserving.
+Dividing by $n$ and taking $n\to\infty$ we see that
+\[
+	h_\mu(T, \pi^{-1}\alpha) = h\nu(S, \alpha)
+\]
+Then taking supremums over $\alpha\in\mathcal{P}_Y$ corresponds to taking supremums over $\pi^{-1}\alpha \in \mathcal{P}_X$.
+Hence $h\mu(T) = h_\nu(S)$.
+\end{proof}
+
+\begin{note}
+Given a countable partition $\alpha$ we can apparently write
+\[
+	h(T, \alpha) = \int \infog{\alpha}{\bigvee_{j=1}^\infty T^{-j}\alpha}\dm
+\]
+\end{note}
+
+\begin{theorem}
+\begin{enumerate}[label=(\roman*)]
+	\item For any $k\geq 0$ we have $h(T^k) = kh(T)$.
+	\item Moreover if $T$ is invertible with measure preserving inverse then for any $k\in \Z$ we have $k(T^k)=\abs{k}h(T)$.
+\end{enumerate}
+\end{theorem}
+
+\subsection{Abramov and Sinai Theorems}
+
+\begin{defin}
+	Given countable partitions $\alpha_n$ and a $\sigma$-algebra $\mathcal{B}$, we say $\alpha_n\uparrow\mathcal{B}$ if
+	\[
+		\alpha_1 \leq \alpha_2 \leq \dots \quad \text{and} \quad \sigma\left( \bigcup_{n=1}^\infty \alpha_n\right)=\mathcal{B}
+	\]
+\end{defin}
+
+\begin{lemma}
+Given countable partitions $\alpha, \beta \in \mathcal{P}$
+\[
+	h(T, \alpha) \leq h(T, \beta) + \entrg{A}{B}
+\]
+\end{lemma}
+
+\begin{proof}
+By monotonicity we can see that $H(\alpha^n) \leq H(\alpha^n \vee \beta^n) = H(\beta^n) + \entrg{alpha^n}{\beta^n}$
+\[
+\begin{WithArrows}
+	\entrg{\alpha^n}{\beta^n} & = \entrg{\bigvee_{j=0}^{n-1}T^{-j}\alpha}{\bigvee_{i=0}^{n-1} T^{-i}\beta} 
+	\leq \sum_{j=0}^{n-1}\entrg{T^{-j}\alpha}{\bigvee_{i=0}^{n-1} T^{-i}\beta}\Arrow{anti-monotonicity}\\
+							  & \leq \sum_{j=0}^{n-1}\entrg{T^{-j}\alpha}{T^{-j}\beta} \Arrow{m.p.t}\\
+							  & = n \entrg{\alpha}{\beta}
+\end{WithArrows}
+\]
+\end{proof}
+
+\begin{lemma}
+Suppose $\alpha, \alpha_n\in\mathcal{P}$ and $\alpha_n\uparrow\mathcal{B}$ then
+\[
+	\lim_{n\to\infty}\entrg{\alpha}{\alpha_n} = 0
+\]
+\end{lemma}
+
+\begin{theorem}[Abramov's Theorem]
+Given a probability space $(X, \mathcal{B}, \mu)$ and $T:X \to X$ a measure preserving transformation, let $\alpha_n\in\mathcal{P}$ such that $\alpha_n\uparrow\mathcal{B}$.
+Then
+\[
+	\lim_{n\to\infty}h(T, \alpha_n) = h(T)
+\]
+\end{theorem}
+
+\begin{proof}
+Well certainly $h(T) \geq \limsup_{n\to\infty} h(T, \alpha_n)$.
+Conversely let $\alpha\in\mathcal{P}$, then by the first Lemma we see
+\[
+	h(T, \alpha) \leq h(T, \alpha_n) + \entrg{\alpha}{\alpha_n}
+\]
+Then taking $n\to \infty$ and using the second lemma we get
+\[
+	h(T, \alpha) \leq \liminf_{n\to\infty} h(T, \alpha_n)
+\]
+\end{proof}
+
+\begin{defin}
+	If $T$ is invertible and $\bigvee_{j=-n}^n T^{-j}\alpha\uparrow\mathcal{B}$ then we say $\alpha$ is a \mdf{generator}.
+
+	If $\bigvee{j=0}^n T^{-j}\alpha\uparrow\mathcal{B}$ then we say $\alpha$ is a \mdf{strong generator}.
+\end{defin}
+
+\begin{theorem}[Sinai's Theorem]
+Let $(X, \mathcal{B}, \mu)$ be a probability space and $T:X \to X$ a measure preserving transformation.
+Given $\alpha\in\mathcal{P}$, if
+\begin{enumerate}
+	\item $T$ is invertible and $\alpha$ is a generator OR
+	\item $\alpha$ is a strong generator
+\end{enumerate}
+then $h(T) = h(T, \alpha)$.
+\end{theorem}
+
+\begin{eg}
+	\textbf{The doubling map has entropy $\log(2)$}
+
+	Define $\alpha = \left\{ \left[ 0, \frac{1}{2}\right], \left[ \frac{1}{2}, 1\right]\right\}$.
+	Then notice
+	\[
+		\alpha^n = \left\{ \left[ \frac{j}{2^n}, \frac{j+1}{2^n}\right] \rmv 0 \leq j \leq 2^n -1\right\}
+	\]
+	is a strong generator and $h(T) = h(T, \alpha)$
+
+	But then
+	\[
+		H(\alpha^n) = \sum_{j=1}^{2^n}-\frac{1}{2^n}\log\frac{1}{2^n}=\log(2^n) = n\log(2)
+	\]
+	and hence $h(T, \alpha) = \log(2)$.
+\end{eg}
+
+\begin{theorem}[Entropy of a Markov Measure]
+Given an aperiodic $k\times k$ matrix $A$ with entries on $\left\{ 0, 1\right\}$ take some row-stochastic matrix $P$ compatible with $A$.
+By the Perron-Frobenius Theorem we get a unique vector $\mv{q}$ with positive entries who sum to $1$ and such that $\mv{q}P = \mv{q}$.
+The entropy of the shift map under the corresponding Markov measure is then
+\[
+	h(T) = -\sum_{i, j=1}^{k}q_i P_{ij}\log P_{ij}
+\]
+\end{theorem}
+
+\end{document}
