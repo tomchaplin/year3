@@ -10,10 +10,11 @@
 \usepackage{amsthm}
 \usepackage{mathdots}
 \usepackage[thicklines]{cancel}
-\renewcommand{\CancelColor}{\color{red}}
+\renewcommand{\CancelColor}{\color{Red}}
 \usepackage[dvipsnames]{xcolor}
 \usepackage{witharrows}
 \usepackage[framemethod=TikZ]{mdframed}
+\usepackage{bm}
 \usepackage{microtype}
 \usepackage{graphicx}
 \usepackage{tikz-cd}
@@ -83,13 +84,13 @@
 %{{{ Environments
 % Definitions environment
 \newenvironment{defin}
-	{\begin{mdframed}[backgroundcolor=white, roundcorner=5pt, linewidth=1pt]}
+	{\begin{mdframed}[backgroundcolor=white, roundcorner=5pt, linewidth=1pt, linecolor=RoyalBlue]}
 	{\end{mdframed}}
-\newcommand{\mdf}[1]{{\color{red} #1}}
+	\newcommand{\mdf}[1]{{\color{RoyalBlue} #1}}
 
 % Important notes environment
 \newenvironment{note}
-	{\begin{mdframed}[backgroundcolor=white, linecolor=red, roundcorner=5pt, linewidth=1pt]\bfseries{Note:}\normalfont}
+	{\begin{mdframed}[backgroundcolor=white, linecolor=RubineRed, roundcorner=5pt, linewidth=1pt]\bfseries{Note:}\normalfont}
 	{\end{mdframed}}
 
 % Examples enviornmnet
@@ -97,6 +98,9 @@
 \newenvironment{eg}
 	{\begin{mdframed}[backgroundcolor=mylg,roundcorner=5pt,linewidth=0pt]\bfseries{Example:}\normalfont}
 	{\end{mdframed}}
+
+% Highlighting
+	\newcommand{\highlight}[1]{{\color{RubineRed} #1}}
 
 % Theorem enviornment
 \newtheorem{prop}{Proposition}[section]
@@ -892,24 +896,24 @@ This is justified because $\frac{1}{n}\sum_{j=0}^{n-1} (f\circ T^j)$ is bounded 
 
 \textit{(d)}$\implies$\textit{(a)}.
 Suppose that our unique ergodic measure is called $\mu$ and that \textit{(a)} does not hold.
-So in particular \textit{(a)} fails with $c(f) = \int_X f \dm$, i.e. there is some $f\in C(X)$ such that
+So in particular \textit{(a)} fails with $c(f) = \int_X f \dm$, i.e. \highlight{there is some $f\in C(X)$} such that
 \[
 	\frac{1}{n}\sum_{j}f\circ T^j \not \to \int f \dm \quad\text{ uniformly}
 \]
-Then there are sequences $n_k\to \infty$ and $x_k\in X$ such that
+Then there are \highlight{sequences $n_k\to \infty$ and $x_k\in X$} such that
 \[
 	\frac{1}{n_k}\sum_{j=0}^{n_k-1}f(T^jx_k) \not \to \int f \dm
 \]
 We aim to contradict the uniqueness of $\mu$ so we set 
 \[
-\nu_k \defeq \frac{1}{n_k}\sum_{j=0}^{n_k-1}\delta_{T^jx_k}
+	\highlight{\nu_k \defeq \frac{1}{n_k}\sum_{j=0}^{n_k-1}\delta_{T^jx_k}}
 \]
-Note that $\nu_k(f) = \frac{1}{n_k}\sum_{j=0}^{n_k-1}f(T^jx_k)$. 
-Then $\nu_k\in M(X)$ and $M(X)$ is weak $\ast$ compact so by passing to a subsequence we can assume that $\nu_k\to \nu$ weak $\ast$ for some $\nu\in M(X)$.
-By the same proof as the Krylov-Bogulyvhov Theorem $\nu\in M(X, T)$.
+Note that $\highlight{ \nu_k(f) = \frac{1}{n_k}\sum_{j=0}^{n_k-1}f(T^jx_k)\not\to\mu(f) }$. 
+Then $\nu_k\in M(X)$ and $M(X)$ is weak $\ast$ compact so by passing to a subsequence we can assume that $\highlight{\nu_k\to \nu}$ weak $\ast$ for some $\nu\in M(X)$.
+By the same proof as the Krylov-Bogulyvhov Theorem $\highlight{\nu\in M(X, T)}$.
 It remains to show that $\nu\neq \mu$.
 \[
-	\nu(f) = \int_f \; d\nu = \lim_{k\to\infty}\int f \; d\nu_k = \lim_{k\to\infty}\frac{1}{n_k}\sum_{j=0}^{n_k-1}f(T^jx_k) \neq \int f \dm = \mu (f)
+	\nu(f) =  \lim_{k\to\infty}\nu_k(f) \neq \mu (f)
 \]
 \end{proof}
 
@@ -1248,7 +1252,7 @@ We would like to say something about the rate of mixing and to this end we defin
 Given $T:X \to X$ a measure preserving transformation then
 \[
 \begin{WithArrows}
-	Cov(f, g\circ T^n) & = \int+X f \cdot g \circ T^n \dm - \int_X f \dm \int_X g\circ T^n \dm	\\
+	Cov(f, g\circ T^n) & = \int_X f \cdot g \circ T^n \dm - \int_X f \dm \int_X g\circ T^n \dm	\\
 					   & = \int_X \left( f - \int_X f \dm\right)g\circ T^n \dm \Arrow{Koopman operator} \\
 					   & = \int_X \left( f - \int_X f \dm\right)U^ng \dm \Arrow{$L\defeq U^\ast$}\\
 					   & = \int_X L^n  \left(f - \int_X f \dm\right) g \dm
@@ -1272,14 +1276,14 @@ L^n\int f \dm = \int f \dm = \int L^n f \dm
 \end{enumerate}
 Therefore we can conclude that
 \[
-	\Cov (f, g \circ T^n) = \int_X\left( L^n f - \int L^n f \right)f \dm
+	\Cov (f, g \circ T^n) = \int_X\left( L^n f - \int L^n f \right)g \dm
 \]
 
 So by applying the Cauchy-Schwarz inequality we can see
 \begin{prop}
 For all $f, g\in L^2$, and $T$ a measure preserving transformation
 \[
-	\abs{\Cov(g, g \circ T^n)} \leq \norm{L^n f - \int L^n f}_2 \norm{g}_2
+	\abs{\Cov(f, g \circ T^n)} \leq \norm{L^n f - \int L^n f}_2 \norm{g}_2
 \]
 \end{prop}
 
@@ -1391,7 +1395,7 @@ We would also like that
 The conditional expectation operator is uniquely defined by the properties
 \begin{enumerate}[label=(\roman*)]
 	\item $\mathbb{E}(f | \mathcal{A})$ is $\mathcal{A}$ measurable.
-	\item $\int_A \mathbb{E}(f | \mathcal{A})\dm = \int_A f \dm$ for all $f\in \mathcal{A}$.
+	\item $\int_A \mathbb{E}(f | \mathcal{A})\dm = \int_A f \dm$ for all $A\in \mathcal{A}$.
 \end{enumerate}
 \end{prop}
 
@@ -1534,7 +1538,7 @@ Assume $\msrspc$ is a probability space and $\alpha=\{A_i\}$ a countable collect
 Suppose that $\mathcal{C}$ is a sub $\sigma$-algebra of $\mathcal{B}$.
 \begin{itemize}
 	\item The \mdf{conditional information of $\alpha$ given $\mathcal{C}$} is
-		$$\infog{\alpha}{\mathcal{C}}\defeq - \sum_{A\in\alpha}\indic{A}\log(\mu\gvn{A}{C})$$
+		$$\infog{\alpha}{\mathcal{C}}\defeq - \sum_{A\in\alpha}\indic{A}\log(\mu\gvn{A}{\mathcal{C}})$$
 	where $\mu\gvn{A}{\mathcal{C}}\defeq\expg{\indic{A}}{\mathcal{C}}$
 	\item The \mdf{conditional entropy of $\alpha$ given $\mathcal{C}$} is
 			$$\entrg{\alpha}{\mathcal{C}}\defeq\int_X\infog{\alpha}{\mathcal{C}}d\mu$$	
@@ -1620,10 +1624,10 @@ Then $\pi^{-1}\alpha\in\mathcal{P}_B$ which gives us a countable partition for $
 with the last equality holding because $\pi$ is measure preserving.
 Dividing by $n$ and taking $n\to\infty$ we see that
 \[
-	h_\mu(T, \pi^{-1}\alpha) = h\nu(S, \alpha)
+	h_\mu(T, \pi^{-1}\alpha) = h_\nu(S, \alpha)
 \]
 Then taking supremums over $\alpha\in\mathcal{P}_Y$ corresponds to taking supremums over $\pi^{-1}\alpha \in \mathcal{P}_X$.
-Hence $h\mu(T) = h_\nu(S)$.
+Hence $h_\mu(T) = h_\nu(S)$.
 \end{proof}
 
 \begin{note}
@@ -1657,7 +1661,7 @@ Given countable partitions $\alpha, \beta \in \mathcal{P}$
 \end{lemma}
 
 \begin{proof}
-By monotonicity we can see that $H(\alpha^n) \leq H(\alpha^n \vee \beta^n) = H(\beta^n) + \entrg{alpha^n}{\beta^n}$
+By monotonicity we can see that $H(\alpha^n) \leq H(\alpha^n \vee \beta^n) = H(\beta^n) + \entrg{\alpha^n}{\beta^n}$
 \[
 \begin{WithArrows}
 	\entrg{\alpha^n}{\beta^n} & = \entrg{\bigvee_{j=0}^{n-1}T^{-j}\alpha}{\bigvee_{i=0}^{n-1} T^{-i}\beta} 
@@ -1710,6 +1714,27 @@ Given $\alpha\in\mathcal{P}$, if
 \end{enumerate}
 then $h(T) = h(T, \alpha)$.
 \end{theorem}
+
+\begin{proof}
+We do case 2 but the proof for 1 is similar.
+By Abramov's Theorem we have that
+\[
+	h\left( T, \bigvee_{j=-n}^n T^{-j}\alpha\right)\to h(T) \quad \text{as }n\to\infty
+\]
+But then
+\[
+\begin{WithArrows}
+	H\left( \bigvee_{i=0}^{k-1}T^{-i}\left( \bigvee_{j=-n}^n T^{-j}\alpha\right)\right)
+	&= H(T^n\alpha \vee \dots \vee T^{-(n+k+1)} ) \\
+	&= H(T^n(\alpha \vee \dots \vee T^{-(2n+k+1)})) \Arrow{$T^{-1}$ m.p.t} \\
+	&= H\left( \bigvee_{j=0}^{2n+k-1} T^{-j}\alpha\right)
+\end{WithArrows}
+\]
+So then
+\[
+	h\left(T, \bigvee_{j=-n}^n T^{-j}\alpha \right)=\lim_{k\to\infty}\frac{2n+k-1}{k}\frac{1}{2n+k-1}H\left( \bigvee_{j=0}^{2n+k-1} T^{-j}\alpha\right)=h(T,\alpha)
+\]
+\end{proof}
 
 \begin{eg}
 	\textbf{The doubling map has entropy $\log(2)$}
