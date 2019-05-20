@@ -31,7 +31,7 @@
 \newcommand{\norm}[1]{\left|\left|#1\right|\right|}
 %\renewcommand{\dots}{...}
 \newcommand{\msrspc}{\ensuremath{(X,\mathcal{B},\mu)}}
-\newcommand{\symd}{\triangle}
+\newcommand{\symd}{\vartriangle}
 \newcommand{\indic}[1]{\mathbbm{1}_{#1}}
 \newcommand\restr[2]{{% we make the whole thing an ordinary symbol
   \left.\kern-\nulldelimiterspace % automatically resize the bar with \right
@@ -56,6 +56,7 @@
 \DeclareMathOperator{\Cov}{\mathrm{Cov}}
 \DeclareMathOperator{\lip}{\mathrm{lip}}
 \DeclareMathOperator{\diam}{\mathrm{diam}}
+\DeclareMathOperator{\im}{\mathrm{im}}
 \newcommand{\gvn}[2]{\ensuremath{\left(#1\rmv#2\right)}}
 \newcommand{\expg}[2]{\ensuremath{\mathbb{E}\gvn{#1}{#2}}}
 \newcommand{\infog}[2]{\ensuremath{I\gvn{#1}{#2}}}
@@ -451,6 +452,16 @@ Uf=f \iff U^\ast f = f
 \]
 \end{prop}
 
+\begin{proof}
+For the forward direction just apply $U^\ast$ to both sides.
+For the backward direction, we want to show $\norm{Uf - f}=0$
+\begin{align*}
+	\norm{Uf-f}^2 = \langle Uf -f, Uf -f\rangle
+	&= \langle Uf, Uf\rangle - \langle f, Uf\rangle - \langle Uf, f\rangle + \langle f, f\rangle \\
+	&= \langle f, f\rangle = \langle U^\ast f, f\rangle - \langle f, U^\ast f\rangle + \langle f, f\rangle=0
+\end{align*}
+\end{proof}
+
 Given a bounded linear operator $A:H\to H$ we can define the \mdf{kernel} to be
 \[
 	\ker(A) \defeq \left\{ f\in H \rmv Af = 0\right\}
@@ -481,7 +492,54 @@ that is
 \end{theorem}
 
 \begin{proof}
-The proof of this is about a page long and definitely warrants a read.
+\textbf{Special Case 1: }Suppose $f\in\ker(U-I)$ then
+\[
+	\frac{1}{n}\sum_{j=0}^{n-1}U^j f = \frac{1}{n}\sum_{j=0}^{n-1}f=f=\pi f
+\]
+
+\textbf{Special Case 2: }Suppose $f\in\im(U-I)$, then for some $h\in H$ we know $f= Uh - h$.
+Therefore
+\[
+	\sum_{j}U^j f = U^n h - h
+\]
+since the sum telescopes.
+Then
+\[
+	\norm{\frac{1}{n}\sum_{j}U^j f} \leq \frac{1}{n}\left( \norm{U^n h} + \norm {h}\right) = \frac{2\norm{h}}{n} \to 0
+\]
+with the last equality holding because $U$ is an isometry.
+
+\textbf{Special Case 3: }Define the following
+\[
+	C\defeq \overline{\im(U-I)}
+\]
+Suppose $f\in C$ and $\epsilon > 0$.
+Then there is a $g\in\im(U-I)$ such that $\norm{f-g} < \epsilon$.
+Then
+\begin{align*}
+	\norm{\frac{1}{n}\sum_{j}U^j f } &\leq \norm{\frac{1}{n}\sum_{j}U^j(f-g)} + \norm{\frac{1}{n}\sum_{j}U^j g} \\
+									 &\leq \frac{1}{n}\sum_{j}\norm{U^j(f-g)} + \norm{\frac{1}{n}\sum_{j}U^j g} \\
+									 &\leq \norm{f-g} + \norm{\frac{1}{n}\sum_{j}U^j g} \\
+									 &\leq \epsilon + \underbrace{\norm{\frac{1}{n}\sum_{j}U^j g}}_{\to 0 \text{ by Case 2}}
+\end{align*}
+Taking $\epsilon\to 0$ and $n\to\infty$ finishes this case.
+
+\textbf{Claim: }
+\[
+	H = \ker(U-I) \oplus C
+\]
+\textit{Proof of Claim.} Since $C$ is closed, $H= C \oplus C^\perp$ so we need to show that $\ker(U-I)=C^\perp$.
+\begin{align*}
+	f \in C^\perp & \iff \langle f, Uh - h\rangle=0 \quad \text{for all }h\in H \\
+				  & \iff \langle U^\ast f, h\rangle - \langle f, h\rangle = \langle U^\ast f -f, h\rangle= 0 \quad\forall h \in H \\
+				  & \iff U^\ast f = f \underbrace{\iff}_{U \text{ isometry}} Uf = f \iff f \in\ker(U-I)
+\end{align*}
+
+Now given general $f\in H$ we can write it is as $f=g_1 + g_2$ for $g_1\in\ker(U-I)$ and $g_2\in C$.
+Then
+\[
+	\frac{1}{n}\sum_{j}U^j f = \frac{1}{n}\sum_{j}U^j g_1 + \frac{1}{n}\sum_{j}U^j g_2 \to \pi g_1 + 0 = \pi f + 0
+\]
 \end{proof}
 
 \begin{cor}
@@ -491,6 +549,15 @@ The proof of this is about a page long and definitely warrants a read.
 	\]
 	If $T$ is ergodic then $\pi f = \int f\; d\mu$.
 \end{cor}
+
+\begin{proof}
+If $T$ is ergodic then $\ker(U-I)=\left\{ \text{constant functions}\right\}$.
+Therefore, $\pi f$ is constant but also
+\[
+	 \int f = \int \frac{1}{n}\sum_{j}f\circ T^j  \to \int \pi f = \pi f
+\]
+with the first equality holding because $\mu$ is $T$-invariant.
+\end{proof}
 
 \section{Existence of invariant/ergodic measures}
 \begin{defin}
@@ -946,7 +1013,7 @@ We would like to use Hahn-Kolmogorov Theorem and hence we need to show that give
 But in fact any such union must be finite and hence the condition trivial holds.
 So we get a unique probability measure on all of $\Sigma^+$, it is certainly a probability measure because
 \[
-	\mu(\Sigma^+) = \mu(\bigcup_{i=1}^k \left[ i\right] = \sum_{i=1}^k \mu\left[ i\right] =\sum_{i=1}^k p_i = 1
+	\mu(\Sigma^+) = \mu\left(\bigcup_{i=1}^k \left[ i\right] \right)= \sum_{i=1}^k \mu\left[ i\right] =\sum_{i=1}^k p_i = 1
 \]
 \end{proof}
 
@@ -967,7 +1034,26 @@ Bernoulli measures are ergodic.
 \end{theorem}
 
 \begin{proof}
-This is definitely worth proving.
+Choose $B\in\mathcal{B}$ such that $\sigma^{-1}B = B$.
+Since $\mathcal{A}$ generated $\mathcal{B}$ we can find $A\in\mathcal{A}$ such that $\mu(B\symd A)< \epsilon$.
+From the previous proposition we get an $n$.
+Then
+\[
+	\mu(B \symd \sigma^{-n} A) = \mu( \sigma^{-n}B \symd \sigma^{-n}A) = \mu(\sigma^{-n}(A\symd B)) = \mu(A \symd B) < \epsilon
+\]
+The set theory gods have decreed that
+\[
+	B \symd (E \cap F) \subseteq (B\symd E ) \cup (B\symd F)
+\]
+And therefore $\mu(B \symd(A \cap \sigma^{-n} A)) \leq \mu(B\symd A) + \mu(B\symd \sigma^{-n}A) < 2 \epsilon$.
+\[
+\begin{WithArrows}
+	\abs{\mu(B) - \mu(B)^2} & \leq \abs{\mu(B) - \mu(A \cap \sigma^{-n}A)} + \abs{\mu(A \cap \sigma^{-n}A) -\mu(B)^2} \Arrow{choice of $n$}\\
+							& \leq \mu(B \symd (A \cap \sigma^{-n}A)) + \abs{\mu(A)^2 - \mu(B)^2} \\
+							& < 2 \epsilon + \underbrace{\abs{\mu(A) - \mu(B)}}_{< \epsilon}\underbrace{\abs{\mu(A) + \mu(B)}}_{\leq 2} < 4 \epsilon
+\end{WithArrows}
+\]
+Then taking $\epsilon\to 0$ we see that $\mu(B) = \mu(B)^2$ and hence $\mu(B) \in \left\{ 0, 1\right\}$.
 \end{proof}
 
 \begin{cor}
@@ -1028,14 +1114,14 @@ Note that we get the following desirable properties:
 	\item By the Perron-Frobenius Theorem, $1$ must be the maximum eigenvalue.
 		Therefore, there must be a unique left eigenvector $q$ such that
 		\[
-			qP = d \quad \sum_{i}q_i = 1\quad q_i >0
+			qP = q \quad \sum_{i}q_i = 1\quad q_i >0
 		\]
 \end{itemize}
 We can use this to define a new measure by first defining on cylinder sets
 \[
 	\mu(\left[ y_0, \dots, y_m \right]) \defeq q_{y_0}P_{y_0 y_1}\dots P_{y_{m-1}y_m}
 \]
-By the Hahn-Kilogram Theorem this extends to a unique measure on $\Sigma_A^+$ and note
+By the Hahn-Kolmogorov Theorem this extends to a unique measure on $\Sigma_A^+$ and note
 \[
 	\mu(\Sigma_A^+)=\mu\left( \bigcup_{i=1}^k [j] \right)=\sum_{j=1}^k \mu( \left[ j\right]) = \sum_{j=1}^k q_j =1
 \]
@@ -1363,18 +1449,18 @@ It was also an exercise to estimate mixing rates for the doubling map when $f$ i
 Suppose we have a probability space $(X, \mathcal{B}, \mu)$ and a sub $\sigma$-algebra $\mathcal{A} \subseteq \mathcal{B}$.
 Our aim is to define a conditional expectation operator
 \[
-	\mathbb{E}(\bullet | \mathcal{A}) : L^1(X, \mathcal{B}, \mu) \to L^1(X, \mathcal{A}, \mu)
+	\expg{\bullet}{\mathcal{A}}: L^1(X, \mathcal{B}, \mu) \to L^1(X, \mathcal{A}, \mu)
 \]
 with the property that $\mathbb{E}(\bullet | \mathcal{A})^2=\mathbb{E}(\bullet | \mathcal{A})$
 We would also like that
 \[
-	\int_A \mathbb{E}(f | \mathcal{A}) \dm = \int_A f \dm \quad \forall A \in \mathcal{A}
+	\int_A \expg{f}{\mathcal{A}} \dm = \int_A f \dm \quad \forall A \in \mathcal{A}
 \]
 
 \begin{enumerate}
 	\item First take $f\in L^1(X, \mathcal{B}, \mu)$ such that $f\geq 0$ and define
 		\[
-			\nu(A0 \defeq \int_A f \dm \quad \forall A\in\mathcal{A}
+			\nu(A) \defeq \int_A f \dm \quad \forall A\in\mathcal{A}
 		\]
 		This gives us a measure on $\mathcal{A}$.
 		Notice that $\restr{\mu}{\mathcal{A}}$ is also a measure on $\mathcal{A}$ and in fact we claim that $\nu << \restr{\mu}{\mathcal{A}}$.
@@ -1577,16 +1663,33 @@ Change the integrand to the conditional expectation on $\mathcal{C}$ and then pu
 	$$\infog{\alpha\vee\beta}{\gamma}=\infog{\alpha}{\gamma}+\infog{\beta}{\alpha\vee\gamma}$$
 	$$\entrg{\alpha\vee\beta}{\gamma}=\entrg{\alpha}{\gamma}+\entrg{\beta}{\alpha\vee\gamma}$$
 \end{lemma}
+
 \begin{proof}
 This can be proved by showing equality on each partition element.
-That is, choose $A\in \alpha$, $B\in \beta$, $C\in\gamma$ and then show equality for $x\in A \cap B \cap C$.
+That is, choose $A\in \alpha$, $B\in \beta$, $C\in\gamma$ and $x \in A \cap B \cap C$.
+\begin{align*}
+	\infog{\alpha \vee \beta}{\gamma}(x)&=-\restr{\log(\mu\gvn{A\cap B}{\gamma})}{C}=-\log\left( \frac{\mu(A\cap B \cap C)}{\mu(C)}\right)\\
+	\infog{\alpha}{\gamma}(x)&= - \log\left(\frac{\mu(A \cap B)}{\mu(C)}\right) \\
+	\infog{\beta}{\alpha\vee\gamma}(x)& =-\log\left(\frac{\mu(A\cap B \cap C)}{\mu(A \cap B)}\right)
+\end{align*}
 \end{proof}
+
 \begin{cor}
 	$$\beta\leq\gamma\implies\infog{\alpha\vee\beta}{\gamma}=\infog{\alpha}{\gamma}$$
 \end{cor}
-\begin{cor}[Monotonicity of information of entropy]
+
+\begin{cor}[Monotonicity of information and entropy]
 	$$\alpha\leq\beta\implies\infog{\alpha}{\gamma}\leq\infog{\beta}{\gamma}$$
 \end{cor}
+
+\begin{proof}
+We have 
+\[
+\infog{\alpha}{\gamma} \leq \infog{\alpha}{\gamma} + \infog{\beta}{\alpha \vee \gamma} = \infog{\alpha\vee \beta}{\gamma}
+\]
+But $\beta$ is a refinement of $\alpha$ so $\alpha \vee \beta = \beta$.
+\end{proof}
+
 \begin{cor}[Anti-monotonicity of entropy]
 	$$\beta\leq\gamma\implies\entrg{\alpha}{\beta}\geq\entrg{\alpha}{\gamma}$$
 \end{cor}
