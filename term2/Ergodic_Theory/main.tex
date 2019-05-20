@@ -379,7 +379,7 @@ $x\in\R$ is \mdf{normal (base b)} if
 \begin{itemize}
 	\item $x$ has a  unique expansion in that base.
 	\item $\forall k\in\{0,1,\dots,b-1\}$
-		$$\frac{1}{n}\#\{1\leq i\leq n | x_i=k\}\to\frac{1}{10}\quad\text{as}\;n\to\infty$$
+		$$\frac{1}{n}\#\{1\leq i\leq n | x_i=k\}\to\frac{1}{b}\quad\text{as}\;n\to\infty$$
 \end{itemize}
 
 $x\in\R$ is \mdf{absolutely normal} if $x$ is normal base b for all $b\geq 2$.
@@ -458,7 +458,7 @@ For the backward direction, we want to show $\norm{Uf - f}=0$
 \begin{align*}
 	\norm{Uf-f}^2 = \langle Uf -f, Uf -f\rangle
 	&= \langle Uf, Uf\rangle - \langle f, Uf\rangle - \langle Uf, f\rangle + \langle f, f\rangle \\
-	&= \langle f, f\rangle = \langle U^\ast f, f\rangle - \langle f, U^\ast f\rangle + \langle f, f\rangle=0
+	&= \langle f, f\rangle - \langle U^\ast f, f\rangle - \langle f, U^\ast f\rangle + \langle f, f\rangle=0
 \end{align*}
 \end{proof}
 
@@ -616,12 +616,12 @@ Unfortunately, $M(X)$ is not compact in the strong topology.
 \begin{proof}
 Recall that in a metric space compactness is equivalent to sequential compactness.
 So it suffices to find a sequence with no convergent subsequence.
-Let $x_1, c_2, \dots \in C$ such that $x_i\neq x_j$ and for all $n$ let $\mu_n=\delta_{x_n}$.
+Let $x_1, x_2, \dots \in C$ such that $x_i\neq x_j$ and for all $n$ let $\mu_n=\delta_{x_n}$.
 
 Now take $n\neq m$ we want to show that $\norm{\mu_n - \mu_m} \geq 1$.
 For this we define the function 
 \[
-	f(x)=\frac{d(x, x_n}{d(x, x_n) + d(x, x_m)}
+	f(x)=\frac{d(x, x_n)}{d(x, x_n) + d(x, x_m)}
 \]
 Note since $x_n\neq x_m$ this is well-defined and $f(x_n)=0$ and $f(x_m)=1$.
 Moreover, $f$ is continuous and $\norm{f}_\infty = 1$
