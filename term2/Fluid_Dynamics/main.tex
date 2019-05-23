@@ -20,6 +20,8 @@
 \usepackage[framemethod=TikZ]{mdframed}
 \usepackage{microtype}
 \usepackage{bm}
+\usepackage{silence}
+\WarningFilter{mdframed}{You got a bad break}
 %}}}
 %{{{ Custom commands
 % Partial Derivative command
@@ -937,6 +939,213 @@ which means
 	u_\theta(r) = \frac{1}{r}\int_0^r \omega(r') r' \; dr'
 \]
 \subsubsection{Solid Body Rotation}
+We consider the velocity field associated to
+\[
+	u_\theta(r) = \Omega r
+\]
+The fluid moves as a rigid body so there must be local rotation.
+This means the vorticity is non-zero.
+\[
+	\omega = \frac{1}{r}\pd{(r u_\theta)}{r}-\frac{1}{r}\pd{u_r}{\theta} = 2\Omega
+\]
+So fluid particles on the circular streamlines rotate to maintain a rigid body.
+We can calculate circulation at a given radius $R$ to be
+\[
+	\Gamma = 2\pi R u\theta(R) = 2\pi \Omega R^2
+\]
+Pressure will be purely radius due to the axisymmetric and can be calculated from the radial steady-state Euler equations which reduce to
+\[
+	-\frac{u_\theta^2}{r}=-\frac{1}{\rho}\pd{p}{r} \implies p(r) = \frac{\rho\Omega^2 r^2}{2} +C
+\]
+for some constant $C$.
+
 \subsubsection{Point Vortices}
-\subsection{Unsteady 2D Flow - Similarity Solution}
+A point vertex is an idealisation which we will often use.
+We assume that all of the vorticity is concentrated at a point.
+The velocity field is
+\[
+	u_\theta(r) = \frac{a}{r}
+\]
+Outside the singularity at $r=0$ we see that the flow is irrotational so there is no local rotation away from the origin.
+
+Then the circulation around a circular contour of radius $R$ will be
+\[
+	\Gamma = 2\pi R u_\theta(R) = 2\pi a
+\]
+and is thus independent of radius.
+So we commonly represent a point vortex as $u_\theta(r) = \frac{\Gamma}{2\pi r}$.
+All of the vorticity is concentrated at the origin so $\omega = \Gamma \delta(\mv{x})$.
+
+Finally, the pressure distribution satisfies the $r$-component of the steady state Euler equation
+
+\[
+	\pd{p}{r}= \frac{\rho u_\theta^2}{r} = \frac{\rho a^2}{r^3} \implies p = p_\infty - \frac{\rho a^2}{2r^2}	
+\]
+
+\section{Irrotational 2D Flow and Aerofoils}
+\subsection{Velocity Potential for Irrotational Flow}
+If we have irrotational flow then we get a velocity potential satisfying $\mv{u}=\grad\phi$ and the viscous term is then automatically so as incompressibility says $\grad^2\phi = 0$.
+From $\mv{u}= \grad \phi$ we get
+\[
+	\phi(\mv{x}) = \int_0^{\mv{x}} \mv{u}(\mv{x}') \cdot d\mv{l}
+\]
+where the integral is taken over some path joining 0 and $\mv{x}$.
+If the irrotational flow is living in a simply connected domain then this integral is independent of path (e.g. use Stokes theorem).
+If the domain is multiply connected then $\phi$ may be multivalued.
+That is $\mv{\omega}\equiv 0$ does not mean that all contours have $0$ circulation.
+In this case
+\[
+	\Gamma = \oint_C \mv{u}(\mv{x}')\cdot d\mv{l} = \oint_C \grad\phi(\mv{x}')\cdot d\mv{l} = \left[ \phi\right]_C
+\]
+i.e. we see how $\phi$ increments going once around $C$.
+
+\begin{note}
+In an irrotational flow then we can compute velocity components by
+\[
+	u = \pd{\phi}{x}\quad\quad v = \pd{\phi}{y}
+\]
+\end{note}
+
+\begin{eg}
+	\textbf{Velocity Potentials: }
+	\begin{itemize}
+		\item Uniform flow at an angle of $\alpha$ to the $x$-axis has velocity potential $\phi = U(x\cos\alpha + y \sin\alpha)$.
+		\item Pure strain flow has velocity potential $\phi = \frac{\alpha}{2}(x^2 - y^2)$.
+		\item Point vortex has the multivalued function $\phi = \frac{\Gamma}{2 \pi}\theta$ where $\theta$ is the polar angle.
+	\end{itemize}
+\end{eg}
+
+\subsection{The Complex Potential}
+Recall the stream function had the properties
+\[
+	u = \pd{\psi}{y} \quad\quad v = - \pd{\psi}{x}
+\]
+and hence combining this with relations for the velocity potential we arrive at the Cauchy-Riemann equations
+\[
+	\pd{\phi}{x}=\pd{\psi}{y}\quad\quad\pd{\phi}{y}=-\pd{\psi}{x}
+\]
+which then tells us that the \mdf{complex potential} $\mdf{w}=\phi + i \psi$ is in fact holomorphic.
+\begin{note}
+Given the complex potential $w$ we can then recover the flow velocity profile by
+\[
+	\frac{dw}{dz}(z) = w'(z) = u(x, y) - i v(x, y)\quad\quad\text{where }z=x+iy
+\]
+Moreover, we can compute the speed by $\abs{\mv{u}} = \abs{\partial_z w}$.
+\end{note}
+
+\begin{eg}
+	\textbf{Example complex potentials are}
+	\begin{itemize}
+		\item Pure strain flow $w = \frac{\alpha}{2}z^2$.
+		\item The point vortex has complex potential $w=-\frac{i\Gamma}{2\pi}\log z$.
+	\end{itemize}
+\end{eg}
+
+Note that any holomorphic function $w$ in fact corresponds to an \emph{ideal} 2D irrotational flow.
+Once $u$ and $v$ have been found from the complex potential, the pressure can be obtained from the time-dependent Bernoulli equation
+\[
+	\pd{\phi}{t} + B = C(t) \quad\text{where}\quad B = \frac{p}{\rho}+\frac{\abs{\grad\phi}^2}{2}+gz	
+\]
+
+\subsection{Flow Past a Cylinder}
+Consider the ideal flow with the complex potential
+\[
+	w= U\left( z + \frac{a^2}{z}\right)
+\]
+where $U$ and $a$ are positive constant.
+Note that as $\abs{z}\to\infty$ the first term becomes dominant an we obtain uniform flow of velocity $U$ in the $x$-direction.
+One can show that on the circle of radius $a$ the stream function is identically $0$ and hence certain constant.
+So the circle is a streamline and the free-slip boundary condition is satisfied.
+Therefore, the potential describes a flow past a cylindrical boundary which is uniform at a distance from the cylinder.
+
+\subsubsection{Non-Uniqueness of the Solution}
+The problem with this is that the free-slip boundary condition on the cylinder is not sufficient to give a unique solution.
+One can add a point vortex with which is irrotational away from origin with arbitrary circulation $\Gamma$.
+Note that this is not a real vortex because it is inside the solid
+\[
+	w = U \left( z + \frac{a^2}{z}\right)-\frac{i\Gamma}{2\pi}\log(z)
+\]
+Note that the first term is still dominant as $\abs{z}\to\infty$.
+Moreover, the point vortex does not have a radial velocity component so we still ratify the free-slip condition at radius $a$.
+
+Which $\Gamma$ is correct is a tough question to answer.
+One could guess it deepens on the rotation speed of the solid cylinder.
+However, this may only matter when we consider a thin viscous boundary layer and use the non-slip boundary condition.
+Based on an ideal flow, there is no way to fix this.
+
+\subsubsection{Velocity and Force}
+We can take the imaginary part of the complex potential to find the stream function and then in polar coordinate we have
+\begin{align*}
+	u_r = \frac{1}{r} \pd{\psi}{\theta} &= U \left( 1- \frac{a^2}{r^2}\right)\cos\theta \\
+	u_\theta = - \pd{\psi}{r} &= -U \left( 1 + \frac{a^2}{r^2}\right)\sin\theta + \frac{\Gamma}{2\pi r}
+	= -U \left[ \left( 1 + \frac{a^2}{r^2}\right)\sin\theta + \frac{Ba}{r}\right]
+\end{align*}
+where $B = \frac{-\Gamma}{2\pi U a}$.
+
+Then denoting by $p_0$ the pressure at infinity we can find pressure $p$ on the circle at $\abs{z} = a$ by using Bernoulli:
+\[
+	p= p_0 + \frac{\rho U^2}{2}- \frac{\rho u_\theta^2}{2} = p_0 + \frac{\rho U^2}{2} - \frac{\rho}{2}\left[ 2U \sin\theta - \frac{\Gamma}{2\pi a}\right]^2
+\]
+
+
+\subsection{Basils' Theorem}
+\begin{theorem}[Blasius' Theorem]
+Consider a steady ideal flow past a 2D body with a boundary given by a closed contour $C$ having complex potential $w(z)$ then
+\[
+	F_x - i F_y = \frac{i\rho}{2}\oint_C \left( \pd{w}{z}\right)^2 dz
+\]
+\end{theorem}
+
+\section{Boundary Layer Theory}
+Before we have been assuming the fluid is everywhere inviscid but in relating, near to the boundary there is a thin layer of fluid in which viscous forces can no longer be neglected.
+This layer satisfies the no-slip boundary condition and is called the \mdf{boundary layer}.
+In the outer flow we can ignore the boundary layer because it has an insignificant thickness $\delta << L$.
+Inside the boundary layer we have free-slip velocity at the top and no-slip at the bottom.
+When the layer becomes thin, the viscous forces become comparable to other terms.
+
+For high $Re$ we assume the boundary layer is thinner than the curvature radius of the surface and is under plane-parallel shear flow.
+
+\subsection{Thickness}
+The boundary layer exists when viscous force becomes comparable to inertia's ones
+\[
+\abs{\nu\grad^2\mv{u}} \sim \abs{\mv{u}\cdot\grad)\mv{u}}
+\]
+Assuming the boundary layer is plane-parallel with $x$-axis along the solid with characteristic length scales $L$ and $\delta$ to be found.
+Viscous terms are
+\[
+	\nu\partial_{yy}u \sim \nu U / \delta^2
+\]
+as the largest gradients in $\mv{u}$ are perpendicular to the solid.
+The inertial terms are given by $U^2/L$.
+Balancing these we see
+\[
+	\delta \sim \frac{L}{Re^\frac{1}{2}}
+\]
+where $Re = UL/\nu$ is based on the outer flow scales.
+
+\subsection{Non-Dimensionalisation}
+Often we wish to rephrase equations in terms of dimensionless parameters which we can then vary to see how the flow changes.
+We will create dimensionless equations for the Navier-Stokes and see which terms dominate as $Re\to\infty$.
+
+Parallel to the solid we have characteristic scales $U$ and $L$.
+In the $y$-direction we have strong gradients in velocity across the boundary layer of length $\delta$.
+Using incompressibility we see $U/L \sim v/ \delta$ and hence $v \sim U\delta /L$.
+So we make the following substitutions into the NS equations.
+\[
+	x = Lx', \quad y=\delta y=L(Re)^{-\frac{1}{2}}y', \quad u=Uu', \quad v=\frac{U\delta v'}{L}=\frac{Uv'}{Re^{1/2}}, \quad p=\rho U^2 p'
+\]
+The pressure scale was chosen as $\rho U^2$ because the Bernoulli equations says that $p+\frac{\rho}{2}u^2$ is constant.
+We can then make these substitutions and take the limit as $Re\to\infty$ to obtain a limiting system which we can subsequently return to the dimensional equations.
+Doing so leads to the boundary layer equations
+\begin{formula}
+	\textbf{Boundary Layer Equations: }
+	\begin{align*}
+		u\pd{u}{x} + v\pd{u}{y} &= - \frac{1}{\rho}\pd{p}{x}+\nu\pd[2]{u}{y}\\
+		p & \equiv p(x) \quad\quad\quad \text{independent of }y \\
+		\pd{u}{x}+ \pd{v}{y}&=0
+	\end{align*}
+\end{formula}
+
+\section{Waves}
+
 \end{document}
