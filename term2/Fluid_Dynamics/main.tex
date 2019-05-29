@@ -63,6 +63,9 @@
 % Norms
 \newcommand{\abs}[1]{\left|#1\right|}
 
+% Spaces
+\newcommand{\R}{\mathbb{R}}
+
 %}}}
 %{{{ Custom environments
 % Proof environments
@@ -94,6 +97,7 @@
 %}}}
 \begin{document}
 \maketitle
+
 \section{Mathematical Modelling of Fluid Flow}
 \subsection{Validity of continuum mechanics}
 Continuum mechanics is valid when
@@ -285,7 +289,7 @@ where $\mu$ is the dynamic viscosity given in $kgm^{-1}s^{-1}$. The dynamic visc
 Then we can write
 \begin{align*}
 	T_{ij}&= -p\delta_{ij}+2\mu e_{ij}\\
-		  &= -p\delta_{ij}+\mu\left(\pd{u_i}{x_j}-\pd{u_j}{x_i}\right)
+		  &= -p\delta_{ij}+\mu\left(\pd{u_i}{x_j}+\pd{u_j}{x_i}\right)
 \end{align*}
 Now $\sum_i T_{ii} = -3p$ and hence $p=-\frac{1}{3}(\sum_i T_{ii})$ is the mechanical (NOT thermodynamic) pressure.
 \begin{note}
@@ -1147,5 +1151,146 @@ Doing so leads to the boundary layer equations
 \end{formula}
 
 \section{Waves}
+The basic element of wave dynamics is a \mdf{monochromatic wave}
+\[
+	a(\mv{x}, t) = A \cos\left( \mv{k}\cdot\mv{x} - \omega t + \varphi\right)
+\]
+where
+\begin{itemize}
+	\item $A$ is the \mdf{wave amplitude}
+	\item $\mv{k}\in \R^d$ is the \mdf{wave vector} (referred to as the \mdf{wave number} when $d=1$).
+	\item $\omega$ is the \mdf{angular wave frequency} (measured in radians per second)
+	\item $\varphi$ is the \mdf{wave frequency}
+\end{itemize}
+
+The \mdf{wavelength} $\lambda$ is the distance between adjacent wave crests and \mdf{period} $T$ is the time it takes to perform one oscillation.
+They can be computed by
+\[
+	\lambda = \frac{2\pi}{\abs{\mv{k}}} \quad \quad \text{and} \quad \quad T= \frac{2\pi}{\omega}
+\]
+Note that
+\[
+	\mv{k}\cdot\mv{x} - wt = \mv{k} \cdot \left(\mv{x} - \frac{\omega\mv{k}}{\abs{k}^2}t\right)
+	=\mv{k} \cdot (\mv{x} - \mv{c}_{ph} t) \quad \text{where} \quad
+	\mdf{\mv{c}_{ph}}\defeq \frac{\omega\mv{k}}{\abs{\mv{k}}^2}
+\]
+We call $\mv{c}_{ph}$ the \mdf{phase speed} and it is the speed at which the peaks move.
+
+\subsection{The Dispersion Relation}
+The frequency is related to $\mv{k}$ by a \mdf{dispersion relation} $\omega=\omega(\mv{k})$.
+The form of the dispersion relation will govern the behaviour of the wave.
+\begin{itemize}
+	\item We consider \mdf{isotropic systems} where $\omega=\omega(\abs{\mv{k}})$.
+	\item For isotropic systems if $\omega$ is a linear function of $\mv{k}$ then we say the waves are \mdf{non-dispersive} (e.g. sound waves).
+\end{itemize}
+
+\subsection{Wave Packets and Group Velocity}
+In reality tend to move in packets whose amplitude decay with the distance from the centre of the packet.
+These packs move with \mdf{group velocity}
+\[
+	\mdf{\mv{c}_g} \defeq \grad_{\mv{k}}\omega \quad\quad\quad
+	\mdf{\mv{c}_{ph}}\defeq \frac{\omega\mv{k}}{\abs{\mv{k}}^2,}
+\]
+whereas individual wave crests move with phase velocity.
+
+\begin{defin}
+	In general we see that waves are \mdf{dispersive} if phase and group speed are not equal.
+\end{defin}
+
+\subsection{Free surface flows}
+In general a free surface between two viscous fluids gives us 4 boundary conditions for the 4 unknowns (3 velocities and the surface shape).
+To obtain these we consider a free surface given in the form $f(\mv{x}, t)=0$ with $f<0$ and $f>0$ referring to fluid 1 and 2 respectively.
+The surface's unit normal from 1 to 2 will be
+\[
+	\mv{n} = \frac{\grad{f}}{\abs{\grad{f}}}
+\]
+
+\noindent\textbf{Kinematic Boundary Condition}
+
+The free surface moves with the velocity of the fluid and so particles on the free surface remain there, so we can conclude
+
+\[
+	\md{f}{t} =0
+\]
+Introducing $\mv{n}$ as define above we get that
+\[
+	\frac{1}{\abs{\grad{f}}}\pd{f}{t}+ \mv{u}\cdot \mv{n} = 0,
+\]
+For steady problems this reduces to impermeability $\mv{u}\cdot\mv{n}=0$.
+
+\noindent\textbf{Dynamic Boundary Conditions}
+
+To get this condition we apply Newton's 2nd law to the free surface.
+There is no mass to the surface and hence the forces acting on either side must balance with forces in the interface.
+We can then see that the stress tensors from above and below must balance as
+\[
+	\mv{T}^+ \cdot \mv{n} = \mv{T}^- \cdot \mv{n} \quad i.e. \quad T^+_{ij}n_j = T^-_{ij}n_j
+\]
+on the surface $f=0$.
+Recall that we have
+\begin{itemize}
+	\item \textbf{Inviscid Flow: } $T_{ij}=-p\delta_{ij}$ which then implies continuity of pressure $p^+=p^-$ at the boundary $f=0$.
+	\item \textbf{Viscous Flow: } $T_{ij}= -p\delta_{ij} + 2\pi e_{ij}
+		= -p\delta_{ij} + \mu \left( \partial_{x_j} u_i + \partial_{x_i} u_j \right)$
+\end{itemize}
+
+\subsection{Linearising Boundary Conditions}
+We often linearise these boundary conditions which take place on a surface $y=h(x, t)$ to obtain an analytically tractable problem.
+This is done by simply remove any terms above first order in our equations.
+However, we must also make sure that we apply these new equations at $y=0$ because for small $h$ we can Taylor expand
+\[
+	\phi(x, h, t) = \phi(x, 0 , t) + h \pd{\phi(x, 0 , t)}{y}+ \dots \approx \phi(x, 0, t)
+\]
+
+\subsection{Surface Tensions and Capillary Flows}
+As we pass to smaller length scales, surface forces dominate volume forces.
+In particular, surface tension dominates gravity.
+
+The surface tension force $\sigma$ (constant here), per unit length of line, is directed tangentially along the surface.
+Suppose the surface is parametrised with coordinates $(s_1, s_2)$ and has tangent vectors $(\mv{t}_1, \mv{t}_2)$.
+A balance of forces on the free surface $f=0$ gives
+\[
+	(\mv{T}^+ - \mv{T}^-) \cdot \mv{n} = - \sigma \left( \pd{\mv{t}_1}{s_1}+\pd{\mv{t_2}}{s_2}\right)\equiv \sigma\kappa \mv{n}
+\]
+where we have defined curvature of the interface $\kappa$ in an appropriate way.
+In terms of the principle radii of curvature
+\[
+	\kappa=\frac{1}{R_1} + \frac{1}{R_2}
+\]
+where $R-i$ is positive when the circle of radius $R-i$ lies within the $(-)$ phase.
+Recall the $(-)$ phase is where $f\defeq y - h(x, t) < 0$.
+
+As a boundary condition, we see stresses tangential to the interface are continuous across the surface, e.g. $\mv{t}_1\cdot\mv{T}^+ \cdot \mv{n} = \mv{t}_1 \cdot \mv{T}^- \cdot \mv{n}$.
+In the inviscid or static viscous case we get the \mdf{Young-Laplace equation}
+\[
+	p^- - p^+ = \sigma \grad\cdot\mv{n} \quad \text{at} \quad f=0
+\]
+which says that the pressure jump across the interface is caused by the surface tension force.
+
+\begin{note}
+Surface tension is of the order $\sigma / L$ where $L$ see approximately the radius of curvature.
+So capillary force will be important when $\sigma / L$ is comparable to pressure due to gravitational forces, i.e.
+\[
+	\mdf{Bo} = \frac{\rho g L^2}{\sigma}=1
+\]
+We call $Bo$ the \mdf{Bond number} and $L_\sigma \defeq \sqrt{\sigma/(\rho g)}$ is the \mdf{capillary length}.
+\end{note}
+
+\section{Instabilities}
+\begin{theorem}[Rayleigh Criterion]
+For an ideal plane-parallel flow between two plates (with free-slip boundary condition) to be linearly unstable, the velocity profile $U(y)$ must have an inflection point.
+\end{theorem}
+
+\section{Good Numbers to know!}
+\begin{itemize}
+	\item The characteristic length in a gas is mean free path $l_{gas}=100nm$.
+	\item The characteristic length in a liquid is interatomic spacing $l_{liquid} = 1nm$.
+	\item Density of water is about $1000kg\;m^{-3}$.
+	\item The dynamic and kinematic viscosity of water at 20C is
+		\[
+			\mu = 10^{-3} \quad\quad \nu = 10^{-6}
+		\]
+	\item Surface tension between water and air is $0.07Nm^{-1}$ and $L_\sigma = 3mm$.
+\end{itemize}
 
 \end{document}
